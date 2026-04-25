@@ -11,8 +11,8 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
-  background:#0a0f1c;
-  color:#e5e7eb;
+  background:#000;
+  color:#fff;
   overflow-x:hidden;
 }
 
@@ -20,203 +20,206 @@ body{
 header{
   position:fixed;
   width:100%;
+  padding:20px 60px;
   display:flex;
   justify-content:space-between;
-  padding:20px 60px;
-  background:rgba(10,15,28,0.5);
-  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(10px);
   z-index:1000;
 }
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:700;
-  color:#6366f1;
-}
-
-.logo img{height:40px;}
+.logo img{height:30px;}
 
 nav a{
   margin-left:25px;
-  cursor:pointer;
-  color:#94a3b8;
+  color:#aaa;
   text-decoration:none;
 }
-
-nav a:hover{color:#22d3ee;}
-
-/* SECTIONS */
-section{
-  min-height:100vh;
-  padding:140px 60px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
+nav a:hover{color:#fff;}
 
 /* HERO */
 .hero{
-  text-align:center;
+  height:450vh;
+  position:relative;
 }
 
-.hero h1{
-  font-size:4rem;
-  font-weight:800;
-  line-height:1.2;
+.sticky{
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  overflow:hidden;
+  perspective:1200px;
 }
 
-.hero span{
-  background:linear-gradient(90deg,#6366f1,#22d3ee);
-  -webkit-background-clip:text;
-  color:transparent;
+/* CURSOR GLOW */
+.cursor{
+  position:fixed;
+  width:300px;
+  height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle,#6366f1,transparent 70%);
+  pointer-events:none;
+  filter:blur(100px);
+  z-index:0;
 }
 
-.hero p{
-  margin:20px auto;
-  max-width:600px;
-  color:#94a3b8;
+/* BACKGROUND GLOW */
+.glow{
+  position:absolute;
+  width:600px;
+  height:600px;
+  background:radial-gradient(circle,#6366f1,transparent 70%);
+  filter:blur(120px);
+  z-index:-1;
 }
 
-/* BUTTON */
-.btn{
+/* PRODUCT */
+.product{
+  width:140px;
+  transition:0.1s;
+  transform-style:preserve-3d;
+  filter:drop-shadow(0 0 60px rgba(99,102,241,0.7));
+}
+
+/* TEXT */
+.headline{
+  font-size:3rem;
   margin-top:20px;
-  padding:12px 30px;
-  border-radius:30px;
-  border:none;
-  background:linear-gradient(90deg,#6366f1,#22d3ee);
-  color:white;
-  cursor:pointer;
+  opacity:0;
+  transform:translateY(50px);
+  transition:0.4s;
 }
 
-/* SERVICES */
+.sub{
+  margin-top:10px;
+  color:#aaa;
+  opacity:0;
+  transition:0.4s;
+}
+
+/* SECTION */
+.section{
+  padding:120px 60px;
+  background:#0a0f1c;
+}
+
 .grid{
   display:flex;
   gap:20px;
   flex-wrap:wrap;
-  margin-top:40px;
 }
 
 .card{
   flex:1;
   min-width:250px;
   padding:30px;
+  background:#111827;
   border-radius:20px;
-  background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.06);
-  transition:0.4s;
+  transition:0.3s;
 }
-
-.card:hover{
-  transform:translateY(-10px);
-  border-color:#6366f1;
-}
-
-/* SCROLL ANIMATION */
-.hidden{
-  opacity:0;
-  transform:translateY(60px);
-  transition:1s;
-}
-
-.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* PARALLAX GLOW */
-.glow{
-  position:absolute;
-  width:500px;
-  height:500px;
-  background:radial-gradient(circle,#6366f1,transparent);
-  filter:blur(120px);
-  top:20%;
-  left:30%;
-  z-index:-1;
-}
+.card:hover{transform:translateY(-10px);}
 
 /* CONTACT */
 .contact{
   text-align:center;
+  padding:120px 20px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="cursor" id="cursor"></div>
+
 <header>
   <div class="logo">
     <img src="https://files.catbox.moe/l9hhld.png">
-    <span>XYLORIS LOGIC</span>
   </div>
-
   <nav>
-    <a href="#home">Home</a>
     <a href="#services">Services</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
 
-<div class="glow"></div>
+<section class="hero">
+  <div class="sticky">
 
-<!-- HOME -->
-<section id="home" class="hero hidden">
-  <h1>We Build <span>Digital Excellence</span></h1>
-  <p>XYLORIS LOGIC creates high-performance websites and software solutions designed for modern businesses.</p>
-  <button class="btn" onclick="scrollToSection('contact')">Start Your Project</button>
-</section>
+    <div class="glow" id="glow"></div>
 
-<!-- SERVICES -->
-<section id="services" class="hidden">
-  <h2>Our Services</h2>
+    <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
 
-  <div class="grid">
-    <div class="card">
-      <h3>Web Development</h3>
-      <p>Fast, responsive and modern websites built for growth.</p>
-    </div>
+    <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
+    <p class="sub" id="sub">Engineering the future of digital systems</p>
 
-    <div class="card">
-      <h3>Software Development</h3>
-      <p>Custom scalable solutions tailored for your business.</p>
-    </div>
-
-    <div class="card">
-      <h3>UI/UX Design</h3>
-      <p>Clean and intuitive designs that enhance user experience.</p>
-    </div>
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact" class="contact hidden">
-  <h2>Let’s Work Together</h2>
-  <p>xylorislogic@gmail.com</p>
-  <button class="btn" onclick="sendEmail()">Email Us</button>
+<section id="services" class="section">
+  <h2>Services</h2>
+  <div class="grid">
+    <div class="card"><h3>Web Development</h3></div>
+    <div class="card"><h3>Software Development</h3></div>
+    <div class="card"><h3>Digital Marketing</h3></div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <h2>Let’s Work Together</h2
+  <button onclick="sendEmail()">Email Us</button>
 </section>
 
 <script>
-function scrollToSection(id){
-  document.getElementById(id).scrollIntoView({behavior:"smooth"});
-}
+const product = document.getElementById("product");
+const headline = document.getElementById("headline");
+const sub = document.getElementById("sub");
+const glow = document.getElementById("glow");
+const cursor = document.getElementById("cursor");
+
+/* SCROLL ENGINE */
+window.addEventListener("scroll", () => {
+  let y = window.scrollY;
+  let max = window.innerHeight * 3.5;
+  let p = y / max;
+
+  /* LOGO TRANSFORM */
+  let scale = 1 + p * 5;
+  let opacity = 1 - p * 1.3;
+  let rotateX = p * 20;
+  let rotateY = p * 30;
+
+  product.style.transform =
+    `scale(${scale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+  product.style.opacity = opacity;
+
+  /* GLOW DEPTH */
+  glow.style.transform = `scale(${1+p*2}) translateY(${p*200}px)`;
+
+  /* TEXT TIMING */
+  if(p > 0.2){
+    headline.style.opacity = 1;
+    headline.style.transform = "translateY(0)";
+  }
+
+  if(p > 0.4){
+    sub.style.opacity = 1;
+  }
+});
+
+/* CURSOR GLOW */
+document.addEventListener("mousemove", e=>{
+  cursor.style.left = e.clientX - 150 + "px";
+  cursor.style.top = e.clientY - 150 + "px";
+});
 
 /* EMAIL */
 function sendEmail(){
-  window.location.href="mailto:xylorislogic@gmail.com?subject=Project Inquiry&body=Hello, I want to work with you.";
+  window.location.href="mailto:xylorislogic@gmail.com";
 }
-
-/* SCROLL ANIMATION */
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add("show");
-    }
-  });
-});
-
-document.querySelectorAll(".hidden").forEach(el=>observer.observe(el));
 </script>
 
 </body>
