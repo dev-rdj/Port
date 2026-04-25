@@ -1,188 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your Company Name</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XYLORIS LOGIC</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-    body {
-      background: #0f172a;
-      color: white;
-    }
+<style>
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 60px;
-      background: #020617;
-      position: sticky;
-      top: 0;
-    }
+body {
+  background:#0b0f19;
+  color:#fff;
+  overflow-x:hidden;
+}
 
-    header h1 {
-      color: #38bdf8;
-    }
+/* NAV */
+header {
+  display:flex;
+  justify-content:space-between;
+  padding:20px 60px;
+  position:fixed;
+  width:100%;
+  top:0;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(12px);
+  z-index:1000;
+}
 
-    nav a {
-      margin-left: 25px;
-      color: white;
-      text-decoration: none;
-    }
+header h1 { color:#5eead4; }
 
-    .hero {
-      height: 90vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-    }
+nav a {
+  margin-left:25px;
+  cursor:pointer;
+  color:#cbd5f5;
+  text-decoration:none;
+}
 
-    .hero h2 {
-      font-size: 3rem;
-    }
+/* PAGES */
+.page {
+  min-height:100vh;
+  padding:120px 60px;
+  position:absolute;
+  width:100%;
+  top:0;
+  left:0;
+  opacity:0;
+  transform:translateX(50px);
+  transition:0.6s ease;
+  pointer-events:none;
+}
 
-    .hero span {
-      color: #38bdf8;
-    }
+.page.active {
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
+}
 
-    .hero p {
-      margin: 20px 0;
-      max-width: 600px;
-    }
+/* HERO */
+.hero {
+  text-align:center;
+  margin-top:100px;
+}
 
-    .btn {
-      padding: 12px 25px;
-      background: #38bdf8;
-      color: black;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
+.hero h2 {
+  font-size:3.5rem;
+}
 
-    section {
-      padding: 60px;
-    }
+.hero span {
+  background:linear-gradient(90deg,#5eead4,#818cf8);
+  -webkit-background-clip:text;
+  color:transparent;
+}
 
-    .services {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+.hero p {
+  margin:20px auto;
+  max-width:600px;
+  color:#94a3b8;
+}
 
-    .card {
-      background: #020617;
-      padding: 20px;
-      border-radius: 10px;
-      flex: 1;
-      min-width: 250px;
-    }
+/* BUTTON */
+.btn {
+  padding:12px 28px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#5eead4,#6366f1);
+  color:#000;
+  cursor:pointer;
+  transition:0.3s;
+}
 
-    .card h3 {
-      margin-bottom: 10px;
-      color: #38bdf8;
-    }
+.btn:hover {
+  transform:scale(1.05);
+}
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #020617;
-    }
+/* GRID */
+.grid {
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-top:30px;
+}
 
-    @media(max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: center;
-      }
+.card {
+  flex:1;
+  min-width:250px;
+  background:rgba(255,255,255,0.05);
+  padding:25px;
+  border-radius:15px;
+  backdrop-filter:blur(10px);
+  transition:0.3s;
+}
 
-      nav {
-        margin-top: 10px;
-      }
-    }
-  </style>
+.card:hover {
+  transform:translateY(-8px) scale(1.02);
+}
+
+/* PORTFOLIO */
+img {
+  width:100%;
+  border-radius:10px;
+}
+
+/* TRANSITION OVERLAY */
+.transition {
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#0b0f19;
+  top:0;
+  left:0;
+  transform:translateY(100%);
+  z-index:2000;
+  transition:0.5s;
+}
+.transition.active {
+  transform:translateY(0);
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>YourCompany</h1>
+  <h1>XYLORIS LOGIC</h1>
   <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#portfolio">Portfolio</a>
-    <a href="#contact">Contact</a>
+    <a onclick="goTo('home')">Home</a>
+    <a onclick="goTo('services')">Services</a>
+    <a onclick="goTo('portfolio')">Work</a>
+    <a onclick="goTo('contact')">Contact</a>
   </nav>
 </header>
 
-<section class="hero" id="home">
-  <h2>We Build <span>Modern Digital Solutions</span></h2>
-  <p>We are a professional web and software development company delivering high-quality solutions for businesses worldwide.</p>
-  <button class="btn" onclick="scrollToSection('contact')">Get in Touch</button>
-</section>
+<div class="transition" id="transition"></div>
 
-<section id="about">
-  <h2>About Us</h2>
-  <p>
-    We are a team of passionate developers specializing in creating high-performance websites and scalable software solutions.
-    Our mission is to help businesses grow through technology and innovation.
-  </p>
-</section>
-
-<section id="services">
-  <h2>Our Services</h2>
-  <div class="services">
-    <div class="card">
-      <h3>Web Development</h3>
-      <p>Responsive, fast and modern websites tailored for your business.</p>
-    </div>
-
-    <div class="card">
-      <h3>Software Development</h3>
-      <p>Custom software solutions designed to meet your business needs.</p>
-    </div>
-
-    <div class="card">
-      <h3>UI/UX Design</h3>
-      <p>Clean and intuitive user experiences that engage users.</p>
-    </div>
+<!-- HOME -->
+<section class="page active" id="home">
+  <div class="hero">
+    <h2>We Build <span>Premium Digital Experiences</span></h2>
+    <p>We are a professional web and software development company delivering modern solutions.</p>
+    <button class="btn" onclick="goTo('services')">Explore</button>
   </div>
 </section>
 
-<section id="portfolio">
+<!-- SERVICES -->
+<section class="page" id="services">
+  <h2>Our Services</h2>
+  <div class="grid">
+    <div class="card"><h3>Web Development</h3><p>Modern websites</p></div>
+    <div class="card"><h3>Software Development</h3><p>Custom systems</p></div>
+    <div class="card"><h3>UI/UX</h3><p>Premium design</p></div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="page" id="portfolio">
   <h2>Our Work</h2>
-  <p>Coming soon... (Add your projects here)</p>
+  <div class="grid">
+    <div class="card"><img src="https://via.placeholder.com/400x250"><p>Ecommerce</p></div>
+    <div class="card"><img src="https://via.placeholder.com/400x250"><p>Dashboard</p></div>
+    <div class="card"><img src="https://via.placeholder.com/400x250"><p>Portfolio</p></div>
+  </div>
 </section>
 
-<section id="contact">
+<!-- CONTACT -->
+<section class="page" id="contact">
   <h2>Contact Us</h2>
-  <p>Email: your@email.com</p>
-  <p>Phone: +91 XXXXX XXXXX</p>
-
-  <button class="btn" onclick="sendWhatsApp()">Chat on WhatsApp</button>
+  <p></p>
+  <p></p>
+  <button class="btn" onclick="whatsapp()">WhatsApp</button>
 </section>
-
-<footer>
-  <p>© 2026 YourCompany. All rights reserved.</p>
-</footer>
 
 <script>
-  function scrollToSection(id) {
-    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-  }
+function goTo(pageId){
+  const transition = document.getElementById("transition");
+  transition.classList.add("active");
 
-  function sendWhatsApp() {
-    window.open("https://wa.me/91XXXXXXXXXX", "_blank");
-  }
+  setTimeout(()=>{
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+  },400);
+
+  setTimeout(()=>{
+    transition.classList.remove("active");
+  },800);
+}
+
+function whatsapp(){
+  window.open("https://wa.me/91XXXXXXXXXX","_blank");
+}
 </script>
 
 </body>
