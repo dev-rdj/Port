@@ -20,12 +20,7 @@
             --glass-border: rgba(255, 255, 255, 0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
             background-color: var(--bg-color);
@@ -34,227 +29,132 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Ambient Glows */
         .ambient-glow {
-            position: fixed;
-            top: -20%;
-            left: -10%;
-            width: 50vw;
-            height: 50vw;
+            position: fixed; top: -20%; left: -10%; width: 50vw; height: 50vw;
             background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(3,7,18,0) 70%);
-            border-radius: 50%;
-            z-index: -1;
-            pointer-events: none;
+            border-radius: 50%; z-index: -1; pointer-events: none;
         }
-
         .ambient-glow.right {
-            top: 40%;
-            left: 60%;
+            top: 40%; left: 60%;
             background: radial-gradient(circle, rgba(34,211,238,0.1) 0%, rgba(3,7,18,0) 70%);
         }
 
+        /* Nav */
         header {
-            position: fixed;
-            width: 100%;
-            padding: 24px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(3, 7, 18, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 1000;
+            position: fixed; width: 100%; padding: 24px 5%; display: flex;
+            justify-content: space-between; align-items: center;
+            background: rgba(3, 7, 18, 0.6); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border); z-index: 1000;
         }
-
-        .logo {
-            height: 40px; /* Adjusted to fit the logo in your screenshot */
-            object-fit: contain;
-        }
-
+        .logo { height: 40px; object-fit: contain; }
         .nav-btn {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--glass-border);
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s ease;
+            background: transparent; color: var(--text-main); border: 1px solid var(--glass-border);
+            padding: 10px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: 0.3s ease;
         }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
+        /* Hero */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0 5%;
+            height: 100vh; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; padding: 0 5%;
         }
-
-        .hero img {
-            width: 280px;
-            margin-bottom: 2rem;
-            filter: drop-shadow(0 0 50px rgba(99, 102, 241, 0.4));
-        }
-
+        .hero img { width: 280px; margin-bottom: 2rem; filter: drop-shadow(0 0 50px rgba(99, 102, 241, 0.4)); }
         .hero h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 800;
-            line-height: 1.1;
-            max-width: 800px;
+            font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; max-width: 800px;
             background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .hero p { margin-top: 1.5rem; font-size: 1.1rem; color: var(--text-muted); max-width: 500px; }
 
-        .hero p {
-            margin-top: 1.5rem;
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 500px;
-        }
-
-        .horizontal {
-            height: 100vh;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .track {
-            display: flex;
-            height: 100%;
-            width: 300vw;
-        }
-
+        /* Horizontal Storytelling Section */
+        .horizontal { height: 100vh; overflow: hidden; background: #000; }
+        .track { display: flex; height: 100%; width: 300vw; }
         .panel {
-            width: 100vw;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            width: 100vw; height: 100%; display: flex; align-items: center;
+            justify-content: center; position: relative; padding: 0 5%;
         }
-
-        .mock {
-            width: 80%;
-            max-width: 900px;
-            height: 70vh;
-            object-fit: contain; /* Changed from cover so your specific images don't get cropped */
-            border-radius: 24px;
-        }
-
-        .overlay {
-            position: absolute;
-            bottom: 12%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 20px 40px;
-            border-radius: 100px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .overlay h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .services {
-            padding: 150px 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-
-        .section-header h2 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            padding: 40px 30px;
-            border-radius: 20px;
+        
+        /* New Story Cards */
+        .story-card {
+            max-width: 800px;
+            padding: 60px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
             position: relative;
             overflow: hidden;
-            transition: all 0.4s;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .card img {
-            width: 80px; /* Fix for your huge service icons */
-            height: 80px;
+        .story-step {
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--secondary);
             margin-bottom: 20px;
+            text-transform: uppercase;
         }
 
-        .card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 15px;
+        .story-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 30px;
             color: #fff;
         }
 
-        .card p {
+        .story-desc {
+            font-size: 1.2rem;
             color: var(--text-muted);
-            line-height: 1.6;
+            line-height: 1.8;
+            max-width: 600px;
         }
 
-        .contact {
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .contact h2 {
-            font-size: clamp(2.5rem, 4vw, 4rem);
+        .story-bg-number {
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            font-size: 300px;
             font-weight: 800;
-            margin-bottom: 30px;
+            color: rgba(255,255,255,0.02);
+            line-height: 1;
+            pointer-events: none;
+            z-index: 0;
         }
 
+        .story-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Services Grid */
+        .services { padding: 150px 5%; max-width: 1400px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header h2 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .section-header p { color: var(--text-muted); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card {
+            padding: 40px 30px; border-radius: 20px; background: var(--glass-bg);
+            border: 1px solid var(--glass-border); transition: all 0.4s;
+        }
+        .card:hover { transform: translateY(-10px); border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .card img { width: 60px; height: 60px; margin-bottom: 20px; filter: invert(1); opacity: 0.8; }
+        .card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 15px; color: #fff; }
+        .card p { color: var(--text-muted); line-height: 1.6; }
+
+        /* Contact */
+        .contact { height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .contact h2 { font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 800; margin-bottom: 30px; }
         .cta-btn {
-            padding: 16px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 100px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
-            transition: 0.3s;
+            padding: 16px 40px; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 100px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); transition: 0.3s;
         }
-
-        .cta-btn:hover {
-            transform: scale(1.05) translateY(-2px);
-        }
+        .cta-btn:hover { transform: scale(1.05) translateY(-2px); }
 
         .fade-up { opacity: 0; transform: translateY(30px); }
     </style>
@@ -278,57 +178,73 @@
 
 <section class="horizontal">
     <div class="track">
+        
         <div class="panel">
-            <img src="https://files.catbox.moe/s5lvhi.jpg" class="mock">
-            <div class="overlay">
-                <h2>Your website is your identity</h2>
+            <div class="story-card">
+                <div class="story-bg-number">1</div>
+                <div class="story-content">
+                    <span class="story-step">Step 01 / The Foundation</span>
+                    <h2 class="story-title">Your digital storefront is leaking money. Let's fix that.</h2>
+                    <p class="story-desc">In today's market, a slow or confusing website destroys trust instantly. We design high-conversion, visually striking websites that capture attention and turn casual visitors into paying clients.</p>
+                </div>
             </div>
         </div>
+
         <div class="panel">
-            <img src="https://files.catbox.moe/tearlx.png" class="mock">
-            <div class="overlay">
-                <h2>Software that scales your business</h2>
+            <div class="story-card">
+                <div class="story-bg-number">2</div>
+                <div class="story-content">
+                    <span class="story-step">Step 02 / The Engine</span>
+                    <h2 class="story-title">Stop losing hours to manual tasks. Automate to scale.</h2>
+                    <p class="story-desc">As your business grows, off-the-shelf tools break down. We engineer custom software solutions—from internal dashboards to complex portals—that eliminate bottlenecks and put your operations on autopilot.</p>
+                </div>
             </div>
         </div>
+
         <div class="panel">
-            <img src="https://files.catbox.moe/s5lvhi.jpg" class="mock">
-            <div class="overlay">
-                <h2>Marketing that drives growth</h2>
+            <div class="story-card">
+                <div class="story-bg-number">3</div>
+                <div class="story-content">
+                    <span class="story-step">Step 03 / The Amplifier</span>
+                    <h2 class="story-title">Traffic is vanity. Revenue is the only metric that matters.</h2>
+                    <p class="story-desc">Having a great product means nothing if no one sees it. We deploy precision-targeted digital marketing campaigns designed not just to gather "likes", but to aggressively acquire market share and drive measurable ROI.</p>
+                </div>
             </div>
         </div>
+
     </div>
 </section>
 
 <section class="services" id="services">
     <div class="section-header fade-up">
-        <h2>What We Do</h2>
+        <h2>Our Core Capabilities</h2>
         <p>End-to-end solutions for modern enterprises.</p>
     </div>
 
     <div class="grid">
         <div class="card fade-up">
-            <img src="https://img.icons8.com/nolan/96/web-design.png" alt="Web Dev">
-            <h3>Web Development</h3>
-            <p>Modern, responsive websites engineered with performance in mind to convert visitors into loyal customers.</p>
+            <img src="https://cdn-icons-png.flaticon.com/512/1005/1005141.png" alt="Web Dev">
+            <h3>Enterprise Web</h3>
+            <p>High-performance UI/UX design and frontend architecture built to maximize conversion rates.</p>
         </div>
 
         <div class="card fade-up">
-            <img src="https://img.icons8.com/nolan/96/software-box.png" alt="Software">
-            <h3>Software Development</h3>
-            <p>Custom, scalable system architectures designed to streamline your operations and adapt to your growth.</p>
+            <img src="https://cdn-icons-png.flaticon.com/512/2888/2888000.png" alt="Software">
+            <h3>Custom Systems</h3>
+            <p>Secure, scalable backend infrastructure and web applications tailored exactly to your workflow.</p>
         </div>
 
         <div class="card fade-up">
-            <img src="https://img.icons8.com/nolan/96/bullish.png" alt="Marketing">
-            <h3>Digital Marketing</h3>
-            <p>Data-driven strategies and advertising campaigns built to capture attention and deliver measurable ROI.</p>
+            <img src="https://cdn-icons-png.flaticon.com/512/1998/1998087.png" alt="Marketing">
+            <h3>Growth Marketing</h3>
+            <p>Data-driven SEO, paid media, and brand positioning strategies designed to dominate your sector.</p>
         </div>
     </div>
 </section>
 
 <section class="contact">
     <div class="contact-content fade-up">
-        <h2>Let’s build something great.</h2>
+        <h2>Ready to dominate your market?</h2>
         <button class="cta-btn" onclick="sendEmail()">Start Your Project</button>
     </div>
 </section>
