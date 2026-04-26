@@ -1,41 +1,35 @@
 gsap.registerPlugin(ScrollTrigger);
 
-/* HERO TEXT REVEAL */
-gsap.from(".hero h1", {
+/* HERO ANIMATION */
+gsap.from(".hero-img", {
+  scale:0.8,
   opacity:0,
-  y:50,
   duration:1
 });
 
-/* PANEL SCROLL ANIMATION */
-gsap.utils.toArray(".panel").forEach(panel => {
-  gsap.from(panel, {
+/* HORIZONTAL SCROLL */
+const panels = gsap.utils.toArray(".panel");
+
+gsap.to(panels, {
+  xPercent: -100 * (panels.length - 1),
+  ease: "none",
+  scrollTrigger: {
+    trigger: ".horizontal",
+    pin: true,
+    scrub: 1,
+    snap: 1 / (panels.length - 1),
+    end: () => "+=" + document.querySelector(".horizontal").offsetWidth
+  }
+});
+
+/* PANEL TEXT FADE */
+panels.forEach(panel => {
+  gsap.from(panel.querySelector("h2"), {
     opacity:0,
-    y:100,
-    duration:1,
+    y:50,
     scrollTrigger:{
       trigger:panel,
-      start:"top 80%",
+      start:"left center"
     }
   });
-});
-
-/* SERVICES ANIMATION */
-gsap.from(".card", {
-  scrollTrigger:{
-    trigger:".services",
-    start:"top 80%"
-  },
-  opacity:0,
-  y:50,
-  stagger:0.2
-});
-
-/* PARALLAX HERO */
-gsap.to(".hero", {
-  scale:1.1,
-  scrollTrigger:{
-    trigger:".hero",
-    scrub:true
-  }
 });
