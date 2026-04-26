@@ -13,23 +13,25 @@
 body{
   background:#0a0f1c;
   color:#e5e7eb;
+  overflow-x:hidden;
 }
 
 /* NAV */
 header{
   position:fixed;
   width:100%;
-  padding:15px 40px;
+  padding:15px 50px;
   display:flex;
   justify-content:space-between;
-  background:rgba(10,15,28,0.7);
-  backdrop-filter:blur(8px);
+  background:rgba(10,15,28,0.6);
+  backdrop-filter:blur(10px);
+  z-index:1000;
 }
 
 .logo img{height:28px;}
 
 nav a{
-  margin-left:20px;
+  margin-left:25px;
   color:#94a3b8;
   text-decoration:none;
 }
@@ -42,31 +44,54 @@ section{
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:60px 20px;
+  padding:80px 20px;
+  position:relative;
+}
+
+/* GLOW BACKGROUND */
+section::before{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:radial-gradient(circle,#6366f1,transparent 70%);
+  filter:blur(120px);
+  opacity:0.3;
+  z-index:-1;
+}
+
+/* CONTENT */
+.content{
+  max-width:700px;
 }
 
 /* TEXT */
 h1{
   font-size:3rem;
   margin-bottom:20px;
+  line-height:1.2;
 }
 
 p{
-  max-width:600px;
-  margin:auto;
   color:#94a3b8;
   line-height:1.6;
+  font-size:1.1rem;
 }
 
 /* BUTTON */
 button{
-  margin-top:25px;
+  margin-top:30px;
   padding:12px 30px;
   border:none;
   border-radius:25px;
-  background:#6366f1;
+  background:linear-gradient(90deg,#6366f1,#22d3ee);
   color:white;
   cursor:pointer;
+  transition:0.3s;
+}
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(99,102,241,0.4);
 }
 
 /* CARDS */
@@ -81,18 +106,24 @@ button{
   flex:1;
   min-width:250px;
   padding:25px;
-  border-radius:15px;
-  background:#111827;
+  border-radius:20px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
   transition:0.3s;
 }
-.card:hover{transform:translateY(-5px);}
+.card:hover{
+  transform:translateY(-8px);
+  border-color:#6366f1;
+}
 
-/* FADE ANIMATION */
+/* SCROLL ANIMATION */
 .fade{
   opacity:0;
-  transform:translateY(30px);
-  transition:0.6s;
+  transform:translateY(40px);
+  transition:0.8s;
 }
+
 .fade.show{
   opacity:1;
   transform:translateY(0);
@@ -114,7 +145,7 @@ button{
 
 <!-- HERO -->
 <section>
-  <div class="fade">
+  <div class="content fade">
     <h1>We Build Digital Experiences</h1>
     <p>
       Helping businesses grow with modern websites, powerful software, and smart digital strategies.
@@ -124,7 +155,7 @@ button{
 
 <!-- PROBLEM -->
 <section>
-  <div class="fade">
+  <div class="content fade">
     <h1>Most Businesses Struggle Online</h1>
     <p>
       Slow websites, poor design, and lack of visibility stop businesses from reaching their true potential.
@@ -134,7 +165,7 @@ button{
 
 <!-- SOLUTION -->
 <section>
-  <div class="fade">
+  <div class="content fade">
     <h1>We Turn Ideas Into Growth</h1>
     <p>
       At XYLORIS LOGIC, we combine design, development, and strategy to build digital solutions that actually work.
@@ -144,7 +175,7 @@ button{
 
 <!-- SERVICES -->
 <section id="services">
-  <div class="fade">
+  <div class="content fade">
     <h1>What We Do</h1>
 
     <div class="grid">
@@ -170,25 +201,24 @@ button{
 
 <!-- TRUST -->
 <section>
-  <div class="fade">
+  <div class="content fade">
     <h1>Why Choose Us</h1>
     <p>
-      We don’t just build projects — we build solutions that help businesses grow, scale, and succeed in the digital world.
+      We don’t just build projects — we build solutions that help businesses grow, scale, and succeed.
     </p>
   </div>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
-  <div class="fade">
+  <div class="content fade">
     <h1>Let’s Build Something Great</h1>
-    <p></p>
+    <p>xylorislogic@gmail.com</p>
     <button onclick="sendEmail()">Start Your Project</button>
   </div>
 </section>
 
 <script>
-/* FADE ON SCROLL */
 const observer = new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){
@@ -199,7 +229,6 @@ const observer = new IntersectionObserver(entries=>{
 
 document.querySelectorAll(".fade").forEach(el=>observer.observe(el));
 
-/* EMAIL */
 function sendEmail(){
   window.location.href="mailto:xylorislogic@gmail.com";
 }
