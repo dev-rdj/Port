@@ -19,9 +19,7 @@ header{
   z-index:1000;
 }
 
-.logo{
-  height:30px;
-}
+.logo{height:30px;}
 
 /* HERO */
 .hero{
@@ -32,45 +30,61 @@ header{
   text-align:center;
 }
 
+.hero-img{
+  width:300px;
+  margin-bottom:20px;
+}
+
 .hero h1{
-  font-size:3rem;
-  max-width:700px;
+  font-size:2.5rem;
 }
 
-.hero span{
-  color:#22d3ee;
-}
-
-/* PANELS */
-.panel{
+/* HORIZONTAL */
+.horizontal{
   height:100vh;
+  overflow:hidden;
+  position:relative;
+}
+
+.track{
   display:flex;
+  height:100%;
+}
+
+.panel{
+  min-width:100vw;
+  height:100%;
+  display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  font-size:2rem;
 }
 
-.dark{background:#0a0f1c;}
-.light{background:#111827;}
+.panel img{
+  width:300px;
+  margin-bottom:20px;
+}
 
 /* SERVICES */
 .services{
   padding:100px;
+  text-align:center;
+}
+
+.grid{
   display:flex;
   gap:20px;
-  justify-content:center;
+  margin-top:40px;
 }
 
 .card{
-  padding:40px;
+  flex:1;
+  padding:30px;
   background:#1f2937;
-  border-radius:20px;
+  border-radius:15px;
   transition:0.3s;
 }
-
-.card:hover{
-  transform:translateY(-10px);
-}
+.card:hover{transform:translateY(-10px);}
 
 /* CONTACT */
 .contact{
