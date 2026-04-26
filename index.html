@@ -11,9 +11,8 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
-  background:#000;
-  color:#fff;
-  overflow-x:hidden;
+  background:#0a0f1c;
+  color:#e5e7eb;
 }
 
 /* NAV */
@@ -23,110 +22,80 @@ header{
   padding:15px 40px;
   display:flex;
   justify-content:space-between;
-  background:rgba(0,0,0,0.6);
+  background:rgba(10,15,28,0.7);
   backdrop-filter:blur(8px);
-  z-index:1000;
 }
 
 .logo img{height:28px;}
 
 nav a{
   margin-left:20px;
-  color:#aaa;
+  color:#94a3b8;
   text-decoration:none;
-  font-size:14px;
 }
-nav a:hover{color:#fff;}
+nav a:hover{color:#22d3ee;}
 
-/* HERO */
-.hero{
-  height:180vh;
-  position:relative;
-}
-
-.sticky{
-  position:sticky;
-  top:0;
-  height:100vh;
+/* SECTION */
+section{
+  min-height:100vh;
   display:flex;
-  justify-content:center;
   align-items:center;
-  flex-direction:column;
+  justify-content:center;
   text-align:center;
+  padding:60px 20px;
 }
 
-/* PRODUCT */
-.product{
-  width:120px;
-  transition:0.1s;
-  filter:drop-shadow(0 0 30px rgba(99,102,241,0.5));
+/* TEXT */
+h1{
+  font-size:3rem;
+  margin-bottom:20px;
 }
 
-/* TEXT ANIMATION */
-.reveal{
-  font-size:2.5rem;
-  margin-top:20px;
-  max-width:700px;
-  line-height:1.4;
+p{
+  max-width:600px;
+  margin:auto;
+  color:#94a3b8;
+  line-height:1.6;
 }
 
-.word{
-  opacity:0;
-  display:inline-block;
-  transform:translateY(20px);
-  transition:0.4s;
+/* BUTTON */
+button{
+  margin-top:25px;
+  padding:12px 30px;
+  border:none;
+  border-radius:25px;
+  background:#6366f1;
+  color:white;
+  cursor:pointer;
 }
 
-.word.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.sub{
-  margin-top:10px;
-  color:#aaa;
-  opacity:0;
-  transition:0.4s;
-}
-
-/* SERVICES */
-.section{
-  padding:100px 40px;
-  background:#0a0f1c;
-  text-align:center;
-}
-
+/* CARDS */
 .grid{
   display:flex;
   gap:20px;
   flex-wrap:wrap;
-  margin-top:30px;
+  margin-top:40px;
 }
 
 .card{
   flex:1;
   min-width:250px;
   padding:25px;
-  background:#111827;
   border-radius:15px;
+  background:#111827;
   transition:0.3s;
 }
-.card:hover{transform:translateY(-6px);}
+.card:hover{transform:translateY(-5px);}
 
-/* CONTACT */
-.contact{
-  text-align:center;
-  padding:100px 20px;
+/* FADE ANIMATION */
+.fade{
+  opacity:0;
+  transform:translateY(30px);
+  transition:0.6s;
 }
-
-button{
-  margin-top:15px;
-  padding:10px 25px;
-  border:none;
-  border-radius:20px;
-  background:#6366f1;
-  color:white;
-  cursor:pointer;
+.fade.show{
+  opacity:1;
+  transform:translateY(0);
 }
 </style>
 </head>
@@ -144,85 +113,91 @@ button{
 </header>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="sticky">
-    <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
+<section>
+  <div class="fade">
+    <h1>We Build Digital Experiences</h1>
+    <p>
+      Helping businesses grow with modern websites, powerful software, and smart digital strategies.
+    </p>
+  </div>
+</section>
 
-    <!-- Apple Text -->
-    <div class="reveal" data-text="We build digital experiences that help businesses grow online."></div>
+<!-- PROBLEM -->
+<section>
+  <div class="fade">
+    <h1>Most Businesses Struggle Online</h1>
+    <p>
+      Slow websites, poor design, and lack of visibility stop businesses from reaching their true potential.
+    </p>
+  </div>
+</section>
 
-    <p class="sub" id="sub">Premium digital solutions</p>
+<!-- SOLUTION -->
+<section>
+  <div class="fade">
+    <h1>We Turn Ideas Into Growth</h1>
+    <p>
+      At XYLORIS LOGIC, we combine design, development, and strategy to build digital solutions that actually work.
+    </p>
   </div>
 </section>
 
 <!-- SERVICES -->
-<section id="services" class="section">
+<section id="services">
+  <div class="fade">
+    <h1>What We Do</h1>
 
-  <div class="reveal" data-text="Your website is your digital identity that turns visitors into customers."></div>
+    <div class="grid">
 
-  <div class="grid">
-    <div class="card">
-      <h3>Web Development</h3>
-      <p>Modern, fast and responsive websites.</p>
-    </div>
+      <div class="card">
+        <h3>Web Development</h3>
+        <p>Your website becomes your strongest business tool — fast, modern, and built to convert visitors.</p>
+      </div>
 
-    <div class="card">
-      <h3>Software Development</h3>
-      <p>Custom systems to automate and scale your business.</p>
-    </div>
+      <div class="card">
+        <h3>Software Development</h3>
+        <p>We create systems that simplify your work and help your business scale efficiently.</p>
+      </div>
 
-    <div class="card">
-      <h3>Digital Marketing</h3>
-      <p>Grow your reach and convert traffic into customers.</p>
+      <div class="card">
+        <h3>Digital Marketing</h3>
+        <p>We bring customers to your business through smart strategies and online growth techniques.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
+<!-- TRUST -->
+<section>
+  <div class="fade">
+    <h1>Why Choose Us</h1>
+    <p>
+      We don’t just build projects — we build solutions that help businesses grow, scale, and succeed in the digital world.
+    </p>
+  </div>
+</section>
+
 <!-- CONTACT -->
-<section id="contact" class="contact">
-
-  <div class="reveal" data-text="Let’s build something great together."></div>
-
-  <button onclick="sendEmail()">Email Us</button>
+<section id="contact">
+  <div class="fade">
+    <h1>Let’s Build Something Great</h1>
+    <p></p>
+    <button onclick="sendEmail()">Start Your Project</button>
+  </div>
 </section>
 
 <script>
-const product = document.getElementById("product");
-const sub = document.getElementById("sub");
-
-/* SCROLL ENGINE */
-window.addEventListener("scroll", () => {
-  let y = window.scrollY;
-  let max = window.innerHeight * 1.5;
-  let p = y / max;
-
-  product.style.transform = `scale(${1 + p*1.8})`;
-  product.style.opacity = 1 - p*1.2;
-
-  if(p > 0.2){
-    sub.style.opacity = 1;
-  }
-});
-
-/* SPLIT TEXT */
-document.querySelectorAll(".reveal").forEach(el=>{
-  let words = el.dataset.text.split(" ");
-  el.innerHTML = words.map(w=>`<span class="word">${w}</span>`).join(" ");
-});
-
-/* ANIMATION */
+/* FADE ON SCROLL */
 const observer = new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){
-      let words = entry.target.querySelectorAll(".word");
-      words.forEach((w,i)=>{
-        setTimeout(()=>w.classList.add("show"), i*60);
-      });
+      entry.target.classList.add("show");
     }
   });
-},{threshold:0.5});
+});
 
-document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+document.querySelectorAll(".fade").forEach(el=>observer.observe(el));
 
 /* EMAIL */
 function sendEmail(){
