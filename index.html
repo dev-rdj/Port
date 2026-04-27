@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif; scroll-behavior: smooth;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 /* LIGHT MODE BASE */
 body{
@@ -31,7 +31,7 @@ header{
   z-index:1000;
 }
 
-.logo img{height:30px;}
+.logo img{height:30px; cursor: pointer;}
 
 nav{
   display: flex;
@@ -45,8 +45,9 @@ nav a{
   font-size:14px;
   font-weight:600;
   transition: 0.2s;
+  cursor: pointer;
 }
-nav a:hover{color:#2563eb;}
+nav a:hover, nav a.active-link {color:#2563eb;}
 
 .nav-btn {
   background: #2563eb;
@@ -60,12 +61,28 @@ nav a:hover{color:#2563eb;}
 }
 .nav-btn:hover {
   background: #1d4ed8;
-  color: white;
+  color: white !important;
 }
 
-/* HERO */
-.hero{
-  height:180vh;
+/* PAGE ROUTING SYSTEM */
+.page-view {
+  display: none; /* Hide all pages by default */
+  animation: fadeIn 0.4s ease forwards;
+  min-height: 100vh;
+}
+
+.page-view.active {
+  display: block; /* Only show active page */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* HERO (Home Page) */
+#home{
+  height:180vh; /* Keeps the scroll length for your animation engine */
   position:relative;
 }
 
@@ -105,34 +122,31 @@ nav a:hover{color:#2563eb;}
   transition:0.4s;
 }
 
-/* SECTIONS (Why Us & Services) */
-.section{
-  padding:120px 5%;
+/* INTERNAL PAGES (Why Us, Services, Contact) */
+.page-content {
+  padding: 120px 5% 80px 5%; /* Top padding clears the fixed header */
   background:#f8fafc; 
+  min-height: 100vh;
 }
 
-.section-alt {
-  background: #ffffff;
-}
-
-.section-header {
+.page-header {
   text-align: center;
   margin-bottom: 60px;
 }
 
-.section-header h2 {
+.page-header h2 {
   font-size: 2.5rem;
   font-weight: 800;
   color: #0f172a;
   margin-bottom: 15px;
 }
 
-.section-header p {
+.page-header p {
   color: #475569;
   font-size: 1.1rem;
 }
 
-/* WHY US - STORY CARDS */
+/* STORY CARDS (Why Us) */
 .story-container {
   display: flex;
   flex-direction: column;
@@ -217,29 +231,13 @@ nav a:hover{color:#2563eb;}
 .card h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; }
 .card p { color: #475569; line-height: 1.6; }
 
-/* CONTACT */
-.contact{
-  text-align:center;
-  padding:120px 20px;
-  background: #ffffff;
-}
-
-.contact h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.contact p {
-  color: #475569;
-  margin-bottom: 30px;
-}
-
+/* CONTACT BUTTONS */
 .btn-group {
   display: flex;
   gap: 15px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 button{
@@ -269,109 +267,160 @@ button:hover { transform: translateY(-2px); }
 
 <header>
   <div class="logo">
-    <a href="#"><img src="https://files.catbox.moe/l9hhld.png" alt="Xyloris Logic"></a>
+    <a href="#home"><img src="https://files.catbox.moe/l9hhld.png" alt="Xyloris Logic"></a>
   </div>
   <nav>
-    <a href="#why-us">Why Us?</a>
-    <a href="#services">Services</a>
-    <a href="#contact" class="nav-btn">Start Project</a>
+    <a href="#why-us" class="nav-item">Why Us?</a>
+    <a href="#services" class="nav-item">Services</a>
+    <a href="#contact" class="nav-btn nav-item">Start Project</a>
   </nav>
 </header>
 
-<section class="hero">
-  <div class="sticky">
-    <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
-    <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
-    <p class="sub" id="sub">Premium digital engineering for modern enterprises.</p>
-  </div>
-</section>
+<main>
 
-<section id="why-us" class="section">
-  <div class="section-header">
-    <h2>The Growth Process</h2>
-    <p>How we engineer unshakeable market dominance.</p>
-  </div>
+  <section id="home" class="page-view active">
+    <div class="sticky">
+      <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
+      <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
+      <p class="sub" id="sub">Premium digital engineering for modern enterprises.</p>
+    </div>
+  </section>
 
-  <div class="story-container">
-    <div class="story-card">
-      <div class="story-bg-number">1</div>
-      <div class="story-content">
-        <span class="story-step">Step 01 / The Foundation</span>
-        <h3>Your digital storefront is leaking money. Let's fix that.</h3>
-        <p>In today's market, a slow or confusing website destroys trust instantly. We design high-conversion, visually striking websites that capture attention and turn casual visitors into paying clients.</p>
+  <section id="why-us" class="page-view">
+    <div class="page-content">
+      <div class="page-header">
+        <h2>The Growth Process</h2>
+        <p>How we engineer unshakeable market dominance.</p>
+      </div>
+
+      <div class="story-container">
+        <div class="story-card">
+          <div class="story-bg-number">1</div>
+          <div class="story-content">
+            <span class="story-step">Step 01 / The Foundation</span>
+            <h3>Your digital storefront is leaking money. Let's fix that.</h3>
+            <p>In today's market, a slow or confusing website destroys trust instantly. We design high-conversion, visually striking websites that capture attention and turn casual visitors into paying clients.</p>
+          </div>
+        </div>
+
+        <div class="story-card">
+          <div class="story-bg-number">2</div>
+          <div class="story-content">
+            <span class="story-step">Step 02 / The Engine</span>
+            <h3>Stop losing hours to manual tasks. Automate to scale.</h3>
+            <p>As your business grows, off-the-shelf tools break down. We engineer custom software solutions—from internal dashboards to complex portals—that eliminate bottlenecks and put your operations on autopilot.</p>
+          </div>
+        </div>
+
+        <div class="story-card">
+          <div class="story-bg-number">3</div>
+          <div class="story-content">
+            <span class="story-step">Step 03 / The Amplifier</span>
+            <h3>Traffic is vanity. Revenue is the metric that matters.</h3>
+            <p>Having a great product means nothing if no one sees it. We deploy precision-targeted digital marketing campaigns designed not just to gather "likes", but to aggressively acquire market share.</p>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="story-card">
-      <div class="story-bg-number">2</div>
-      <div class="story-content">
-        <span class="story-step">Step 02 / The Engine</span>
-        <h3>Stop losing hours to manual tasks. Automate to scale.</h3>
-        <p>As your business grows, off-the-shelf tools break down. We engineer custom software solutions—from internal dashboards to complex portals—that eliminate bottlenecks and put your operations on autopilot.</p>
+  <section id="services" class="page-view">
+    <div class="page-content" style="background: #ffffff;">
+      <div class="page-header">
+        <h2>Our Core Capabilities</h2>
+        <p>End-to-end solutions tailored exactly to your workflow.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Enterprise Web</h3>
+          <p>High-performance UI/UX design and frontend architecture built to maximize conversion rates and establish unshakeable market trust.</p>
+        </div>
+        <div class="card">
+          <h3>Custom Systems</h3>
+          <p>Secure, scalable backend infrastructure and web applications tailored exactly to your workflow to automate repetitive tasks.</p>
+        </div>
+        <div class="card">
+          <h3>Growth Marketing</h3>
+          <p>Data-driven SEO, paid media, and brand positioning strategies specifically designed to dominate your sector and acquire market share.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="story-card">
-      <div class="story-bg-number">3</div>
-      <div class="story-content">
-        <span class="story-step">Step 03 / The Amplifier</span>
-        <h3>Traffic is vanity. Revenue is the metric that matters.</h3>
-        <p>Having a great product means nothing if no one sees it. We deploy precision-targeted digital marketing campaigns designed not just to gather "likes", but to aggressively acquire market share.</p>
+  <section id="contact" class="page-view">
+    <div class="page-content" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+      <div class="page-header">
+        <h2>Ready to dominate your market?</h2>
+        <p>Let's discuss how we can scale your operations.</p>
+      </div>
+      
+      <div class="btn-group">
+        <button class="wa-btn" onclick="sendWhatsApp()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.662-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp Us
+        </button>
+        <button class="email-btn" onclick="sendEmail()">
+          Email Us
+        </button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="services" class="section section-alt">
-  <div class="section-header">
-    <h2>Our Core Capabilities</h2>
-    <p>End-to-end solutions tailored exactly to your workflow.</p>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Enterprise Web</h3>
-      <p>High-performance UI/UX design and frontend architecture built to maximize conversion rates and establish unshakeable market trust.</p>
-    </div>
-    <div class="card">
-      <h3>Custom Systems</h3>
-      <p>Secure, scalable backend infrastructure and web applications tailored exactly to your workflow to automate repetitive tasks.</p>
-    </div>
-    <div class="card">
-      <h3>Growth Marketing</h3>
-      <p>Data-driven SEO, paid media, and brand positioning strategies specifically designed to dominate your sector and acquire market share.</p>
-    </div>
-  </div>
-</section>
-
-<section id="contact" class="contact">
-  <h2>Ready to dominate your market?</h2>
-  <p>Let's discuss how we can scale your operations.</p>
-  
-  <div class="btn-group">
-    <button class="wa-btn" onclick="sendWhatsApp()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.662-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-      WhatsApp Us
-    </button>
-    <button class="email-btn" onclick="sendEmail()">
-      Email Us
-    </button>
-  </div>
-</section>
+</main>
 
 <script>
+/* --- 1. SPA ROUTING SYSTEM --- */
+function navigateToPage() {
+  // Get the hash from the URL (e.g., #services), default to #home
+  let hash = window.location.hash || '#home';
+  
+  // Hide all pages
+  document.querySelectorAll('.page-view').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  // Remove active state from nav links
+  document.querySelectorAll('nav a').forEach(link => {
+    link.classList.remove('active-link');
+  });
+
+  // Show the target page
+  const targetPage = document.querySelector(hash);
+  if (targetPage) {
+    targetPage.classList.add('active');
+    
+    // Highlight the active nav link (if it's not the button)
+    const activeLink = document.querySelector(`nav a[href="${hash}"]`);
+    if(activeLink && !activeLink.classList.contains('nav-btn')){
+      activeLink.classList.add('active-link');
+    }
+    
+    // Jump straight to the top of the new page cleanly
+    window.scrollTo(0, 0);
+  }
+}
+
+// Run routing when a link is clicked
+window.addEventListener('hashchange', navigateToPage);
+
+// Run routing on initial page load
+window.addEventListener('DOMContentLoaded', navigateToPage);
+
+
+/* --- 2. FAST SCROLL ENGINE (Home Page Only) --- */
 const product = document.getElementById("product");
 const headline = document.getElementById("headline");
 const sub = document.getElementById("sub");
 
-/* FAST SCROLL ENGINE */
 window.addEventListener("scroll", () => {
+  // Only run the scroll animation if the Home page is active
+  if (!document.getElementById('home').classList.contains('active')) return;
+
   let y = window.scrollY;
-  // Calculate max scroll for the hero section to control the scale
   let max = window.innerHeight * 1.5; 
   let p = y / max;
 
-  // Stop scaling once the user scrolls past the hero section
   if (p <= 1) {
     product.style.transform = `scale(${1 + p*1.8})`;
     product.style.opacity = 1 - p*1.2;
@@ -392,7 +441,8 @@ window.addEventListener("scroll", () => {
   }
 });
 
-/* ROUTING */
+
+/* --- 3. COMMUNICATION ROUTING --- */
 function sendWhatsApp(){
   const msg = encodeURIComponent("Hello Xyloris Logic, I am interested in discussing a project.");
   window.open(`https://wa.me/917411169798?text=${msg}`, "_blank");
