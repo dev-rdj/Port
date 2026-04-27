@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif; scroll-behavior: smooth;}
 
 /* LIGHT MODE BASE */
 body{
@@ -66,13 +66,13 @@ nav a:hover, nav a.active-link {color:#2563eb;}
 
 /* PAGE ROUTING SYSTEM */
 .page-view {
-  display: none; /* Hide all pages by default */
+  display: none; 
   animation: fadeIn 0.4s ease forwards;
   min-height: 100vh;
 }
 
 .page-view.active {
-  display: block; /* Only show active page */
+  display: block; 
 }
 
 @keyframes fadeIn {
@@ -80,9 +80,9 @@ nav a:hover, nav a.active-link {color:#2563eb;}
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* HERO (Home Page) */
-#home{
-  height:180vh; /* Keeps the scroll length for your animation engine */
+/* ================= HERO (Home Page) ================= */
+.hero-scroll {
+  height:180vh; 
   position:relative;
 }
 
@@ -122,9 +122,62 @@ nav a:hover, nav a.active-link {color:#2563eb;}
   transition:0.4s;
 }
 
-/* INTERNAL PAGES (Why Us, Services, Contact) */
+/* HOME PAGE CONTENT (Below Scroll) */
+.home-content {
+  padding: 80px 5% 120px 5%;
+  background: #ffffff;
+  text-align: center;
+}
+
+.home-content h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.home-content p.home-desc {
+  font-size: 1.15rem;
+  color: #475569;
+  max-width: 750px;
+  margin: 0 auto 40px auto;
+  line-height: 1.7;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 80px;
+}
+
+.stat-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 30px;
+  border-radius: 16px;
+  width: 280px;
+  text-align: left;
+}
+
+.stat-box h4 {
+  color: #2563eb;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.stat-box p {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ================= INTERNAL PAGES ================= */
 .page-content {
-  padding: 120px 5% 80px 5%; /* Top padding clears the fixed header */
+  padding: 120px 5% 80px 5%; 
   background:#f8fafc; 
   min-height: 100vh;
 }
@@ -231,7 +284,7 @@ nav a:hover, nav a.active-link {color:#2563eb;}
 .card h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; }
 .card p { color: #475569; line-height: 1.6; }
 
-/* CONTACT BUTTONS */
+/* BUTTONS */
 .btn-group {
   display: flex;
   gap: 15px;
@@ -240,7 +293,7 @@ nav a:hover, nav a.active-link {color:#2563eb;}
   margin-top: 30px;
 }
 
-button{
+button, .action-link {
   padding:14px 35px;
   border:none;
   border-radius:100px;
@@ -249,11 +302,12 @@ button{
   color:white;
   cursor:pointer;
   transition: 0.2s;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
 }
-button:hover { transform: translateY(-2px); }
+button:hover, .action-link:hover { transform: translateY(-2px); color: white;}
 
 .wa-btn { background:#25d366; }
 .wa-btn:hover { background: #20ba56; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); }
@@ -279,11 +333,40 @@ button:hover { transform: translateY(-2px); }
 <main>
 
   <section id="home" class="page-view active">
-    <div class="sticky">
-      <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
-      <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
-      <p class="sub" id="sub">Premium digital engineering for modern enterprises.</p>
+    
+    <div class="hero-scroll">
+      <div class="sticky">
+        <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
+        <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
+        <p class="sub" id="sub">Premium digital engineering for modern enterprises.</p>
+      </div>
     </div>
+
+    <div class="home-content">
+      <h2>Transforming clicks into measurable growth.</h2>
+      <p class="home-desc">Based in Bangalore, Xyloris Logic partners with ambitious brands to engineer high-conversion websites, develop custom software architectures, and execute data-driven digital advertising campaigns.</p>
+      
+      <div class="btn-group">
+        <a href="#services" class="action-link email-btn">Explore Our Services</a>
+        <button class="wa-btn" onclick="sendWhatsApp()">Talk to an Expert</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <h4>Website Development</h4>
+          <p>We build digital storefronts optimized for speed, UI/UX, and maximum customer conversion.</p>
+        </div>
+        <div class="stat-box">
+          <h4>Custom Software</h4>
+          <p>We design scalable internal systems and applications that automate your operational workflows.</p>
+        </div>
+        <div class="stat-box">
+          <h4>Digital Marketing</h4>
+          <p>We deploy aggressive advertising strategies designed to acquire market share and dominate your niche.</p>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <section id="why-us" class="page-view">
@@ -372,39 +455,30 @@ button:hover { transform: translateY(-2px); }
 <script>
 /* --- 1. SPA ROUTING SYSTEM --- */
 function navigateToPage() {
-  // Get the hash from the URL (e.g., #services), default to #home
   let hash = window.location.hash || '#home';
   
-  // Hide all pages
   document.querySelectorAll('.page-view').forEach(page => {
     page.classList.remove('active');
   });
 
-  // Remove active state from nav links
   document.querySelectorAll('nav a').forEach(link => {
     link.classList.remove('active-link');
   });
 
-  // Show the target page
   const targetPage = document.querySelector(hash);
   if (targetPage) {
     targetPage.classList.add('active');
     
-    // Highlight the active nav link (if it's not the button)
     const activeLink = document.querySelector(`nav a[href="${hash}"]`);
     if(activeLink && !activeLink.classList.contains('nav-btn')){
       activeLink.classList.add('active-link');
     }
     
-    // Jump straight to the top of the new page cleanly
     window.scrollTo(0, 0);
   }
 }
 
-// Run routing when a link is clicked
 window.addEventListener('hashchange', navigateToPage);
-
-// Run routing on initial page load
 window.addEventListener('DOMContentLoaded', navigateToPage);
 
 
@@ -414,7 +488,6 @@ const headline = document.getElementById("headline");
 const sub = document.getElementById("sub");
 
 window.addEventListener("scroll", () => {
-  // Only run the scroll animation if the Home page is active
   if (!document.getElementById('home').classList.contains('active')) return;
 
   let y = window.scrollY;
@@ -440,7 +513,6 @@ window.addEventListener("scroll", () => {
     sub.style.opacity = 0;
   }
 });
-
 
 /* --- 3. COMMUNICATION ROUTING --- */
 function sendWhatsApp(){
