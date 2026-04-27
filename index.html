@@ -80,47 +80,69 @@ nav a:hover, nav a.active-link {color:#2563eb;}
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= HERO (Home Page) ================= */
+/* ================= HERO (Home Page - Auto Animated Splash) ================= */
 .hero {
-  height:180vh; 
-  position:relative;
+  height: 100vh; /* Fixed height, no scrolling needed */
+  position: relative;
   background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  overflow: hidden;
 }
 
-.sticky{
-  position:sticky;
-  top:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  text-align:center;
+.product {
+  width: 140px;
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.08));
+  position: absolute; /* Keeps it centered independent of text */
+  opacity: 0;
 }
 
-.product{
-  width:140px;
-  transition:0.1s;
-  filter:drop-shadow(0 15px 25px rgba(0,0,0,0.08));
+.text-wrapper {
+  position: relative;
+  z-index: 2;
 }
 
-.headline{
-  font-size:clamp(2.5rem, 5vw, 4rem);
+.headline {
+  font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
-  margin-top:20px;
-  opacity:0;
-  transform:translateY(30px);
-  transition:0.4s;
   color: #0f172a;
   letter-spacing: -0.02em;
+  opacity: 0;
 }
 
-.sub{
-  margin-top:10px;
+.sub {
+  margin-top: 10px;
   font-size: 1.2rem;
-  color:#475569;
-  opacity:0;
-  transition:0.4s;
+  color: #475569;
+  opacity: 0;
+}
+
+/* Auto-Play Animation Classes */
+.animate-hero .product {
+  animation: logoZoomOut 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-hero .headline {
+  animation: fadeUpIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.5s forwards;
+}
+
+.animate-hero .sub {
+  animation: fadeUpIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.8s forwards;
+}
+
+@keyframes logoZoomOut {
+  0% { transform: scale(0.9); opacity: 0; }
+  15% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2.8); opacity: 0; visibility: hidden; }
+}
+
+@keyframes fadeUpIn {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* ================= INTERNAL PAGES ================= */
@@ -206,25 +228,26 @@ nav a:hover, nav a.active-link {color:#2563eb;}
 }
 
 /* SERVICES GRID */
-.grid{
-  display:grid;
+.grid {
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap:30px;
+  gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.card{
-  padding:40px 30px;
-  background:#ffffff;
-  border-radius:20px;
+.card {
+  padding: 40px 30px;
+  background: #ffffff;
+  border-radius: 20px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition:0.3s;
+  transition: 0.3s;
   text-align: left;
 }
-.card:hover{
-  transform:translateY(-8px);
+
+.card:hover {
+  transform: translateY(-8px);
   box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
   border-color: #2563eb;
 }
@@ -242,25 +265,26 @@ nav a:hover, nav a.active-link {color:#2563eb;}
 }
 
 button, .action-link {
-  padding:14px 35px;
-  border:none;
-  border-radius:100px;
+  padding: 14px 35px;
+  border: none;
+  border-radius: 100px;
   font-weight: 600;
   font-size: 1rem;
-  color:white;
-  cursor:pointer;
+  color: white;
+  cursor: pointer;
   transition: 0.2s;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
 }
+
 button:hover, .action-link:hover { transform: translateY(-2px); color: white;}
 
-.wa-btn { background:#25d366; }
+.wa-btn { background: #25d366; }
 .wa-btn:hover { background: #20ba56; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); }
 
-.email-btn { background:#2563eb; }
+.email-btn { background: #2563eb; }
 .email-btn:hover { background: #1d4ed8; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
 </style>
 </head>
@@ -282,10 +306,10 @@ button:hover, .action-link:hover { transform: translateY(-2px); color: white;}
 
   <section id="home" class="page-view active">
     <div class="hero">
-      <div class="sticky">
-        <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
-        <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
-        <p class="sub" id="sub">Premium digital engineering for modern enterprises.</p>
+      <img src="https://files.catbox.moe/l9hhld.png" class="product">
+      <div class="text-wrapper">
+        <h1 class="headline">XYLORIS LOGIC</h1>
+        <p class="sub">Premium digital engineering for modern enterprises.</p>
       </div>
     </div>
   </section>
@@ -374,36 +398,51 @@ button:hover, .action-link:hover { transform: translateY(-2px); color: white;}
 </main>
 
 <script>
-/* --- 1. SPA ROUTING SYSTEM --- */
+/* --- 1. SPA ROUTING SYSTEM & ANIMATION TRIGGER --- */
 function navigateToPage() {
-  // Always clear specific URL hash weirdness, default to home
   let hash = window.location.hash;
   if (!hash || hash === '') {
     hash = '#home';
   }
   
+  // Hide all pages
   document.querySelectorAll('.page-view').forEach(page => {
     page.classList.remove('active');
   });
 
+  // Remove active state from nav links
   document.querySelectorAll('nav a').forEach(link => {
     link.classList.remove('active-link');
   });
 
+  // Activate target page
   const targetPage = document.querySelector(hash);
   if (targetPage) {
     targetPage.classList.add('active');
     
+    // Highlight correct nav link
     const activeLink = document.querySelector(`nav a[href="${hash}"]`);
     if(activeLink && !activeLink.classList.contains('nav-btn')){
       activeLink.classList.add('active-link');
     }
     
-    // Jump straight to the top of the newly activated page
+    // Smooth reset of the hero animation if Home is activated
+    if (hash === '#home') {
+      const homeSection = document.getElementById('home');
+      // Briefly remove the animation class to reset the CSS keyframes
+      homeSection.classList.remove('animate-hero');
+      
+      // Trigger a reflow so the browser acknowledges the class removal
+      void homeSection.offsetWidth; 
+      
+      // Re-add the class to start the animation over smoothly
+      homeSection.classList.add('animate-hero');
+    }
+    
     window.scrollTo(0, 0);
   } else {
-    // Failsafe: If hash is invalid, force home
-    document.getElementById('home').classList.add('active');
+    // Failsafe
+    document.getElementById('home').classList.add('active', 'animate-hero');
     window.scrollTo(0, 0);
   }
 }
@@ -420,39 +459,7 @@ window.addEventListener('load', () => {
 window.addEventListener('hashchange', navigateToPage);
 
 
-/* --- 2. FAST SCROLL ENGINE (Home Page Only) --- */
-const product = document.getElementById("product");
-const headline = document.getElementById("headline");
-const sub = document.getElementById("sub");
-
-window.addEventListener("scroll", () => {
-  if (!document.getElementById('home').classList.contains('active')) return;
-
-  let y = window.scrollY;
-  let max = window.innerHeight * 1.5; 
-  let p = y / max;
-
-  if (p <= 1) {
-    product.style.transform = `scale(${1 + p*1.8})`;
-    product.style.opacity = 1 - p*1.2;
-  }
-
-  if(p > 0.15){
-    headline.style.opacity = 1;
-    headline.style.transform = "translateY(0)";
-  } else {
-    headline.style.opacity = 0;
-    headline.style.transform = "translateY(30px)";
-  }
-
-  if(p > 0.25){
-    sub.style.opacity = 1;
-  } else {
-    sub.style.opacity = 0;
-  }
-});
-
-/* --- 3. COMMUNICATION ROUTING --- */
+/* --- 2. COMMUNICATION ROUTING --- */
 function sendWhatsApp(){
   const msg = encodeURIComponent("Hello Team, I am interested in discussing a project.");
   window.open(`https://wa.me/917411169798?text=${msg}`, "_blank");
