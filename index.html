@@ -81,9 +81,10 @@ nav a:hover, nav a.active-link {color:#2563eb;}
 }
 
 /* ================= HERO (Home Page) ================= */
-.hero-scroll {
+.hero {
   height:180vh; 
   position:relative;
+  background: #ffffff;
 }
 
 .sticky{
@@ -120,59 +121,6 @@ nav a:hover, nav a.active-link {color:#2563eb;}
   color:#475569;
   opacity:0;
   transition:0.4s;
-}
-
-/* HOME PAGE CONTENT (Below Scroll) */
-.home-content {
-  padding: 80px 5% 120px 5%;
-  background: #ffffff;
-  text-align: center;
-}
-
-.home-content h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 20px;
-  letter-spacing: -0.02em;
-}
-
-.home-content p.home-desc {
-  font-size: 1.15rem;
-  color: #475569;
-  max-width: 750px;
-  margin: 0 auto 40px auto;
-  line-height: 1.7;
-}
-
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-  margin-top: 80px;
-}
-
-.stat-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 30px;
-  border-radius: 16px;
-  width: 280px;
-  text-align: left;
-}
-
-.stat-box h4 {
-  color: #2563eb;
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.stat-box p {
-  color: #475569;
-  font-size: 0.95rem;
-  line-height: 1.5;
 }
 
 /* ================= INTERNAL PAGES ================= */
@@ -333,40 +281,13 @@ button:hover, .action-link:hover { transform: translateY(-2px); color: white;}
 <main>
 
   <section id="home" class="page-view active">
-    
-    <div class="hero-scroll">
+    <div class="hero">
       <div class="sticky">
         <img src="https://files.catbox.moe/l9hhld.png" class="product" id="product">
         <h1 class="headline" id="headline">XYLORIS LOGIC</h1>
         <p class="sub" id="sub">Premium digital engineering for modern enterprises.</p>
       </div>
     </div>
-
-    <div class="home-content">
-      <h2>Transforming clicks into measurable growth.</h2>
-      <p class="home-desc">Based in Bangalore, Xyloris Logic partners with ambitious brands to engineer high-conversion websites, develop custom software architectures, and execute data-driven digital advertising campaigns.</p>
-      
-      <div class="btn-group">
-        <a href="#services" class="action-link email-btn">Explore Our Services</a>
-        <button class="wa-btn" onclick="sendWhatsApp()">Talk to an Expert</button>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-box">
-          <h4>Website Development</h4>
-          <p>We build digital storefronts optimized for speed, UI/UX, and maximum customer conversion.</p>
-        </div>
-        <div class="stat-box">
-          <h4>Custom Software</h4>
-          <p>We design scalable internal systems and applications that automate your operational workflows.</p>
-        </div>
-        <div class="stat-box">
-          <h4>Digital Marketing</h4>
-          <p>We deploy aggressive advertising strategies designed to acquire market share and dominate your niche.</p>
-        </div>
-      </div>
-    </div>
-
   </section>
 
   <section id="why-us" class="page-view">
@@ -455,7 +376,11 @@ button:hover, .action-link:hover { transform: translateY(-2px); color: white;}
 <script>
 /* --- 1. SPA ROUTING SYSTEM --- */
 function navigateToPage() {
-  let hash = window.location.hash || '#home';
+  // Always clear specific URL hash weirdness, default to home
+  let hash = window.location.hash;
+  if (!hash || hash === '') {
+    hash = '#home';
+  }
   
   document.querySelectorAll('.page-view').forEach(page => {
     page.classList.remove('active');
@@ -474,12 +399,25 @@ function navigateToPage() {
       activeLink.classList.add('active-link');
     }
     
+    // Jump straight to the top of the newly activated page
+    window.scrollTo(0, 0);
+  } else {
+    // Failsafe: If hash is invalid, force home
+    document.getElementById('home').classList.add('active');
     window.scrollTo(0, 0);
   }
 }
 
+// Ensure the page loads properly even on first visit
+window.addEventListener('load', () => {
+  if(!window.location.hash) {
+    window.location.hash = '#home';
+  } else {
+    navigateToPage();
+  }
+});
+
 window.addEventListener('hashchange', navigateToPage);
-window.addEventListener('DOMContentLoaded', navigateToPage);
 
 
 /* --- 2. FAST SCROLL ENGINE (Home Page Only) --- */
