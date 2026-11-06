@@ -3,15 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>JEFF SPACE — SECURE UPLINK</title>
+  <title>JEFF SPACE</title>
 
   <!-- Google Fonts: Cinzel (Brand) + JetBrains Mono (Terminal) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- Core Libraries -->
+  <!-- Tailwind CSS with Custom Tactical Theme Configuration -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-deep': '#070512',
+            'brand-amber': '#ffd166',
+            'brand-cyan': '#48cae4',
+            'brand-rose': '#ff758f',
+            'brand-emerald': '#06d6a0',
+            'term-text': '#e0fbfc',
+            'grid-border': 'rgba(72, 202, 228, 0.22)',
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
@@ -20,12 +43,13 @@
       --brand-amber: #ffd166;
       --brand-cyan: #48cae4;
       --brand-rose: #ff758f;
+      --brand-emerald: #06d6a0;
       --term-text: #e0fbfc;
-      --grid-border: rgba(72, 202, 228, 0.2);
+      --grid-border: rgba(72, 202, 228, 0.22);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
     body {
       background-color: var(--bg-deep);
       color: var(--term-text);
@@ -33,14 +57,17 @@
       overflow: hidden;
       text-transform: uppercase;
       -webkit-font-smoothing: antialiased;
+      user-select: none;
     }
 
     /* CRT & Scanline Effects */
     .crt-overlay {
       position: fixed;
       inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-      background-size: 100% 3px, 3px 100%;
+      background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.015), rgba(0, 0, 255, 0.04));
+      background-size: 100% 3px, 4px 100%;
       pointer-events: none;
       z-index: 50;
       mix-blend-mode: overlay;
@@ -49,103 +76,120 @@
     .vignette {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(3, 2, 8, 0.95) 100%);
+      background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(3, 2, 8, 0.96) 100%);
       pointer-events: none;
       z-index: 49;
     }
 
-    /* Base Layout Grid */
+    /* Tactical Layout Grid */
     .tactical-ui {
       position: relative;
       z-index: 10;
       display: grid;
       grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr auto;
-      height: 100vh;
+      grid-template-rows: auto 1fr;
+      height: 100dvh;
       width: 100vw;
-      padding: 1.5rem;
-      gap: 1.5rem;
+      padding: 0.75rem;
+      gap: 0.75rem;
     }
-    
+
     @media (min-width: 1024px) {
       .tactical-ui {
-        grid-template-columns: 320px 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-columns: 290px 1fr;
+        padding: 1.25rem;
+        gap: 1.25rem;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .tactical-ui {
+        grid-template-columns: 300px 1fr 320px;
       }
     }
 
     .panel {
       border: 1px solid var(--grid-border);
-      background: rgba(7, 5, 18, 0.75);
-      backdrop-filter: blur(8px);
-      padding: 1.5rem;
+      background: rgba(7, 5, 18, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 1.25rem;
       position: relative;
+      box-shadow: inset 0 0 30px rgba(72, 202, 228, 0.03);
     }
 
-    /* Corner Accents for Panels */
+    /* Tactical Corner Reticles */
     .panel::before, .panel::after {
-      content: ''; position: absolute; width: 8px; height: 8px; border: 2px solid var(--brand-cyan);
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--brand-cyan);
+      pointer-events: none;
+      transition: border-color 0.3s ease;
     }
     .panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
     .panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
-    /* The Interactive Terminal Form */
-    .booking-terminal {
-      font-size: 0.85rem;
-      line-height: 1.8;
+    /* Interactive Protocol Cards */
+    .protocol-btn {
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.25rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--grid-border);
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(72, 202, 228, 0.04);
+      text-align: left;
+    }
+    .protocol-btn:hover {
+      border-color: var(--brand-cyan);
+      color: #fff;
+      background: rgba(72, 202, 228, 0.12);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(72, 202, 228, 0.15);
+    }
+    .protocol-btn.selected {
+      border-color: var(--brand-amber);
+      color: var(--brand-amber);
+      background: rgba(255, 209, 102, 0.12);
+      box-shadow: 0 0 20px rgba(255, 209, 102, 0.2);
+    }
+    .protocol-btn.disabled {
+      opacity: 0.35;
+      pointer-events: none;
     }
 
-    .terminal-line { display: flex; gap: 0.75rem; }
-    .terminal-prompt { color: var(--brand-amber); font-weight: bold; }
-    
+    /* Blinking Cursor */
     .cursor-blink {
       display: inline-block;
       width: 8px;
-      height: 1.2em;
+      height: 1.1em;
       background-color: var(--brand-cyan);
-      vertical-align: middle;
+      vertical-align: text-bottom;
       animation: blink 1s step-end infinite;
       margin-left: 4px;
     }
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* Selectable Options */
-    .protocol-btn {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--grid-border);
-      color: rgba(255,255,255,0.7);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: rgba(72, 202, 228, 0.05);
-    }
-    .protocol-btn:hover, .protocol-btn.selected {
-      border-color: var(--brand-cyan);
-      color: var(--brand-cyan);
-      background: rgba(72, 202, 228, 0.15);
-      box-shadow: 0 0 15px rgba(72, 202, 228, 0.2);
-    }
-
-    /* Hidden Input for Typing */
-    #hidden-input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
     /* Background Canvas */
     #webgl-canvas {
-      position: absolute;
+      position: fixed;
       inset: 0;
       z-index: 1;
     }
 
+    /* Glitch Hover Effect on Brand */
+    .brand-glitch:hover {
+      text-shadow: -2px 0 var(--brand-rose), 2px 0 var(--brand-cyan);
+    }
+
     /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: rgba(7, 5, 18, 0.4); }
     ::-webkit-scrollbar-thumb { background: var(--brand-cyan); }
   </style>
 </head>
@@ -158,134 +202,378 @@
 
   <div class="tactical-ui">
     
-    <!-- TOP HEADER (Spans full width) -->
-    <header class="panel lg:col-span-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 !py-3">
-      <div class="flex items-center gap-4">
-        <!-- Original Branding Font -->
-        <h1 class="font-['Cinzel'] font-black text-2xl tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,209,102,0.5)]">
+    <!-- TOP HEADER (Spans all columns) -->
+    <header class="panel lg:col-span-2 xl:col-span-3 flex flex-wrap items-center justify-between gap-4 !py-2.5 !px-4">
+      <div class="flex items-center gap-3 md:gap-4">
+        <h1 class="font-cinzel font-black text-xl md:text-2xl tracking-widest text-white drop-shadow-[0_0_12px_rgba(255,209,102,0.5)] brand-glitch cursor-pointer" onclick="resetTerminal()">
           JEFF SPACE
         </h1>
-        <span class="text-[10px] text-brand-amber border border-brand-amber/30 px-2 py-0.5 tracking-widest">SECURE_UPLINK</span>
+        <span class="text-[10px] text-brand-amber border border-brand-amber/40 bg-brand-amber/10 px-2 py-0.5 tracking-widest font-bold">
+          UPLINK_OS v2.4
+        </span>
+        <span id="stage-badge" class="hidden sm:inline-block text-[10px] text-brand-cyan border border-brand-cyan/30 px-2 py-0.5 tracking-widest">
+          STAGE: 01/05
+        </span>
       </div>
-      <div class="flex gap-6 text-[10px] text-brand-cyan/70 font-bold tracking-widest">
-        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div> ENCRYPTION: 256-BIT TLS</span>
-        <span class="hidden md:inline-block">SYS.STAT: OPTIMAL</span>
+
+      <div class="flex items-center gap-4 md:gap-6 text-[10px] text-brand-cyan/80 font-bold tracking-widest">
+        <div class="hidden md:flex items-center gap-2">
+          <span class="text-white/40">UTC_CLOCK:</span>
+          <span id="utc-clock" class="text-white font-mono">00:00:00</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 bg-brand-emerald rounded-full animate-ping"></span>
+          <span class="w-2 h-2 bg-brand-emerald rounded-full -ml-4"></span>
+          <span>TLS_1.3: ACTIVE</span>
+        </div>
+        <button id="audio-toggle" onclick="toggleAudio()" class="border border-brand-cyan/40 hover:border-brand-amber hover:text-brand-amber px-2.5 py-1 transition-colors cursor-pointer">
+          [ SFX: ON ]
+        </button>
       </div>
     </header>
 
-    <!-- LEFT SIDEBAR: Telemetry & Info -->
-    <aside class="panel hidden lg:flex flex-col gap-8">
-      <div>
-        <div class="text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">TARGET_COORDINATES</div>
-        <div class="text-sm font-bold">12.9716° N</div>
-        <div class="text-sm font-bold">77.5946° E</div>
-        <div class="text-xs text-white/50 mt-1">BENGALURU, INDIA</div>
-      </div>
-      
-      <div>
-        <div class="text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">AVAILABLE_PROTOCOLS</div>
-        <ul class="text-xs text-white/70 space-y-2">
-          <li>> ENTERPRISE WEB SYSTEMS</li>
-          <li>> CUSTOM CLOUD ENGINES</li>
-          <li>> ALGORITHMIC ACQUISITION</li>
-        </ul>
-      </div>
+    <!-- LEFT SIDEBAR: Orbital Radar & Telemetry -->
+    <aside class="panel hidden lg:flex flex-col justify-between overflow-hidden">
+      <div class="space-y-5">
+        <!-- Orbital Radar Canvas -->
+        <div>
+          <div class="flex justify-between items-center text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">
+            <span>GEOSPATIAL_LOCK</span>
+            <span class="text-brand-amber animate-pulse">● TRACKING</span>
+          </div>
+          <div class="relative flex items-center justify-center bg-black/40 border border-grid-border p-2">
+            <canvas id="radar-canvas" width="220" height="140" class="w-full h-[130px]"></canvas>
+            <div class="absolute bottom-2 left-2 text-[9px] leading-tight text-white/80 bg-bg-deep/80 px-1.5 py-0.5 border border-grid-border">
+              <div>LAT: 12.9716° N</div>
+              <div>LON: 77.5946° E</div>
+              <div class="text-brand-amber">LOC: BENGALURU, IN</div>
+            </div>
+          </div>
+        </div>
 
-      <div class="mt-auto">
-        <div class="text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">DIRECT_CHANNELS</div>
-        <div class="text-xs text-white/70">WhatsApp: +91 7090462940</div>
-        <div class="text-xs text-white/70 mt-1">Email: xylorislogic@gmail.com</div>
-      </div>
-    </aside>
+        <!-- Network Telemetry Sparkline -->
+        <div>
+          <div class="flex justify-between items-center text-[10px] text-brand-cyan mb-1.5 border-b border-grid-border pb-1">
+            <span>SIGNAL_TELEMETRY</span>
+            <span id="ping-readout" class="text-brand-emerald">14ms</span>
+          </div>
+          <canvas id="telemetry-canvas" width="240" height="50" class="w-full h-[46px] bg-black/30 border border-grid-border"></canvas>
+          <div class="grid grid-cols-3 gap-1 mt-1.5 text-[9px] text-white/60">
+            <div class="bg-white/5 p-1 text-center">PKT: <span class="text-white">99.98%</span></div>
+            <div class="bg-white/5 p-1 text-center">ENC: <span class="text-brand-cyan">AES-GCM</span></div>
+            <div class="bg-white/5 p-1 text-center">NODE: <span class="text-brand-amber">BLR-01</span></div>
+          </div>
+        </div>
 
-    <!-- MAIN TERMINAL: Booking Interface -->
-    <main class="panel flex flex-col relative overflow-hidden">
-      <!-- Grid Background inside panel -->
-      <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(var(--brand-cyan) 1px, transparent 1px), linear-gradient(90deg, var(--brand-cyan) 1px, transparent 1px); background-size: 20px 20px;"></div>
-      
-      <div class="relative z-10 flex-1 overflow-y-auto" id="terminal-output">
-        <div class="booking-terminal" id="booking-flow">
-          <!-- Terminal content injected via JS -->
+        <!-- Available Architectures -->
+        <div>
+          <div class="text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">CORE_CAPABILITIES</div>
+          <ul class="text-[11px] text-white/75 space-y-1.5">
+            <li class="flex items-center justify-between">
+              <span>> ENTERPRISE WEB</span>
+              <span class="text-[9px] text-brand-emerald">[READY]</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>> CLOUD ENGINES</span>
+              <span class="text-[9px] text-brand-emerald">[READY]</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>> ALGO ACQUISITION</span>
+              <span class="text-[9px] text-brand-emerald">[READY]</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>> AI AUTOMATION</span>
+              <span class="text-[9px] text-brand-amber">[BETA]</span>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <!-- Hidden input to capture mobile/desktop keyboard typing -->
-      <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <!-- Direct Comm Channels -->
+      <div class="pt-4 border-t border-grid-border">
+        <div class="text-[10px] text-brand-cyan mb-2">DIRECT_COMMS_FALLBACK</div>
+        <a href="https://wa.me/917090462940" target="_blank" class="block text-[11px] text-white/70 hover:text-brand-amber transition-colors truncate">
+          WA // +91 7090462940 ↗
+        </a>
+        <a href="mailto:xylorislogic@gmail.com" class="block text-[11px] text-white/70 hover:text-brand-cyan transition-colors mt-1 truncate">
+          EM // XYLORISLOGIC@GMAIL.COM ↗
+        </a>
+      </div>
+    </aside>
+
+    <!-- CENTER MAIN TERMINAL: Interactive Booking Console -->
+    <main class="panel flex flex-col relative overflow-hidden !p-0">
+      <!-- Subtle Tactical Grid Overlay -->
+      <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: linear-gradient(var(--brand-cyan) 1px, transparent 1px), linear-gradient(90deg, var(--brand-cyan) 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+      <!-- Terminal Sub-header -->
+      <div class="relative z-10 flex items-center justify-between px-4 py-2 bg-black/50 border-b border-grid-border text-[10px]">
+        <div class="flex items-center gap-2">
+          <span class="text-brand-amber font-bold">SESSION_TTY:</span>
+          <span class="text-white/70">/DEV/PTS/0</span>
+        </div>
+        <div class="flex items-center gap-3 text-white/50">
+          <span>CMDS: <strong class="text-brand-cyan">/HELP</strong> <strong class="text-brand-cyan">/CLEAR</strong> <strong class="text-brand-cyan">/REBOOT</strong></span>
+        </div>
+      </div>
+
+      <!-- Scrollable Terminal Output -->
+      <div class="relative z-10 flex-1 overflow-y-auto p-4 md:p-6 space-y-3 text-xs md:text-sm leading-relaxed select-text" id="terminal-output">
+        <div id="booking-flow" class="space-y-3"></div>
+      </div>
+
+      <!-- Persistent Bottom Command Bar (Solves Mobile Keyboard Issues & Enables Shell Commands) -->
+      <form id="terminal-form" class="relative z-10 flex items-center gap-2 px-4 py-3 bg-black/80 border-t border-grid-border">
+        <span id="prompt-label" class="text-brand-amber font-bold text-xs md:text-sm shrink-0">root@jeffspace:~#</span>
+        <input
+          type="text"
+          id="terminal-input"
+          placeholder="SELECT AN OPTION ABOVE OR TYPE /HELP..."
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          class="w-full bg-transparent text-white text-xs md:text-sm focus:outline-none placeholder:text-white/25 font-mono uppercase"
+        />
+        <button
+          type="submit"
+          class="px-3 py-1 bg-brand-cyan/15 border border-brand-cyan/50 text-brand-cyan text-[10px] font-bold tracking-wider hover:bg-brand-cyan hover:text-black transition-colors shrink-0"
+        >
+          EXEC ↵
+        </button>
+      </form>
     </main>
+
+    <!-- RIGHT SIDEBAR: Live Mission Manifest & Cryptographic Payload -->
+    <aside class="panel hidden xl:flex flex-col justify-between overflow-hidden">
+      <div class="space-y-5">
+        <div>
+          <div class="flex justify-between items-center text-[10px] text-brand-amber mb-2 border-b border-grid-border pb-1">
+            <span>MISSION_MANIFEST</span>
+            <span id="manifest-status" class="text-white/50">AWAITING_INPUT</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs bg-black/40 border border-grid-border p-3">
+            <div>
+              <div class="text-[9px] text-white/40">01 // ARCHITECTURE_PROTOCOL</div>
+              <div id="mf-protocol" class="text-brand-cyan font-bold mt-0.5">UNASSIGNED</div>
+            </div>
+            <div class="border-t border-white/10 pt-2">
+              <div class="text-[9px] text-white/40">02 // DEPLOYMENT_SCALE</div>
+              <div id="mf-scale" class="text-white/80 font-bold mt-0.5">UNASSIGNED</div>
+            </div>
+            <div class="border-t border-white/10 pt-2">
+              <div class="text-[9px] text-white/40">03 // TIMELINE_VELOCITY</div>
+              <div id="mf-timeline" class="text-white/80 font-bold mt-0.5">UNASSIGNED</div>
+            </div>
+            <div class="border-t border-white/10 pt-2">
+              <div class="text-[9px] text-white/40">04 // TARGET_DESIGNATION</div>
+              <div id="mf-designation" class="text-white/80 font-bold mt-0.5">UNASSIGNED</div>
+            </div>
+            <div class="border-t border-white/10 pt-2">
+              <div class="text-[9px] text-white/40">05 // MISSION_DIRECTIVE</div>
+              <div id="mf-directive" class="text-white/60 text-[11px] mt-0.5 line-clamp-2">UNASSIGNED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Cryptographic Signature Block -->
+        <div>
+          <div class="text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">
+            PAYLOAD_SIGNATURE (SHA-256)
+          </div>
+          <div id="crypto-hash" class="font-mono text-[10px] text-white/50 bg-black/50 border border-grid-border p-2.5 break-all leading-relaxed">
+            e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+          </div>
+        </div>
+      </div>
+
+      <!-- Live System Log Stream -->
+      <div class="pt-3 border-t border-grid-border">
+        <div class="text-[10px] text-brand-cyan mb-1.5">KERNEL_AUDIT_STREAM</div>
+        <div id="audit-stream" class="text-[9px] text-white/45 space-y-1 font-mono h-[95px] overflow-hidden flex flex-col justify-end">
+          <div>[00.01] INIT THREE.WEBGL_RENDERER</div>
+          <div>[00.04] GEOMETRY MATRIX ARMED</div>
+          <div>[00.09] AWAITING OPERATOR HANDSHAKE</div>
+        </div>
+      </div>
+    </aside>
 
   </div>
 
   <script>
     // =======================================================================
-    // 1. THREE.JS: TACTICAL DATA GRID BACKGROUND
+    // 1. PROCEDURAL WEB AUDIO SYNTHESIZER (Zero External Assets)
+    // =======================================================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq = 600, type = 'sine', duration = 0.04, gainVal = 0.04) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function sfxKey() { playTone(820 + Math.random() * 180, 'triangle', 0.025, 0.025); }
+    function sfxSelect() {
+      playTone(520, 'sine', 0.08, 0.06);
+      setTimeout(() => playTone(880, 'sine', 0.14, 0.06), 60);
+    }
+    function sfxSuccess() {
+      playTone(440, 'triangle', 0.1, 0.07);
+      setTimeout(() => playTone(660, 'triangle', 0.1, 0.07), 90);
+      setTimeout(() => playTone(880, 'triangle', 0.22, 0.08), 180);
+    }
+    function sfxError() {
+      playTone(180, 'sawtooth', 0.18, 0.06);
+    }
+
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('audio-toggle');
+      btn.textContent = soundEnabled ? '[ SFX: ON ]' : '[ SFX: MUTED ]';
+      btn.className = soundEnabled
+        ? 'border border-brand-cyan/40 hover:border-brand-amber hover:text-brand-amber px-2.5 py-1 transition-colors cursor-pointer'
+        : 'border border-brand-rose/50 text-brand-rose px-2.5 py-1 transition-colors cursor-pointer';
+      if (soundEnabled) sfxSelect();
+    }
+
+    // =======================================================================
+    // 2. THREE.JS: REACTIVE TACTICAL TOPOGRAPHY & ORBITAL CORE
     // =======================================================================
     const canvas = document.getElementById('webgl-canvas');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070512, 0.012);
+    scene.fog = new THREE.FogExp2(0x070512, 0.011);
 
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 15, 50);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(0, 18, 52);
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Dynamic Topography Plane
-    const planeGeo = new THREE.PlaneGeometry(200, 200, 60, 60);
+    // A. Dynamic Topography Plane (Fixed XZ Wave Displacement)
+    const planeGeo = new THREE.PlaneGeometry(220, 220, 64, 64);
     planeGeo.rotateX(-Math.PI / 2);
 
-    // Cyan wireframe reflecting the brand
-    const planeMat = new THREE.MeshBasicMaterial({ 
-      color: 0x48cae4, 
-      wireframe: true, 
+    const planeMat = new THREE.MeshBasicMaterial({
+      color: 0x48cae4,
+      wireframe: true,
       transparent: true,
-      opacity: 0.15
+      opacity: 0.14
     });
     const terrain = new THREE.Mesh(planeGeo, planeMat);
+    terrain.position.y = -6;
     scene.add(terrain);
 
-    // Floating data particles (Amber)
+    // B. Orbital Wireframe Geodesic Core & Tactical Rings
+    const coreGroup = new THREE.Group();
+    coreGroup.position.set(0, 14, -25);
+    scene.add(coreGroup);
+
+    const icoGeo = new THREE.IcosahedronGeometry(10, 1);
+    const icoMat = new THREE.MeshBasicMaterial({
+      color: 0xffd166,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.22
+    });
+    const orbitalCore = new THREE.Mesh(icoGeo, icoMat);
+    coreGroup.add(orbitalCore);
+
+    const ringGeo = new THREE.RingGeometry(14, 14.2, 64);
+    ringGeo.rotateX(Math.PI / 2.3);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x48cae4,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.35
+    });
+    const orbitalRing = new THREE.Mesh(ringGeo, ringMat);
+    coreGroup.add(orbitalRing);
+
+    // C. Floating Telemetry Particles
     const pGeo = new THREE.BufferGeometry();
-    const pCount = 300;
+    const pCount = 350;
     const pPos = new Float32Array(pCount * 3);
-    for(let i=0; i<pCount*3; i++) {
-      pPos[i] = (Math.random() - 0.5) * 150;
-      if(i%3===1) pPos[i] = Math.random() * 40; // Y height
+    for (let i = 0; i < pCount * 3; i += 3) {
+      pPos[i] = (Math.random() - 0.5) * 180;
+      pPos[i + 1] = Math.random() * 45 - 5;
+      pPos[i + 2] = (Math.random() - 0.5) * 180;
     }
     pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0xffd166, size: 0.4, transparent: true, opacity: 0.6 });
+    const pMat = new THREE.PointsMaterial({ color: 0xffd166, size: 0.45, transparent: true, opacity: 0.65 });
     const particles = new THREE.Points(pGeo, pMat);
     scene.add(particles);
 
-    const pos = planeGeo.attributes.position;
+    // Scene Target State (for smooth reactive transitions per step/protocol)
+    let sceneState = {
+      targetCamX: 0,
+      targetCamY: 18,
+      targetCamZ: 52,
+      waveSpeed: 0.012,
+      waveHeight: 3.2
+    };
+
     let time = 0;
     let mouseX = 0, mouseY = 0;
-
     document.addEventListener('mousemove', (e) => {
       mouseX = (e.clientX / window.innerWidth) * 2 - 1;
       mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
 
+    const pos = planeGeo.attributes.position;
     function animateBg() {
       requestAnimationFrame(animateBg);
-      time += 0.01;
+      time += sceneState.waveSpeed;
 
-      // Camera Parallax
-      camera.position.x += (mouseX * 8 - camera.position.x) * 0.05;
-      camera.position.y += ((mouseY * 8 + 15) - camera.position.y) * 0.05;
-      camera.lookAt(0, 0, 0);
+      // Smooth Camera Interpolation
+      const desiredX = sceneState.targetCamX + mouseX * 6;
+      const desiredY = sceneState.targetCamY + mouseY * 4;
+      camera.position.x += (desiredX - camera.position.x) * 0.04;
+      camera.position.y += (desiredY - camera.position.y) * 0.04;
+      camera.position.z += (sceneState.targetCamZ - camera.position.z) * 0.04;
+      camera.lookAt(0, 4, 0);
 
-      // Undulating Grid Math
-      for(let i = 0; i < pos.count; i++) {
+      // Fixed XZ Wave Math
+      for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
-        const y = pos.getY(i);
-        const wave = Math.sin(x * 0.1 + time) * Math.cos(y * 0.1 + time) * 3;
+        const z = pos.getZ(i);
+        const wave =
+          Math.sin(x * 0.08 + time) *
+          Math.cos(z * 0.08 + time * 0.8) *
+          sceneState.waveHeight;
         pos.setY(i, wave);
       }
       pos.needsUpdate = true;
 
-      terrain.rotation.y = time * 0.02;
+      terrain.rotation.y = time * 0.015;
+      orbitalCore.rotation.y = -time * 0.15;
+      orbitalCore.rotation.x = time * 0.08;
+      orbitalRing.rotation.z = time * 0.2;
       particles.rotation.y = -time * 0.01;
 
       renderer.render(scene, camera);
@@ -299,174 +587,545 @@
     });
 
     // =======================================================================
-    // 2. INTERACTIVE TERMINAL BOOKING SYSTEM
+    // 3. SIDEBAR CANVASES: RADAR SWEEP & TELEMETRY SPARKLINE
+    // =======================================================================
+    const radarCanvas = document.getElementById('radar-canvas');
+    const rCtx = radarCanvas ? radarCanvas.getContext('2d') : null;
+    let radarAngle = 0;
+
+    const telCanvas = document.getElementById('telemetry-canvas');
+    const tCtx = telCanvas ? telCanvas.getContext('2d') : null;
+    const telHistory = new Array(40).fill(25);
+
+    function renderHUDCanvases() {
+      // Radar Sweep
+      if (rCtx) {
+        const w = radarCanvas.width;
+        const h = radarCanvas.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        const radius = Math.min(cx, cy) - 8;
+
+        rCtx.fillStyle = 'rgba(7, 5, 18, 0.18)';
+        rCtx.fillRect(0, 0, w, h);
+
+        // Concentric rings
+        rCtx.strokeStyle = 'rgba(72, 202, 228, 0.25)';
+        rCtx.lineWidth = 1;
+        [0.35, 0.7, 1].forEach(scale => {
+          rCtx.beginPath();
+          rCtx.arc(cx, cy, radius * scale, 0, Math.PI * 2);
+          rCtx.stroke();
+        });
+
+        // Crosshairs
+        rCtx.beginPath();
+        rCtx.moveTo(cx - radius, cy); rCtx.lineTo(cx + radius, cy);
+        rCtx.moveTo(cx, cy - radius); rCtx.lineTo(cx, cy + radius);
+        rCtx.stroke();
+
+        // Rotating sweep line
+        rCtx.save();
+        rCtx.translate(cx, cy);
+        rCtx.rotate(radarAngle);
+        const grad = rCtx.createLinearGradient(0, 0, radius, 0);
+        grad.addColorStop(0, 'rgba(255, 209, 102, 0.8)');
+        grad.addColorStop(1, 'rgba(72, 202, 228, 0.05)');
+        rCtx.strokeStyle = grad;
+        rCtx.lineWidth = 2;
+        rCtx.beginPath();
+        rCtx.moveTo(0, 0);
+        rCtx.lineTo(radius, 0);
+        rCtx.stroke();
+        rCtx.restore();
+
+        // Target Blip (Bengaluru Node)
+        const blipX = cx + Math.cos(1.1) * (radius * 0.45);
+        const blipY = cy + Math.sin(1.1) * (radius * 0.45);
+        rCtx.fillStyle = '#ffd166';
+        rCtx.beginPath();
+        rCtx.arc(blipX, blipY, 3, 0, Math.PI * 2);
+        rCtx.fill();
+
+        radarAngle += 0.035;
+      }
+
+      // Telemetry Sparkline
+      if (tCtx && Math.random() < 0.25) {
+        telHistory.shift();
+        telHistory.push(12 + Math.random() * 28);
+
+        const w = telCanvas.width;
+        const h = telCanvas.height;
+        tCtx.clearRect(0, 0, w, h);
+
+        tCtx.strokeStyle = '#48cae4';
+        tCtx.lineWidth = 1.5;
+        tCtx.beginPath();
+        telHistory.forEach((val, idx) => {
+          const x = (idx / (telHistory.length - 1)) * w;
+          const y = h - val;
+          if (idx === 0) tCtx.moveTo(x, y);
+          else tCtx.lineTo(x, y);
+        });
+        tCtx.stroke();
+      }
+
+      requestAnimationFrame(renderHUDCanvases);
+    }
+    renderHUDCanvases();
+
+    // Live UTC Clock & Ping Jitter
+    setInterval(() => {
+      const now = new Date();
+      const clockEl = document.getElementById('utc-clock');
+      if (clockEl) clockEl.textContent = now.toISOString().slice(11, 19) + ' UTC';
+      const pingEl = document.getElementById('ping-readout');
+      if (pingEl) pingEl.textContent = (11 + Math.floor(Math.random() * 7)) + 'ms';
+    }, 1000);
+
+    // Kernel Audit Log Helper
+    function pushAuditLog(msg) {
+      const stream = document.getElementById('audit-stream');
+      if (!stream) return;
+      const ts = (performance.now() / 1000).toFixed(2).padStart(5, '0');
+      const div = document.createElement('div');
+      div.textContent = `[${ts}] ${msg}`;
+      stream.appendChild(div);
+      if (stream.children.length > 6) stream.removeChild(stream.firstChild);
+    }
+
+    // Cryptographic SHA-256 Manifest Hash Updater
+    async function updateManifestUI() {
+      document.getElementById('mf-protocol').textContent = bookingData.protocol || 'UNASSIGNED';
+      document.getElementById('mf-scale').textContent = bookingData.scale || 'UNASSIGNED';
+      document.getElementById('mf-timeline').textContent = bookingData.timeline || 'UNASSIGNED';
+      document.getElementById('mf-designation').textContent = bookingData.designation || 'UNASSIGNED';
+      document.getElementById('mf-directive').textContent = bookingData.directive || 'UNASSIGNED';
+
+      const payloadStr = JSON.stringify(bookingData) + Date.now();
+      if (window.crypto && window.crypto.subtle) {
+        const msgBuffer = new TextEncoder().encode(payloadStr);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        bookingData.signature = hashHex.slice(0, 16).toUpperCase();
+        const hashEl = document.getElementById('crypto-hash');
+        if (hashEl) hashEl.textContent = hashHex;
+      }
+    }
+
+    // =======================================================================
+    // 4. MULTI-STAGE INTERACTIVE TERMINAL & SHELL ENGINE
     // =======================================================================
     const flowContainer = document.getElementById('booking-flow');
-    const hiddenInput = document.getElementById('hidden-input');
     const scrollContainer = document.getElementById('terminal-output');
+    const terminalForm = document.getElementById('terminal-form');
+    const terminalInput = document.getElementById('terminal-input');
+    const stageBadge = document.getElementById('stage-badge');
 
-    let currentStep = 0;
+    let currentStage = 0; // 0: Boot, 1: Protocol, 2: Scale, 3: Timeline, 4: Designation, 5: Directive, 6: Complete
+    let activeOptions = []; // Stores current clickable option handlers for keyboard 1-4 hotkeys
+
     let bookingData = {
       protocol: '',
-      designation: ''
+      scale: '',
+      timeline: '',
+      designation: '',
+      directive: '',
+      signature: '8F92A10C44E19B02'
     };
 
-    // Helper: Typewriter effect for system text
-    async function typeText(text, isPrompt = false, color = "text-white") {
+    function scrollToBottom() {
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    }
+
+    function setStageBadge(step, label) {
+      if (stageBadge) stageBadge.textContent = `STAGE: 0${step}/05 // ${label}`;
+      const statusEl = document.getElementById('manifest-status');
+      if (statusEl) statusEl.textContent = step === 5 ? 'LOCKED_READY' : `STEP_0${step}_ACTIVE`;
+    }
+
+    // Typewriter Output Function
+    async function typeText(text, isPrompt = false, colorClass = "text-white", speed = 14) {
       const line = document.createElement('div');
-      line.className = 'terminal-line';
-      
-      const content = document.createElement('div');
-      content.className = color;
-      
+      line.className = 'flex items-start gap-2';
+
+      const prefix = document.createElement('span');
       if (isPrompt) {
-        const prefix = document.createElement('span');
-        prefix.className = 'terminal-prompt';
-        prefix.textContent = 'root@jeffspace:~# ';
-        line.appendChild(prefix);
+        prefix.className = 'text-brand-amber font-bold shrink-0';
+        prefix.textContent = 'root@jeffspace:~#';
       } else {
-        const prefix = document.createElement('span');
-        prefix.className = 'text-brand-amber/50 mr-2';
+        prefix.className = 'text-brand-cyan/60 shrink-0';
         prefix.textContent = '>';
-        line.appendChild(prefix);
       }
-      
+      line.appendChild(prefix);
+
+      const content = document.createElement('div');
+      content.className = colorClass;
       line.appendChild(content);
       flowContainer.appendChild(line);
 
-      for(let i=0; i<text.length; i++) {
-        content.innerHTML += text.charAt(i);
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-        await new Promise(r => setTimeout(r, 15 + Math.random() * 20)); // Fast typing
+      for (let i = 0; i < text.length; i++) {
+        content.textContent += text.charAt(i);
+        if (i % 3 === 0) sfxKey();
+        scrollToBottom();
+        await new Promise(r => setTimeout(r, speed));
       }
       return line;
     }
 
-    // Helper: Append the blinking cursor to a line
-    let activeCursor;
-    function attachCursor(parentElement) {
-      if (activeCursor) activeCursor.remove();
-      activeCursor = document.createElement('span');
-      activeCursor.className = 'cursor-blink';
-      parentElement.appendChild(activeCursor);
+    // Reusable Option Selector Renderer
+    function renderChoices(choices, onSelectCallback) {
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 my-3 pl-4';
+      activeOptions = [];
+
+      choices.forEach((choice, idx) => {
+        const card = document.createElement('div');
+        card.className = 'protocol-btn';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-xs md:text-sm">${choice.label}</span>
+            <span class="text-[10px] text-brand-amber/80 border border-brand-amber/30 px-1.5 py-0.2">KEY [${idx + 1}]</span>
+          </div>
+          <div class="text-[10px] text-white/50 normal-case">${choice.desc}</div>
+        `;
+
+        const triggerSelect = () => {
+          activeOptions = [];
+          Array.from(grid.children).forEach(c => c.classList.add('disabled'));
+          card.classList.remove('disabled');
+          card.classList.add('selected');
+          sfxSelect();
+          onSelectCallback(choice);
+        };
+
+        card.addEventListener('click', triggerSelect);
+        activeOptions.push(triggerSelect);
+        grid.appendChild(card);
+      });
+
+      flowContainer.appendChild(grid);
+      scrollToBottom();
     }
 
-    // --- STEP LOGIC ---
+    // --- PIPELINE STAGES ---
 
     async function initSequence() {
-      await typeText("ESTABLISHING SECURE CONNECTION...", false, "text-brand-cyan");
-      await typeText("AUTHENTICATING ENDPOINT...", false, "text-brand-cyan");
-      await typeText("ACCESS GRANTED.", false, "text-green-400 font-bold");
-      
-      const blank = document.createElement('div'); blank.innerHTML = '<br/>'; flowContainer.appendChild(blank);
-      
-      await typeText("INITIATE DIGITAL DOMINANCE PROTOCOL.", false, "text-white");
-      await typeText("SELECT REQUIRED ARCHITECTURE:", false, "text-white");
-      
-      renderProtocolSelection();
+      currentStage = 0;
+      flowContainer.innerHTML = '';
+      await typeText("INITIALIZING JEFF SPACE TACTICAL UPLINK v2.4...", false, "text-brand-cyan", 10);
+      await typeText("VERIFYING TLS 1.3 HANDSHAKE & ORBITAL TELEMETRY... OK.", false, "text-white/70", 8);
+      await typeText("ACCESS GRANTED. WELCOME OPERATOR.", false, "text-brand-emerald font-bold", 12);
+
+      startStage1Protocol();
     }
 
-    function renderProtocolSelection() {
-      const optionsDiv = document.createElement('div');
-      optionsDiv.className = 'flex flex-col md:flex-row gap-4 mt-2 mb-4 pl-4';
-      
-      const opts = [
-        { id: 'WEB', label: '[ ENTERPRISE_WEB ]' },
-        { id: 'CLOUD', label: '[ CLOUD_ENGINES ]' },
-        { id: 'ALGO', label: '[ ALGORITHMIC_GROWTH ]' }
-      ];
+    // Stage 1: Architecture Protocol
+    async function startStage1Protocol() {
+      currentStage = 1;
+      setStageBadge(1, 'ARCHITECTURE');
+      terminalInput.placeholder = "PRESS [1-4] OR CLICK AN ARCHITECTURE PROTOCOL...";
 
-      opts.forEach(opt => {
-        const btn = document.createElement('div');
-        btn.className = 'protocol-btn';
-        btn.textContent = opt.label;
-        btn.onclick = async () => {
-          // Disable others
-          Array.from(optionsDiv.children).forEach(c => c.style.pointerEvents = 'none');
-          btn.classList.add('selected');
-          bookingData.protocol = opt.label.replace(/[\[\]\s]/g, '');
-          
-          await typeText(`PROTOCOL SELECTED: ${bookingData.protocol}`, false, "text-brand-cyan mt-4");
-          startNameInput();
-        };
-        optionsDiv.appendChild(btn);
-      });
-      
-      flowContainer.appendChild(optionsDiv);
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-    }
+      await typeText("STEP 01 // SELECT TARGET ARCHITECTURE PROTOCOL:", false, "text-brand-amber font-bold mt-2");
 
-    async function startNameInput() {
-      const line = await typeText("ENTER TARGET DESIGNATION (CLIENT / COMPANY NAME):", true);
-      const inputSpan = document.createElement('span');
-      inputSpan.className = 'text-white ml-2';
-      line.appendChild(inputSpan);
-      attachCursor(line);
-
-      hiddenInput.value = '';
-      hiddenInput.focus();
-
-      const handleInput = (e) => {
-        inputSpan.textContent = hiddenInput.value.toUpperCase();
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      };
-
-      const handleEnter = async (e) => {
-        if (e.key === 'Enter' && hiddenInput.value.trim().length > 0) {
-          hiddenInput.removeEventListener('input', handleInput);
-          hiddenInput.removeEventListener('keydown', handleEnter);
-          hiddenInput.blur();
-          
-          bookingData.designation = hiddenInput.value.toUpperCase();
-          if (activeCursor) activeCursor.remove();
-          
-          finalizeBooking();
+      renderChoices([
+        {
+          id: 'ENTERPRISE_WEB',
+          label: '[ ENTERPRISE_WEB_SYSTEMS ]',
+          desc: 'High-conversion 3D/WebGL platforms, custom full-stack web apps & design systems.',
+          color: 0x48cae4,
+          cam: { x: -6, y: 16, z: 46 }
+        },
+        {
+          id: 'CLOUD_ENGINES',
+          label: '[ CUSTOM_CLOUD_ENGINES ]',
+          desc: 'Distributed backend architectures, APIs, microservices & high-load infrastructure.',
+          color: 0xffd166,
+          cam: { x: 8, y: 20, z: 44 }
+        },
+        {
+          id: 'ALGORITHMIC_GROWTH',
+          label: '[ ALGORITHMIC_ACQUISITION ]',
+          desc: 'Data-driven conversion pipelines, programmatic SEO & automated growth funnels.',
+          color: 0xff758f,
+          cam: { x: 0, y: 24, z: 50 }
+        },
+        {
+          id: 'NEURAL_AUTOMATION',
+          label: '[ AI_AGENT_INFRASTRUCTURE ]',
+          desc: 'Autonomous LLM workflows, RAG pipelines & custom enterprise AI integrations.',
+          color: 0x06d6a0,
+          cam: { x: 0, y: 14, z: 38 }
         }
-      };
+      ], async (choice) => {
+        bookingData.protocol = choice.id;
+        // Morph 3D Scene colors & camera position
+        planeMat.color.setHex(choice.color);
+        icoMat.color.setHex(choice.color);
+        sceneState.targetCamX = choice.cam.x;
+        sceneState.targetCamY = choice.cam.y;
+        sceneState.targetCamZ = choice.cam.z;
+        sceneState.waveHeight = 4.2;
 
-      hiddenInput.addEventListener('input', handleInput);
-      hiddenInput.addEventListener('keydown', handleEnter);
-      
-      // Keep focus on click
-      document.addEventListener('click', () => { if(currentStep === 1) hiddenInput.focus(); });
-      currentStep = 1;
+        pushAuditLog(`PROTOCOL LOCKED: ${choice.id}`);
+        await updateManifestUI();
+        await typeText(`ARCHITECTURE CONFIRMED: ${choice.id}`, false, "text-brand-cyan");
+        startStage2Scale();
+      });
     }
 
+    // Stage 2: Deployment Scale
+    async function startStage2Scale() {
+      currentStage = 2;
+      setStageBadge(2, 'SCALE_TIER');
+      terminalInput.placeholder = "PRESS [1-3] OR CLICK DEPLOYMENT SCALE...";
+
+      await typeText("STEP 02 // SELECT DEPLOYMENT RESOURCE ALLOCATION:", false, "text-brand-amber font-bold mt-2");
+
+      renderChoices([
+        {
+          id: 'TACTICAL_MVP',
+          label: '[ TACTICAL_STRIKE // MVP ]',
+          desc: 'Rapid high-impact deployment for startups, product launches, or core system upgrades.'
+        },
+        {
+          id: 'ORBITAL_GROWTH',
+          label: '[ ORBITAL_SCALE // PRODUCTION ]',
+          desc: 'Full-scale multi-module architecture engineered for high traffic & rapid scaling.'
+        },
+        {
+          id: 'SOVEREIGN_ENTERPRISE',
+          label: '[ SOVEREIGN_TIER // CUSTOM ]',
+          desc: 'Dedicated engineering squad, custom SLAs & multi-region enterprise infrastructure.'
+        }
+      ], async (choice) => {
+        bookingData.scale = choice.id;
+        pushAuditLog(`SCALE TIER: ${choice.id}`);
+        await updateManifestUI();
+        await typeText(`RESOURCE TIER LOCKED: ${choice.id}`, false, "text-brand-cyan");
+        startStage3Timeline();
+      });
+    }
+
+    // Stage 3: Timeline Velocity
+    async function startStage3Timeline() {
+      currentStage = 3;
+      setStageBadge(3, 'TIMELINE');
+      terminalInput.placeholder = "PRESS [1-3] OR CLICK TARGET TIMELINE...";
+
+      await typeText("STEP 03 // SPECIFY TARGET DEPLOYMENT VELOCITY:", false, "text-brand-amber font-bold mt-2");
+
+      renderChoices([
+        {
+          id: 'IMMEDIATE_PRIORITY',
+          label: '[ IMMEDIATE // UNDER 30 DAYS ]',
+          desc: 'Accelerated sprint execution. Priority engineering allocation.'
+        },
+        {
+          id: 'STANDARD_CYCLE',
+          label: '[ STANDARD // 1 TO 3 MONTHS ]',
+          desc: 'Structured architecture, iterative milestones & comprehensive QA.'
+        },
+        {
+          id: 'STRATEGIC_ROADMAP',
+          label: '[ LONG_RANGE // Q-ROADMAP ]',
+          desc: 'Phased architectural transformation & ongoing technical advisory.'
+        }
+      ], async (choice) => {
+        bookingData.timeline = choice.id;
+        pushAuditLog(`VELOCITY: ${choice.id}`);
+        await updateManifestUI();
+        await typeText(`DEPLOYMENT VELOCITY: ${choice.id}`, false, "text-brand-cyan");
+        startStage4Designation();
+      });
+    }
+
+    // Stage 4: Client / Company Designation
+    async function startStage4Designation() {
+      currentStage = 4;
+      setStageBadge(4, 'DESIGNATION');
+      await typeText("STEP 04 // ENTER TARGET DESIGNATION (YOUR NAME OR ORGANIZATION):", true, "text-brand-amber font-bold mt-2");
+      terminalInput.placeholder = "TYPE YOUR NAME / COMPANY AND PRESS ENTER...";
+      terminalInput.focus();
+    }
+
+    // Stage 5: Mission Directive / Brief
+    async function startStage5Directive() {
+      currentStage = 5;
+      setStageBadge(5, 'DIRECTIVE');
+      await typeText("STEP 05 // ENTER BRIEF MISSION OBJECTIVE (OR PRESS ENTER TO SKIP):", true, "text-brand-amber font-bold mt-2");
+      terminalInput.placeholder = "E.G., REBUILD FINTECH SAAS PLATFORM / NEW AI PORTAL...";
+      terminalInput.focus();
+    }
+
+    // Stage 6: Final Compilation & Encrypted Dispatch
     async function finalizeBooking() {
-      currentStep = 2;
-      const blank = document.createElement('div'); blank.innerHTML = '<br/>'; flowContainer.appendChild(blank);
-      
-      await typeText("COMPILING MISSION PARAMETERS...", false, "text-brand-amber");
-      await typeText(`TARGET: ${bookingData.designation}`, false, "text-white");
-      await typeText(`REQUIREMENT: ${bookingData.protocol}`, false, "text-white");
-      
-      await new Promise(r => setTimeout(r, 600));
-      
-      await typeText("GENERATING SECURE UPLINK...", false, "text-green-400 font-bold animate-pulse");
-      
-      const actionDiv = document.createElement('div');
-      actionDiv.className = 'flex flex-col sm:flex-row gap-4 mt-6';
-      
-      // WhatsApp Link Builder
-      const waMessage = `INITIATING UPLINK%0A%0ATarget: ${bookingData.designation}%0AProtocol: ${bookingData.protocol}%0A%0ARequesting engineering deployment.`;
-      const waLink = `https://wa.me/917090462940?text=${waMessage}`;
-      
-      actionDiv.innerHTML = `
-        <a href="${waLink}" target="_blank" class="px-6 py-3 bg-brand-amber text-black font-bold text-center hover:bg-white transition-colors flex items-center justify-center gap-2">
-          [ EXECUTE WHATSAPP UPLINK ] ↗
-        </a>
-        <a href="mailto:xylorislogic@gmail.com?subject=Deployment Request: ${bookingData.designation}&body=Target: ${bookingData.designation}%0AProtocol: ${bookingData.protocol}" class="px-6 py-3 border border-brand-cyan text-brand-cyan text-center hover:bg-brand-cyan/20 transition-colors">
-          [ FALLBACK: EMAIL ]
-        </a>
+      currentStage = 6;
+      setStageBadge(5, 'COMPLETE');
+      terminalInput.placeholder = "TYPE /REBOOT TO START A NEW MISSION...";
+      sfxSuccess();
+
+      sceneState.targetCamX = 0;
+      sceneState.targetCamY = 12;
+      sceneState.targetCamZ = 34;
+
+      await typeText("COMPILING ENCRYPTED MISSION MANIFEST...", false, "text-brand-amber mt-3");
+      await typeText(`SIGNATURE HASH: ${bookingData.signature}`, false, "text-white/60");
+      await typeText("UPLINK CHANNELS ARMED AND READY FOR TRANSMISSION.", false, "text-brand-emerald font-bold");
+
+      // Build Structured WhatsApp & Email Payloads
+      const rawMessage =
+`⚡ *JEFF SPACE — SECURE UPLINK MANIFEST* ⚡
+-----------------------------------------
+*ID:* #${bookingData.signature}
+*TARGET:* ${bookingData.designation}
+*PROTOCOL:* ${bookingData.protocol}
+*SCALE:* ${bookingData.scale}
+*TIMELINE:* ${bookingData.timeline}
+*DIRECTIVE:* ${bookingData.directive}
+-----------------------------------------
+Requesting engineering deployment & technical consultation.`;
+
+      const waLink = `https://wa.me/917090462940?text=${encodeURIComponent(rawMessage)}`;
+      const mailSubject = encodeURIComponent(`[JEFF SPACE UPLINK #${bookingData.signature}] ${bookingData.designation} — ${bookingData.protocol}`);
+      const mailBody = encodeURIComponent(rawMessage);
+      const mailLink = `mailto:xylorislogic@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+
+      const dossierCard = document.createElement('div');
+      dossierCard.className = 'my-4 p-4 border border-brand-amber/60 bg-brand-amber/5 space-y-4';
+      dossierCard.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-brand-amber/30 pb-2">
+          <span class="text-brand-amber font-bold text-xs tracking-widest">ENCRYPTED MISSION DOSSIER // #${bookingData.signature}</span>
+          <span class="text-[10px] bg-brand-emerald/20 text-brand-emerald px-2 py-0.5 font-bold">VERIFIED</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div><span class="text-white/40">CLIENT:</span> <strong class="text-white">${bookingData.designation}</strong></div>
+          <div><span class="text-white/40">PROTOCOL:</span> <strong class="text-brand-cyan">${bookingData.protocol}</strong></div>
+          <div><span class="text-white/40">SCALE:</span> <strong class="text-white">${bookingData.scale}</strong></div>
+          <div><span class="text-white/40">TIMELINE:</span> <strong class="text-white">${bookingData.timeline}</strong></div>
+          <div class="sm:col-span-2"><span class="text-white/40">DIRECTIVE:</span> <span class="text-white/90">${bookingData.directive}</span></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <a href="${waLink}" target="_blank" class="flex-1 px-5 py-3 bg-brand-amber text-black font-bold text-xs tracking-wider text-center hover:bg-white transition-colors">
+            [ TRANSMIT VIA WHATSAPP UPLINK ] ↗
+          </a>
+          <a href="${mailLink}" class="px-5 py-3 border border-brand-cyan text-brand-cyan font-bold text-xs tracking-wider text-center hover:bg-brand-cyan/20 transition-colors">
+            [ DISPATCH EMAIL ]
+          </a>
+          <button type="button" onclick="copyManifest()" id="copy-btn" class="px-4 py-3 border border-white/30 text-white/80 text-xs hover:border-white transition-colors">
+            [ COPY JSON ]
+          </button>
+        </div>
       `;
-      
-      flowContainer.appendChild(actionDiv);
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+
+      flowContainer.appendChild(dossierCard);
+      scrollToBottom();
     }
+
+    window.copyManifest = function() {
+      navigator.clipboard.writeText(JSON.stringify(bookingData, null, 2));
+      const btn = document.getElementById('copy-btn');
+      if (btn) {
+        btn.textContent = '[ COPIED! ]';
+        btn.classList.add('text-brand-emerald', 'border-brand-emerald');
+      }
+      sfxSelect();
+    };
+
+    window.resetTerminal = function() {
+      bookingData = { protocol: '', scale: '', timeline: '', designation: '', directive: '', signature: '8F92A10C44E19B02' };
+      updateManifestUI();
+      planeMat.color.setHex(0x48cae4);
+      icoMat.color.setHex(0xffd166);
+      sceneState = { targetCamX: 0, targetCamY: 18, targetCamZ: 52, waveSpeed: 0.012, waveHeight: 3.2 };
+      pushAuditLog("OPERATOR INITIATED WARM REBOOT");
+      initSequence();
+    };
+
+    // --- HANDLE KEYBOARD HOTKEYS & SHELL INPUT ---
+    document.addEventListener('keydown', (e) => {
+      // Allow 1-4 number keys to select options when in choice stages (1, 2, 3) and not typing a slash command
+      if ([1, 2, 3].includes(currentStage) && document.activeElement !== terminalInput) {
+        const num = parseInt(e.key, 10);
+        if (num >= 1 && num <= activeOptions.length) {
+          e.preventDefault();
+          activeOptions[num - 1]();
+        }
+      }
+    });
+
+    terminalForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const rawVal = terminalInput.value.trim();
+      terminalInput.value = '';
+
+      // 1. Check built-in slash CLI commands
+      if (rawVal.startsWith('/')) {
+        const cmd = rawVal.toLowerCase();
+        await typeText(rawVal.toUpperCase(), true, "text-white/80", 5);
+
+        if (cmd === '/help') {
+          await typeText("AVAILABLE SHELL COMMANDS: /HELP, /STATUS, /CLEAR, /REBOOT", false, "text-brand-cyan", 6);
+        } else if (cmd === '/clear') {
+          flowContainer.innerHTML = '';
+          await typeText("TERMINAL BUFFER CLEARED.", false, "text-brand-cyan", 6);
+        } else if (cmd === '/reboot') {
+          resetTerminal();
+        } else if (cmd === '/status') {
+          await typeText(`SYS_STATUS: OPTIMAL | STAGE: 0${currentStage} | HASH: ${bookingData.signature}`, false, "text-brand-emerald", 6);
+        } else {
+          sfxError();
+          await typeText(`UNKNOWN COMMAND "${rawVal}". TYPE /HELP FOR COMMAND LIST.`, false, "text-brand-rose", 6);
+        }
+        return;
+      }
+
+      // 2. If user types 1-4 in the input box during a choice stage
+      if ([1, 2, 3].includes(currentStage)) {
+        const num = parseInt(rawVal, 10);
+        if (num >= 1 && num <= activeOptions.length) {
+          activeOptions[num - 1]();
+        } else {
+          sfxError();
+          await typeText(`PLEASE SELECT AN OPTION ABOVE OR ENTER A NUMBER (1-${activeOptions.length}).`, false, "text-brand-rose", 6);
+        }
+        return;
+      }
+
+      // 3. Stage 4: Client Designation
+      if (currentStage === 4) {
+        if (!rawVal) {
+          sfxError();
+          await typeText("ERR: TARGET DESIGNATION CANNOT BE EMPTY.", false, "text-brand-rose", 8);
+          return;
+        }
+        bookingData.designation = rawVal.toUpperCase();
+        sfxSelect();
+        pushAuditLog(`DESIGNATION: ${bookingData.designation}`);
+        await updateManifestUI();
+        await typeText(`DESIGNATION RECORDED: ${bookingData.designation}`, false, "text-brand-cyan", 8);
+        startStage5Directive();
+        return;
+      }
+
+      // 4. Stage 5: Mission Directive
+      if (currentStage === 5) {
+        bookingData.directive = rawVal ? rawVal.toUpperCase() : 'CLASSIFIED // STANDARD CONSULTATION';
+        sfxSelect();
+        pushAuditLog("MISSION DIRECTIVE LOCKED");
+        await updateManifestUI();
+        await typeText(`DIRECTIVE LOGGED: ${bookingData.directive}`, false, "text-brand-cyan", 8);
+        finalizeBooking();
+        return;
+      }
+    });
 
     // Start Boot Sequence
-    setTimeout(initSequence, 500);
-
+    setTimeout(initSequence, 400);
   </script>
 </body>
 </html>
