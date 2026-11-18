@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>JEFF SPACE // SOVEREIGN ENGINEERING OS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>JEFF SPACE — Sovereign Digital Architecture</title>
 
-  <!-- Fonts: Cinzel (Emblem), Space Grotesk (Display), JetBrains Mono (Telemetry/CLI) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Editorial & Technical Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,23 +17,22 @@
       theme: {
         extend: {
           colors: {
-            'bg-deep': '#05040d',
-            'bg-panel': 'rgba(9, 8, 22, 0.76)',
-            'brand-amber': '#ffd166',
-            'brand-cyan': '#48cae4',
-            'brand-rose': '#ff5d8f',
-            'brand-emerald': '#06d6a0',
-            'term-text': '#e0fbfc',
-            'grid-border': 'rgba(72, 202, 228, 0.2)',
+            obsidian: '#040407',
+            surface: '#0a0b10',
+            champagne: '#e5c17b',
+            platinum: '#f4f4f6',
+            cobalt: '#38bdf8',
+            emerald: '#10b981',
+            muted: '#71717a',
           },
           fontFamily: {
-            cinzel: ['Cinzel', 'serif'],
-            display: ['Space Grotesk', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          }
-        }
-      }
-    }
+            serif: ['Cormorant Garamond', 'serif'],
+            sans: ['Space Grotesk', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          },
+        },
+      },
+    };
   </script>
 
   <!-- Three.js r128 -->
@@ -41,1607 +40,1430 @@
 
   <style>
     :root {
-      --bg-deep: #05040d;
-      --brand-amber: #ffd166;
-      --brand-cyan: #48cae4;
-      --brand-rose: #ff5d8f;
-      --brand-emerald: #06d6a0;
-      --term-text: #e0fbfc;
-      --grid-border: rgba(72, 202, 228, 0.2);
+      --obsidian: #040407;
+      --champagne: #e5c17b;
+      --platinum: #f4f4f6;
+      --cobalt: #38bdf8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    body {
-      background-color: var(--bg-deep);
-      color: var(--term-text);
-      font-family: 'JetBrains Mono', monospace;
-      overflow: hidden;
+    html, body {
+      background-color: var(--obsidian);
+      color: var(--platinum);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      user-select: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(229, 193, 123, 0.35) #040407;
     }
 
-    /* Subtle Film Grain + CRT Scanlines + Vignette */
-    .noise-overlay {
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #040407; }
+    ::-webkit-scrollbar-thumb { background: rgba(229, 193, 123, 0.4); border-radius: 2px; }
+
+    /* Fixed WebGL Stage */
+    #webgl-stage {
       position: fixed;
       inset: 0;
-      opacity: 0.032;
-      pointer-events: none;
-      z-index: 52;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-    .crt-overlay {
-      position: fixed;
-      inset: 0;
-      background:
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
-        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      background-size: 100% 3px, 4px 100%;
-      pointer-events: none;
-      z-index: 51;
-      mix-blend-mode: overlay;
-    }
-
-    .vignette {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, transparent 48%, rgba(2, 1, 8, 0.94) 100%);
-      pointer-events: none;
-      z-index: 50;
-    }
-
-    /* Background WebGL Canvas */
-    #webgl-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-    }
-
-    /* Main Tactical Grid */
-    .tactical-ui {
-      position: relative;
-      z-index: 10;
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto 1fr;
-      height: 100dvh;
       width: 100vw;
-      padding: 0.65rem;
-      gap: 0.65rem;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
     }
 
-    @media (min-width: 1024px) {
-      .tactical-ui {
-        grid-template-columns: 285px 1fr;
-        grid-template-rows: auto 1fr;
-        padding: 1rem;
-        gap: 1rem;
-      }
-    }
-
-    @media (min-width: 1360px) {
-      .tactical-ui {
-        grid-template-columns: 295px 1fr 315px;
-      }
-    }
-
-    /* Spotlight Glassmorphic Panels */
-    .panel {
-      --mouse-x: 50%;
-      --mouse-y: 50%;
-      border: 1px solid var(--grid-border);
-      background: rgba(8, 7, 20, 0.76);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 1.1rem;
-      position: relative;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(72, 202, 228, 0.03);
-      transition: border-color 0.3s ease;
-    }
-
-    .panel::before {
-      content: '';
-      position: absolute;
+    /* Subtle Film Grain & Radial Depth */
+    .film-grain {
+      position: fixed;
       inset: 0;
-      background: radial-gradient(500px circle at var(--mouse-x) var(--mouse-y), rgba(72, 202, 228, 0.08), transparent 45%);
+      z-index: 40;
       pointer-events: none;
-      z-index: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* Tactical Corner Reticles */
-    .reticle-tl, .reticle-br {
-      position: absolute;
-      width: 9px;
-      height: 9px;
-      border: 1.5px solid var(--brand-cyan);
-      pointer-events: none;
+    .ambient-vignette {
+      position: fixed;
+      inset: 0;
       z-index: 2;
-    }
-    .reticle-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-    .reticle-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
-
-    /* Navigation Tabs */
-    .nav-tab {
-      position: relative;
-      padding: 0.45rem 0.85rem;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.6);
-      border: 1px solid transparent;
-      background: rgba(255, 255, 255, 0.02);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    .nav-tab:hover {
-      color: #fff;
-      border-color: rgba(72, 202, 228, 0.35);
-      background: rgba(72, 202, 228, 0.08);
-    }
-    .nav-tab.active {
-      color: var(--brand-amber);
-      border-color: rgba(255, 209, 102, 0.55);
-      background: rgba(255, 209, 102, 0.12);
-      box-shadow: 0 0 18px rgba(255, 209, 102, 0.16);
-    }
-
-    /* Interactive Protocol Cards */
-    .protocol-btn {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      padding: 0.85rem 1rem;
-      border: 1px solid var(--grid-border);
-      color: rgba(255, 255, 255, 0.85);
-      cursor: pointer;
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      background: linear-gradient(145deg, rgba(72, 202, 228, 0.06), rgba(7, 5, 18, 0.6));
-      text-align: left;
-    }
-    .protocol-btn:hover {
-      border-color: var(--brand-cyan);
-      color: #fff;
-      background: rgba(72, 202, 228, 0.14);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(72, 202, 228, 0.18);
-    }
-    .protocol-btn.selected {
-      border-color: var(--brand-amber);
-      color: var(--brand-amber);
-      background: rgba(255, 209, 102, 0.14);
-      box-shadow: 0 0 24px rgba(255, 209, 102, 0.22);
-    }
-    .protocol-btn.disabled {
-      opacity: 0.32;
       pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, transparent 35%, rgba(4, 4, 7, 0.86) 100%);
     }
 
-    /* Architectural Module Toggle Cards */
-    .arch-card {
-      border: 1px solid rgba(72, 202, 228, 0.22);
-      background: rgba(10, 9, 26, 0.65);
-      padding: 1rem;
-      cursor: pointer;
-      transition: all 0.22s ease;
-    }
-    .arch-card:hover {
-      border-color: rgba(72, 202, 228, 0.6);
-      background: rgba(72, 202, 228, 0.08);
-    }
-    .arch-card.active {
-      border-color: var(--brand-amber);
-      background: rgba(255, 209, 102, 0.1);
-      box-shadow: 0 0 22px rgba(255, 209, 102, 0.14);
+    /* Inertial Smooth Scroll Container */
+    #smooth-viewport {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      will-change: transform;
     }
 
-    /* Brand Glitch Hover */
-    .brand-glitch:hover {
-      text-shadow: -2px 0 var(--brand-rose), 2px 0 var(--brand-cyan);
+    /* Custom Magnetic Cursor (Desktop Pointer Devices Only) */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      a, button, input, textarea, select, [data-cursor] { cursor: none; }
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: rgba(5, 4, 13, 0.4); }
-    ::-webkit-scrollbar-thumb { background: rgba(72, 202, 228, 0.5); }
-    ::-webkit-scrollbar-thumb:hover { background: var(--brand-amber); }
+    #cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      background: var(--champagne);
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background-color 0.2s;
+    }
 
-    /* Boot Preloader */
-    #boot-screen {
+    #cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(229, 193, 123, 0.45);
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--champagne);
+      transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  background-color 0.28s,
+                  border-color 0.28s;
+    }
+
+    #cursor-ring.expanded {
+      width: 84px;
+      height: 84px;
+      background: rgba(229, 193, 123, 0.1);
+      border-color: var(--champagne);
+      backdrop-filter: blur(4px);
+    }
+
+    @media (pointer: coarse) {
+      #cursor-dot, #cursor-ring { display: none !important; }
+    }
+
+    /* Luxury Glass Cards with Specular Hover Border */
+    .luxe-card {
+      position: relative;
+      background: linear-gradient(160deg, rgba(16, 18, 28, 0.68) 0%, rgba(7, 8, 13, 0.85) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .luxe-card:hover {
+      border-color: rgba(229, 193, 123, 0.45);
+      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(229, 193, 123, 0.08);
+    }
+
+    /* Reveal Animations */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-up.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Scroll Scrub Word Highlight */
+    .scrub-word {
+      color: rgba(244, 244, 246, 0.16);
+      transition: color 0.18s ease, text-shadow 0.18s ease;
+    }
+    .scrub-word.lit {
+      color: #f4f4f6;
+      text-shadow: 0 0 28px rgba(229, 193, 123, 0.25);
+    }
+    .scrub-word.gold.lit {
+      color: var(--champagne);
+    }
+
+    /* Configurator Pill Options */
+    .config-pill {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.02);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .config-pill:hover {
+      border-color: rgba(229, 193, 123, 0.5);
+      background: rgba(229, 193, 123, 0.06);
+    }
+    .config-pill.selected {
+      border-color: var(--champagne);
+      background: rgba(229, 193, 123, 0.15);
+      color: #fff;
+      box-shadow: 0 0 24px rgba(229, 193, 123, 0.16);
+    }
+
+    /* Preloader Curtain */
+    #intro-curtain {
       position: fixed;
       inset: 0;
       z-index: 100;
-      background: #04030a;
+      background: #030305;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.55s ease, visibility 0.55s ease;
+      transition: transform 1.1s cubic-bezier(0.77, 0, 0.175, 1);
     }
-    #boot-screen.hidden-boot {
-      opacity: 0;
-      visibility: hidden;
+    #intro-curtain.lifted {
+      transform: translateY(-100%);
       pointer-events: none;
+    }
+
+    /* Case Study Slide-Over Drawer */
+    #artifact-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #artifact-drawer.open {
+      pointer-events: auto;
+      opacity: 1;
+    }
+    #artifact-panel {
+      transform: translateX(100%);
+      transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #artifact-drawer.open #artifact-panel {
+      transform: translateX(0);
     }
   </style>
 </head>
 <body>
 
-  <!-- CINEMATIC BOOT PRELOADER -->
-  <div id="boot-screen" onclick="skipBoot()">
-    <div class="w-full max-w-md px-6 space-y-4">
-      <div class="flex items-center justify-between text-xs text-brand-cyan tracking-widest">
-        <span>JEFF_SPACE // KERNEL_v4.0</span>
-        <span id="boot-pct" class="text-brand-amber font-bold">0%</span>
+  <!-- PRELOADER CURTAIN -->
+  <div id="intro-curtain">
+    <div class="text-center space-y-5 px-6">
+      <div class="font-mono text-[10px] tracking-[0.35em] text-champagne/80 uppercase">BENGALURU // SOVEREIGN STUDIO</div>
+      <div class="font-serif text-4xl md:text-6xl tracking-[0.22em] text-white font-semibold">JEFF SPACE</div>
+      <div class="w-48 h-[1px] bg-white/10 mx-auto overflow-hidden">
+        <div id="loader-line" class="h-full bg-champagne w-0 transition-all duration-300"></div>
       </div>
-      <div class="w-full h-1 bg-white/10 overflow-hidden">
-        <div id="boot-bar" class="h-full bg-gradient-to-r from-brand-cyan via-brand-amber to-brand-emerald w-0 transition-all duration-150"></div>
-      </div>
-      <div id="boot-log" class="text-[10px] text-white/50 font-mono h-12">
-        ALLOCATING WEBGL SHADER BUFFERS...
-      </div>
-      <div class="text-[9px] text-white/30 tracking-widest text-center pt-2">[ CLICK ANYWHERE TO BYPASS HANDSHAKE ]</div>
+      <div id="loader-counter" class="font-mono text-xs text-muted tracking-widest">000</div>
     </div>
   </div>
 
-  <!-- VISUAL POST-PROCESSING OVERLAYS -->
-  <div class="noise-overlay"></div>
-  <div class="crt-overlay"></div>
-  <div class="vignette"></div>
-  <canvas id="webgl-canvas"></canvas>
+  <!-- CUSTOM MAGNETIC CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"><span id="cursor-label"></span></div>
 
-  <!-- MAIN OS INTERFACE -->
-  <div class="tactical-ui">
+  <!-- VISUAL ATMOSPHERE -->
+  <div class="film-grain"></div>
+  <div class="ambient-vignette"></div>
+  <canvas id="webgl-stage"></canvas>
 
-    <!-- TOP COMMAND BAR -->
-    <header class="panel lg:col-span-2 xl:col-span-3 flex flex-wrap items-center justify-between gap-3 !py-2.5 !px-4">
-      <div class="reticle-tl"></div>
-      <div class="reticle-br"></div>
-
-      <!-- Brand & OS Badge -->
-      <div class="flex items-center gap-3">
-        <h1 class="font-cinzel font-black text-xl md:text-2xl tracking-[0.18em] text-white drop-shadow-[0_0_14px_rgba(255,209,102,0.5)] brand-glitch cursor-pointer" onclick="switchView('terminal'); resetTerminal();">
-          JEFF SPACE
-        </h1>
-        <span class="text-[10px] text-brand-amber border border-brand-amber/40 bg-brand-amber/10 px-2 py-0.5 tracking-widest font-bold">
-          SOVEREIGN_OS
-        </span>
-        <span id="stage-badge" class="hidden xl:inline-block text-[10px] text-brand-cyan border border-brand-cyan/30 px-2 py-0.5 tracking-widest">
-          STAGE: 01/05
-        </span>
+  <!-- FIXED TOP NAVIGATION HUD -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-5 md:px-10 py-5 flex items-center justify-between pointer-events-none">
+    <!-- Brand Emblem -->
+    <a href="#chapter-1" onclick="scrollToChapter(0); return false;" data-cursor="TOP" class="pointer-events-auto flex items-center gap-3 group">
+      <div class="w-8 h-8 rounded-full border border-champagne/50 flex items-center justify-center bg-obsidian/60 backdrop-blur-md group-hover:border-champagne transition-colors">
+        <span class="w-2 h-2 rounded-full bg-champagne group-hover:scale-125 transition-transform"></span>
       </div>
-
-      <!-- Primary Workspace Navigation -->
-      <nav class="hidden lg:flex items-center gap-1.5" id="desktop-nav">
-        <button class="nav-tab active" data-view="terminal" onclick="switchView('terminal')">[ 01 // UPLINK_CLI ]</button>
-        <button class="nav-tab" data-view="systems" onclick="switchView('systems')">[ 02 // DEPLOYED_SYSTEMS ]</button>
-        <button class="nav-tab" data-view="architect" onclick="switchView('architect')">[ 03 // SCOPE_ARCHITECT ]</button>
-        <button class="nav-tab" data-view="node" onclick="switchView('node')">[ 04 // COMMAND_NODE ]</button>
-      </nav>
-
-      <!-- Live Telemetry & Audio Controls -->
-      <div class="flex items-center gap-3 md:gap-4 text-[10px] text-brand-cyan/80 font-bold tracking-widest">
-        <div class="hidden sm:flex items-center gap-2">
-          <span class="text-white/40">UTC:</span>
-          <span id="utc-clock" class="text-white font-mono">00:00:00</span>
-        </div>
-        <button id="audio-toggle" onclick="toggleAudio()" class="border border-brand-cyan/40 hover:border-brand-amber hover:text-brand-amber px-2.5 py-1 transition-colors cursor-pointer">
-          [ SFX: ON ]
-        </button>
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 bg-brand-emerald rounded-full animate-ping"></span>
-          <span class="w-2 h-2 bg-brand-emerald rounded-full -ml-4"></span>
-          <span class="hidden md:inline text-brand-emerald">BLR-01</span>
-        </div>
+      <div>
+        <div class="font-serif text-lg md:text-xl tracking-[0.2em] text-white font-semibold leading-none">JEFF SPACE</div>
+        <div class="font-mono text-[9px] tracking-[0.25em] text-champagne/75 mt-1">BLR // 12.97° N</div>
       </div>
-    </header>
+    </a>
 
-    <!-- MOBILE NAVIGATION BAR -->
-    <div class="lg:hidden flex items-center gap-1.5 overflow-x-auto pb-0.5" id="mobile-nav">
-      <button class="nav-tab active" data-view="terminal" onclick="switchView('terminal')">01 // UPLINK_CLI</button>
-      <button class="nav-tab" data-view="systems" onclick="switchView('systems')">02 // SYSTEMS</button>
-      <button class="nav-tab" data-view="architect" onclick="switchView('architect')">03 // ARCHITECT</button>
-      <button class="nav-tab" data-view="node" onclick="switchView('node')">04 // NODE</button>
+    <!-- Center Chapter Indicator Pill (Desktop) -->
+    <div class="hidden md:flex items-center gap-4 px-4 py-2 rounded-full border border-white/10 bg-obsidian/65 backdrop-blur-xl pointer-events-auto">
+      <span class="font-mono text-[10px] text-champagne tracking-widest" id="hud-chapter-num">01 / 06</span>
+      <span class="w-[1px] h-3 bg-white/15"></span>
+      <span class="font-mono text-[10px] text-platinum/80 tracking-[0.2em] uppercase" id="hud-chapter-title">THE SINGULARITY</span>
     </div>
 
-    <!-- LEFT SIDEBAR: Geospatial Lock & Telemetry -->
-    <aside class="panel hidden lg:flex flex-col justify-between overflow-hidden">
-      <div class="reticle-tl"></div>
-      <div class="reticle-br"></div>
+    <!-- Right Actions: Ambient Audio + Commission CTA -->
+    <div class="flex items-center gap-3 pointer-events-auto">
+      <button id="sound-btn" onclick="toggleSoundscape()" data-cursor="AUDIO" class="w-10 h-10 rounded-full border border-white/15 bg-obsidian/65 backdrop-blur-xl flex items-center justify-center text-platinum/80 hover:border-champagne hover:text-champagne transition-colors" title="Toggle Spatial Audio">
+        <svg id="sound-icon-off" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+        <svg id="sound-icon-on" class="w-4 h-4 hidden text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+        </svg>
+      </button>
 
-      <div class="space-y-4 relative z-10">
-        <!-- Orbital Radar -->
-        <div>
-          <div class="flex justify-between items-center text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">
-            <span>GEOSPATIAL_LOCK</span>
-            <span class="text-brand-amber animate-pulse">● ORBITAL_SYNC</span>
-          </div>
-          <div class="relative flex items-center justify-center bg-black/50 border border-grid-border p-2">
-            <canvas id="radar-canvas" width="220" height="130" class="w-full h-[125px]"></canvas>
-            <div class="absolute bottom-2 left-2 text-[9px] leading-tight text-white/80 bg-bg-deep/90 px-2 py-1 border border-grid-border">
-              <div>LAT: 12.9716° N</div>
-              <div>LON: 77.5946° E</div>
-              <div class="text-brand-amber font-bold">HQ: BENGALURU, IN</div>
-            </div>
-          </div>
-        </div>
+      <button onclick="scrollToChapter(5)" data-cursor="START" class="magnetic-btn px-5 py-2.5 rounded-full bg-champagne text-obsidian font-mono text-[11px] font-bold tracking-[0.16em] uppercase hover:bg-white transition-colors shadow-[0_0_25px_rgba(229,193,123,0.3)]">
+        COMMISSION ↗
+      </button>
+    </div>
+  </header>
 
-        <!-- Network Signal Sparkline -->
-        <div>
-          <div class="flex justify-between items-center text-[10px] text-brand-cyan mb-1.5 border-b border-grid-border pb-1">
-            <span>UPLINK_LATENCY</span>
-            <span id="ping-readout" class="text-brand-emerald">12ms</span>
-          </div>
-          <canvas id="telemetry-canvas" width="240" height="46" class="w-full h-[44px] bg-black/40 border border-grid-border"></canvas>
-          <div class="grid grid-cols-3 gap-1 mt-1.5 text-[9px] text-white/60">
-            <div class="bg-white/5 p-1 text-center">SLA: <span class="text-white">99.99%</span></div>
-            <div class="bg-white/5 p-1 text-center">ENC: <span class="text-brand-cyan">AES-256</span></div>
-            <div class="bg-white/5 p-1 text-center">MESH: <span class="text-brand-amber">GLOBAL</span></div>
-          </div>
-        </div>
+  <!-- RIGHT EDGE CHAPTER SCRUBBER RAIL -->
+  <aside class="fixed right-5 md:right-8 top-1/2 -translate-y-1/2 z-50 hidden sm:flex flex-col items-end gap-4">
+    <button onclick="scrollToChapter(0)" data-cursor="01" class="chapter-dot group flex items-center gap-3" data-idx="0">
+      <span class="font-mono text-[9px] tracking-widest text-white/0 group-hover:text-champagne transition-colors">ORIGIN</span>
+      <span class="dot-bar w-4 h-[2px] bg-champagne transition-all"></span>
+    </button>
+    <button onclick="scrollToChapter(1)" data-cursor="02" class="chapter-dot group flex items-center gap-3" data-idx="1">
+      <span class="font-mono text-[9px] tracking-widest text-white/0 group-hover:text-champagne transition-colors">THESIS</span>
+      <span class="dot-bar w-2 h-[2px] bg-white/25 transition-all"></span>
+    </button>
+    <button onclick="scrollToChapter(2)" data-cursor="03" class="chapter-dot group flex items-center gap-3" data-idx="2">
+      <span class="font-mono text-[9px] tracking-widest text-white/0 group-hover:text-champagne transition-colors">SYSTEMS</span>
+      <span class="dot-bar w-2 h-[2px] bg-white/25 transition-all"></span>
+    </button>
+    <button onclick="scrollToChapter(3)" data-cursor="04" class="chapter-dot group flex items-center gap-3" data-idx="3">
+      <span class="font-mono text-[9px] tracking-widest text-white/0 group-hover:text-champagne transition-colors">ARTIFACTS</span>
+      <span class="dot-bar w-2 h-[2px] bg-white/25 transition-all"></span>
+    </button>
+    <button onclick="scrollToChapter(4)" data-cursor="05" class="chapter-dot group flex items-center gap-3" data-idx="4">
+      <span class="font-mono text-[9px] tracking-widest text-white/0 group-hover:text-champagne transition-colors">TELEMETRY</span>
+      <span class="dot-bar w-2 h-[2px] bg-white/25 transition-all"></span>
+    </button>
+    <button onclick="scrollToChapter(5)" data-cursor="06" class="chapter-dot group flex items-center gap-3" data-idx="5">
+      <span class="font-mono text-[9px] tracking-widest text-white/0 group-hover:text-champagne transition-colors">UPLINK</span>
+      <span class="dot-bar w-2 h-[2px] bg-white/25 transition-all"></span>
+    </button>
+  </aside>
 
-        <!-- Engineering Capabilities Matrix -->
-        <div>
-          <div class="text-[10px] text-brand-cyan mb-2 border-b border-grid-border pb-1">ACTIVE_MODULES</div>
-          <ul class="text-[11px] text-white/80 space-y-2">
-            <li class="flex items-center justify-between cursor-pointer hover:text-brand-cyan transition-colors" onclick="switchView('systems')">
-              <span>> SPATIAL WEB / 3D</span>
-              <span class="text-[9px] text-brand-emerald border border-brand-emerald/30 px-1.5">ONLINE</span>
-            </li>
-            <li class="flex items-center justify-between cursor-pointer hover:text-brand-cyan transition-colors" onclick="switchView('systems')">
-              <span>> CLOUD INFRASTRUCTURE</span>
-              <span class="text-[9px] text-brand-emerald border border-brand-emerald/30 px-1.5">ONLINE</span>
-            </li>
-            <li class="flex items-center justify-between cursor-pointer hover:text-brand-cyan transition-colors" onclick="switchView('systems')">
-              <span>> ALGO ACQUISITION</span>
-              <span class="text-[9px] text-brand-emerald border border-brand-emerald/30 px-1.5">ONLINE</span>
-            </li>
-            <li class="flex items-center justify-between cursor-pointer hover:text-brand-amber transition-colors" onclick="switchView('architect')">
-              <span>> AUTONOMOUS AI AGENTS</span>
-              <span class="text-[9px] text-brand-amber border border-brand-amber/30 px-1.5">DEPLOY</span>
-            </li>
-          </ul>
-        </div>
+  <!-- BOTTOM PROGRESS BAR -->
+  <div class="fixed bottom-0 left-0 right-0 h-[2px] bg-white/5 z-50 pointer-events-none">
+    <div id="global-progress" class="h-full bg-gradient-to-r from-champagne via-platinum to-cobalt w-0"></div>
+  </div>
+
+  <!-- VIRTUAL SCROLL SPACER (Sets Native Document Scroll Height) -->
+  <div id="scroll-spacer"></div>
+
+  <!-- INERTIAL SMOOTH VIEWPORT -->
+  <main id="smooth-viewport">
+
+    <!-- =================================================================
+         CHAPTER 01: THE SINGULARITY (HERO)
+         ================================================================= -->
+    <section id="chapter-1" class="chapter-section min-h-screen flex flex-col justify-between px-6 md:px-16 pt-28 pb-12 max-w-7xl mx-auto">
+      <div class="flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-champagne/90 uppercase reveal-up is-visible">
+        <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+        <span>CHAPTER I // ARCHITECTURAL ENGINEERING PRACTICE</span>
       </div>
 
-      <!-- Direct Executive Channels -->
-      <div class="pt-3 border-t border-grid-border relative z-10 space-y-1.5">
-        <div class="text-[10px] text-brand-cyan">DIRECT_COMMS_OVERRIDE</div>
-        <a href="https://wa.me/917090462940" target="_blank" class="flex items-center justify-between text-[11px] text-white/80 hover:text-brand-amber transition-colors bg-white/5 px-2.5 py-1.5 border border-white/10 hover:border-brand-amber/50">
-          <span>WA // +91 7090462940</span>
-          <span>↗</span>
-        </a>
-        <a href="mailto:xylorislogic@gmail.com" class="flex items-center justify-between text-[11px] text-white/80 hover:text-brand-cyan transition-colors bg-white/5 px-2.5 py-1.5 border border-white/10 hover:border-brand-cyan/50">
-          <span class="truncate">XYLORISLOGIC@GMAIL.COM</span>
-          <span>↗</span>
-        </a>
-      </div>
-    </aside>
-
-    <!-- CENTER WORKSPACE: Dynamic View Container -->
-    <main class="panel flex flex-col relative overflow-hidden !p-0">
-      <div class="reticle-tl"></div>
-      <div class="reticle-br"></div>
-
-      <!-- Subtle Blueprint Grid -->
-      <div class="absolute inset-0 opacity-[0.07] pointer-events-none" style="background-image: linear-gradient(var(--brand-cyan) 1px, transparent 1px), linear-gradient(90deg, var(--brand-cyan) 1px, transparent 1px); background-size: 28px 28px;"></div>
-
-      <!-- ===============================================================
-           VIEW 01: INTERACTIVE UPLINK TERMINAL
-           =============================================================== -->
-      <section id="view-terminal" class="relative z-10 flex flex-col h-full">
-        <!-- Terminal Sub-header -->
-        <div class="flex items-center justify-between px-4 py-2 bg-black/60 border-b border-grid-border text-[10px]">
-          <div class="flex items-center gap-2">
-            <span class="text-brand-amber font-bold">TTY_SESSION:</span>
-            <span class="text-white/70">/DEV/SOVEREIGN/UPLINK_01</span>
-          </div>
-          <div class="flex items-center gap-3 text-white/50">
-            <span class="hidden sm:inline">HOTKEYS: <strong class="text-brand-amber">[1-4]</strong></span>
-            <span>CMDS: <strong class="text-brand-cyan">/HELP</strong> <strong class="text-brand-cyan">/STATUS</strong> <strong class="text-brand-cyan">/REBOOT</strong></span>
-          </div>
-        </div>
-
-        <!-- Scrollable Terminal Buffer -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 text-xs md:text-sm leading-relaxed select-text" id="terminal-output">
-          <div id="booking-flow" class="space-y-3"></div>
-        </div>
-
-        <!-- Persistent Command Input -->
-        <form id="terminal-form" class="flex items-center gap-2 px-4 py-3 bg-black/85 border-t border-grid-border">
-          <span id="prompt-label" class="text-brand-amber font-bold text-xs md:text-sm shrink-0">root@jeffspace:~#</span>
-          <input
-            type="text"
-            id="terminal-input"
-            placeholder="SELECT AN OPTION ABOVE OR TYPE /HELP..."
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-            class="w-full bg-transparent text-white text-xs md:text-sm focus:outline-none placeholder:text-white/30 font-mono uppercase"
-          />
-          <button
-            type="submit"
-            class="px-3.5 py-1.5 bg-brand-cyan/15 border border-brand-cyan/60 text-brand-cyan text-[10px] font-bold tracking-wider hover:bg-brand-cyan hover:text-black transition-colors shrink-0 cursor-pointer"
-          >
-            EXEC ↵
-          </button>
-        </form>
-      </section>
-
-      <!-- ===============================================================
-           VIEW 02: DEPLOYED SYSTEMS (CASE STUDIES & ARCHITECTURE)
-           =============================================================== -->
-      <section id="view-systems" class="hidden relative z-10 flex-col h-full overflow-y-auto p-4 md:p-6 space-y-5">
-        <div class="flex flex-wrap items-end justify-between gap-2 border-b border-grid-border pb-3">
-          <div>
-            <div class="text-[10px] text-brand-amber tracking-widest">PRODUCTION_ARCHIVE // VERIFIED_BUILDS</div>
-            <h2 class="font-display font-bold text-xl md:text-2xl text-white tracking-wide mt-0.5 cipher-title">DEPLOYED FLAGSHIP ARCHITECTURES</h2>
-          </div>
-          <button onclick="switchView('terminal')" class="px-3 py-1.5 bg-brand-amber text-black font-bold text-[10px] tracking-widest hover:bg-white transition-colors cursor-pointer">
-            INITIATE SIMILAR BUILD →
-          </button>
-        </div>
-
-        <!-- Case Study Selector Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="case-studies-grid">
-          <!-- Populated via JS -->
-        </div>
-      </section>
-
-      <!-- ===============================================================
-           VIEW 03: INTERACTIVE SCOPE & INVESTMENT ARCHITECT
-           =============================================================== -->
-      <section id="view-architect" class="hidden relative z-10 flex-col h-full overflow-y-auto p-4 md:p-6 space-y-5">
-        <div class="flex flex-wrap items-end justify-between gap-2 border-b border-grid-border pb-3">
-          <div>
-            <div class="text-[10px] text-brand-cyan tracking-widest">MODULAR_SYSTEM_CONFIGURATOR</div>
-            <h2 class="font-display font-bold text-xl md:text-2xl text-white tracking-wide mt-0.5 cipher-title">ARCHITECT YOUR DEPLOYMENT</h2>
-          </div>
-          <span class="text-[10px] text-brand-emerald border border-brand-emerald/40 bg-brand-emerald/10 px-2.5 py-1">
-            REAL-TIME TOPOLOGY ENGINE
-          </span>
-        </div>
-
-        <p class="text-xs text-white/70 leading-relaxed">
-          Select the engineering modules required for your infrastructure. Our compiler calculates sprint velocity, deliverable architecture, and pre-loads your manifest directly into the encrypted uplink terminal.
+      <div class="my-auto py-12 space-y-6">
+        <h1 class="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-[7.2rem] leading-[0.92] tracking-tight text-white font-semibold reveal-up is-visible">
+          Beyond <span class="italic font-normal text-champagne">Interfaces.</span><br />
+          Sovereign Systems.
+        </h1>
+        <p class="max-w-xl text-sm sm:text-base md:text-lg text-platinum/70 font-light leading-relaxed reveal-up is-visible">
+          JEFF SPACE architects ultra-low-latency cloud engines, spatial WebGL flagships, and autonomous AI infrastructure for category-defining founders.
         </p>
-
-        <!-- Toggleable Modules -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="architect-modules">
-          <!-- Populated via JS -->
+        <div class="pt-4 flex flex-wrap items-center gap-4 reveal-up is-visible">
+          <button onclick="scrollToChapter(3)" data-cursor="VIEW" class="magnetic-btn px-7 py-3.5 rounded-full border border-champagne/60 bg-champagne/10 text-champagne font-mono text-xs tracking-[0.18em] uppercase hover:bg-champagne hover:text-obsidian transition-all">
+            EXPLORE ARTIFACTS
+          </button>
+          <button onclick="scrollToChapter(5)" data-cursor="BRIEF" class="px-6 py-3.5 rounded-full border border-white/15 text-platinum/80 font-mono text-xs tracking-[0.18em] uppercase hover:border-white/50 hover:text-white transition-all">
+            CONFIGURE BUILD →
+          </button>
         </div>
+      </div>
 
-        <!-- Live Blueprint Output Box -->
-        <div class="border border-brand-amber/50 bg-black/60 p-4 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
-            <span class="text-xs font-bold text-brand-amber tracking-widest">COMPILED_BLUEPRINT_SUMMARY</span>
-            <span id="arch-sprint-est" class="text-xs text-brand-cyan font-bold">EST. SPRINT: 4–6 WEEKS</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div class="bg-white/5 p-3 border border-white/10">
-              <div class="text-[9px] text-white/40">SELECTED_MODULES</div>
-              <div id="arch-count" class="text-lg font-bold text-white mt-0.5">2 ACTIVE</div>
-            </div>
-            <div class="bg-white/5 p-3 border border-white/10">
-              <div class="text-[9px] text-white/40">RECOMMENDED_TIER</div>
-              <div id="arch-tier" class="text-sm font-bold text-brand-cyan mt-1">ORBITAL_GROWTH</div>
-            </div>
-            <div class="bg-white/5 p-3 border border-white/10">
-              <div class="text-[9px] text-white/40">TARGET_SLA_GUARANTEE</div>
-              <div class="text-sm font-bold text-brand-emerald mt-1">99.99% UPTIME</div>
-            </div>
-          </div>
-
-          <div id="arch-deliverables" class="text-[11px] text-white/75 space-y-1">
-            <!-- Dynamic deliverables -->
-          </div>
-
-          <div class="pt-1 flex flex-wrap gap-3">
-            <button onclick="pushArchitectToTerminal()" class="flex-1 px-5 py-3 bg-brand-amber text-black font-bold text-xs tracking-widest hover:bg-white transition-colors cursor-pointer">
-              [ LOAD BLUEPRINT INTO UPLINK TERMINAL ] ↵
-            </button>
-          </div>
+      <div class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5 font-mono text-[10px] tracking-[0.2em] text-muted uppercase">
+        <div>COORD: 12.9716° N, 77.5946° E — BENGALURU</div>
+        <div class="flex items-center gap-2 text-champagne/80 animate-bounce">
+          <span>SCROLL TO INITIATE ODYSSEY</span>
+          <span>↓</span>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- ===============================================================
-           VIEW 04: COMMAND NODE & SECURITY DOCTRINE
-           =============================================================== -->
-      <section id="view-node" class="hidden relative z-10 flex-col h-full overflow-y-auto p-4 md:p-6 space-y-5">
-        <div class="border-b border-grid-border pb-3">
-          <div class="text-[10px] text-brand-emerald tracking-widest">NODE_IDENTITY // BLR-01-SOVEREIGN</div>
-          <h2 class="font-display font-bold text-xl md:text-2xl text-white tracking-wide mt-0.5 cipher-title">ENGINEERING DOCTRINE & DIRECT UPLINK</h2>
+    <!-- =================================================================
+         CHAPTER 02: THE THESIS (SCROLL-SCRUBBED KINETIC MANIFESTO)
+         ================================================================= -->
+    <section id="chapter-2" class="chapter-section min-h-[120vh] flex items-center px-6 md:px-16 py-24 max-w-6xl mx-auto">
+      <div class="space-y-8">
+        <div class="font-mono text-[11px] tracking-[0.28em] text-cobalt uppercase">
+          CHAPTER II // THE ENGINEERING DOCTRINE
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-          <div class="border border-grid-border bg-black/50 p-4 space-y-1.5">
-            <div class="text-brand-cyan font-bold">01 // ZERO BLOAT</div>
-            <p class="text-white/65 text-[11px] leading-relaxed">Sub-second edge execution, custom WebGL shaders, and bare-metal API optimization without fragile third-party bloat.</p>
+        <h2 id="scrub-manifesto" class="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-[1.12] font-medium tracking-tight">
+          Conventional agencies assemble fragile templates. We engineer <span class="gold">bespoke digital flagships</span>—merging mathematical precision, <span class="gold">60FPS spatial graphics</span>, and resilient distributed systems that turn technical superiority into <span class="gold">unfair market dominance.</span>
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-white/10 font-mono">
+          <div>
+            <div class="text-[10px] text-muted tracking-widest">LATENCY TARGET</div>
+            <div class="text-xl md:text-2xl text-white font-bold mt-1">&lt; 15ms</div>
           </div>
-          <div class="border border-grid-border bg-black/50 p-4 space-y-1.5">
-            <div class="text-brand-amber font-bold">02 // CRYPTO-GRADE</div>
-            <p class="text-white/65 text-[11px] leading-relaxed">End-to-end encrypted data pipelines, zero-trust authentication, and hardened cloud deployments built for scale.</p>
+          <div>
+            <div class="text-[10px] text-muted tracking-widest">RENDER PIPELINE</div>
+            <div class="text-xl md:text-2xl text-champagne font-bold mt-1">GLSL / 60FPS</div>
           </div>
-          <div class="border border-grid-border bg-black/50 p-4 space-y-1.5">
-            <div class="text-brand-emerald font-bold">03 // RAPID VELOCITY</div>
-            <p class="text-white/65 text-[11px] leading-relaxed">Senior-only execution from Bengaluru, India—delivering production architectures in weeks rather than quarters.</p>
+          <div>
+            <div class="text-[10px] text-muted tracking-widest">SECURITY POSTURE</div>
+            <div class="text-xl md:text-2xl text-white font-bold mt-1">ZERO-TRUST</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-muted tracking-widest">EXECUTION MODEL</div>
+            <div class="text-xl md:text-2xl text-cobalt font-bold mt-1">PRINCIPAL-ONLY</div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="border border-brand-cyan/40 bg-brand-cyan/5 p-5 space-y-4">
-          <div class="text-xs font-bold text-brand-cyan tracking-widest">DIRECT EXECUTIVE DISPATCH</div>
-          <p class="text-xs text-white/80 leading-relaxed">
-            Bypass automated queues for urgent enterprise deployments, custom AI infrastructure, or technical audits.
+    <!-- =================================================================
+         CHAPTER 03: CORE ARCHITECTURES (4 PILLARS)
+         ================================================================= -->
+    <section id="chapter-3" class="chapter-section min-h-screen flex flex-col justify-center px-6 md:px-16 py-24 max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 reveal-up">
+        <div>
+          <div class="font-mono text-[11px] tracking-[0.28em] text-champagne uppercase mb-3">CHAPTER III // CAPABILITY MATRIX</div>
+          <h2 class="font-serif text-4xl sm:text-6xl text-white font-semibold">Four Pillars of Scale.</h2>
+        </div>
+        <p class="max-w-md text-sm text-platinum/65 font-light leading-relaxed">
+          Every engagement is architected from first principles—combining expressive front-end choreography with hardened cloud infrastructure.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Pillar 01 -->
+        <div class="luxe-card tilt-card rounded-2xl p-8 space-y-5 reveal-up" data-cursor="PILLAR 01">
+          <div class="flex items-center justify-between font-mono text-xs">
+            <span class="text-champagne tracking-widest">01 // SPATIAL WEB</span>
+            <span class="px-2.5 py-1 rounded-full border border-champagne/30 text-[10px] text-champagne">WEBGL • SHADERS</span>
+          </div>
+          <h3 class="font-serif text-3xl text-white font-semibold">Interactive Flagship Experiences</h3>
+          <p class="text-sm text-platinum/70 leading-relaxed font-light">
+            Custom Three.js environments, GLSL shaders, and editorial scrollytelling interfaces engineered to command immediate category authority and elevate conversion velocity.
           </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <a href="https://wa.me/917090462940?text=⚡%20JEFF%20SPACE%20EXECUTIVE%20INQUIRY" target="_blank" class="px-4 py-3 bg-brand-amber text-black font-bold text-xs tracking-wider text-center hover:bg-white transition-colors">
-              WHATSAPP DIRECT // +91 7090462940 ↗
-            </a>
-            <a href="mailto:xylorislogic@gmail.com?subject=[JEFF%20SPACE]%20Executive%20Briefing" class="px-4 py-3 border border-brand-cyan text-brand-cyan font-bold text-xs tracking-wider text-center hover:bg-brand-cyan/20 transition-colors">
-              EMAIL // XYLORISLOGIC@GMAIL.COM ↗
-            </a>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- RIGHT SIDEBAR: Live Mission Manifest & Cryptographic Signature -->
-    <aside class="panel hidden xl:flex flex-col justify-between overflow-hidden">
-      <div class="reticle-tl"></div>
-      <div class="reticle-br"></div>
-
-      <div class="space-y-4 relative z-10">
-        <div>
-          <div class="flex justify-between items-center text-[10px] text-brand-amber mb-2 border-b border-grid-border pb-1">
-            <span>MISSION_MANIFEST</span>
-            <span id="manifest-status" class="text-white/50">AWAITING_INPUT</span>
-          </div>
-
-          <div class="space-y-2 text-xs bg-black/50 border border-grid-border p-3">
-            <div>
-              <div class="text-[9px] text-white/40">01 // ARCHITECTURE_PROTOCOL</div>
-              <div id="mf-protocol" class="text-brand-cyan font-bold mt-0.5 truncate">UNASSIGNED</div>
-            </div>
-            <div class="border-t border-white/10 pt-1.5">
-              <div class="text-[9px] text-white/40">02 // DEPLOYMENT_SCALE</div>
-              <div id="mf-scale" class="text-white/85 font-bold mt-0.5 truncate">UNASSIGNED</div>
-            </div>
-            <div class="border-t border-white/10 pt-1.5">
-              <div class="text-[9px] text-white/40">03 // TIMELINE_VELOCITY</div>
-              <div id="mf-timeline" class="text-white/85 font-bold mt-0.5 truncate">UNASSIGNED</div>
-            </div>
-            <div class="border-t border-white/10 pt-1.5">
-              <div class="text-[9px] text-white/40">04 // TARGET_DESIGNATION</div>
-              <div id="mf-designation" class="text-white/85 font-bold mt-0.5 truncate">UNASSIGNED</div>
-            </div>
-            <div class="border-t border-white/10 pt-1.5">
-              <div class="text-[9px] text-white/40">05 // MISSION_DIRECTIVE</div>
-              <div id="mf-directive" class="text-white/65 text-[11px] mt-0.5 line-clamp-2">UNASSIGNED</div>
-            </div>
+          <div class="pt-3 border-t border-white/10 flex flex-wrap gap-2 font-mono text-[10px] text-muted">
+            <span>THREE.JS</span> • <span>CUSTOM GLSL</span> • <span>REACT / NEXT.JS</span> • <span>DESIGN SYSTEMS</span>
           </div>
         </div>
 
-        <!-- Live SHA-256 Hash -->
-        <div>
-          <div class="flex justify-between items-center text-[10px] text-brand-cyan mb-1.5 border-b border-grid-border pb-1">
-            <span>PAYLOAD_SIGNATURE</span>
-            <span class="text-[9px] text-brand-emerald">SHA-256</span>
+        <!-- Pillar 02 -->
+        <div class="luxe-card tilt-card rounded-2xl p-8 space-y-5 reveal-up" data-cursor="PILLAR 02">
+          <div class="flex items-center justify-between font-mono text-xs">
+            <span class="text-cobalt tracking-widest">02 // CLOUD ENGINES</span>
+            <span class="px-2.5 py-1 rounded-full border border-cobalt/30 text-[10px] text-cobalt">DISTRIBUTED • API</span>
           </div>
-          <div id="crypto-hash" class="font-mono text-[10px] text-white/55 bg-black/60 border border-grid-border p-2.5 break-all leading-relaxed">
-            e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+          <h3 class="font-serif text-3xl text-white font-semibold">High-Throughput Core Infrastructure</h3>
+          <p class="text-sm text-platinum/70 leading-relaxed font-light">
+            Fault-tolerant microservices, real-time WebSocket telemetry pipelines, and edge-cached APIs designed to sustain massive concurrent loads with 99.99% uptime.
+          </p>
+          <div class="pt-3 border-t border-white/10 flex flex-wrap gap-2 font-mono text-[10px] text-muted">
+            <span>EDGE COMPUTE</span> • <span>POSTGRES / REDIS</span> • <span>ZERO-DOWNTIME CI/CD</span> • <span>AES-256</span>
+          </div>
+        </div>
+
+        <!-- Pillar 03 -->
+        <div class="luxe-card tilt-card rounded-2xl p-8 space-y-5 reveal-up" data-cursor="PILLAR 03">
+          <div class="flex items-center justify-between font-mono text-xs">
+            <span class="text-emerald tracking-widest">03 // NEURAL SYSTEMS</span>
+            <span class="px-2.5 py-1 rounded-full border border-emerald/30 text-[10px] text-emerald">AGENTS • RAG</span>
+          </div>
+          <h3 class="font-serif text-3xl text-white font-semibold">Autonomous AI & Agentic Workflows</h3>
+          <p class="text-sm text-platinum/70 leading-relaxed font-light">
+            Production multi-agent orchestration, private enterprise RAG knowledge engines, and deterministic tool-calling pipelines embedded directly into your operations.
+          </p>
+          <div class="pt-3 border-t border-white/10 flex flex-wrap gap-2 font-mono text-[10px] text-muted">
+            <span>LLM ORCHESTRATION</span> • <span>VECTOR SEARCH</span> • <span>EVAL HARNESSES</span> • <span>API ROUTING</span>
+          </div>
+        </div>
+
+        <!-- Pillar 04 -->
+        <div class="luxe-card tilt-card rounded-2xl p-8 space-y-5 reveal-up" data-cursor="PILLAR 04">
+          <div class="flex items-center justify-between font-mono text-xs">
+            <span class="text-platinum tracking-widest">04 // ALGO ACQUISITION</span>
+            <span class="px-2.5 py-1 rounded-full border border-white/25 text-[10px] text-platinum">GROWTH • TELEMETRY</span>
+          </div>
+          <h3 class="font-serif text-3xl text-white font-semibold">Programmatic Growth Engines</h3>
+          <p class="text-sm text-platinum/70 leading-relaxed font-light">
+            Data-instrumented acquisition funnels, dynamic programmatic landing architectures, and sub-second SEO engines that compound organic enterprise demand.
+          </p>
+          <div class="pt-3 border-t border-white/10 flex flex-wrap gap-2 font-mono text-[10px] text-muted">
+            <span>PROGRAMMATIC SEO</span> • <span>ATTRIBUTION</span> • <span>CONVERSION LABS</span> • <span>AUTOMATION</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHAPTER 04: SELECTED ARTIFACTS (INTERACTIVE CASE STUDIES)
+         ================================================================= -->
+    <section id="chapter-4" class="chapter-section min-h-screen flex flex-col justify-center px-6 md:px-16 py-24 max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 reveal-up">
+        <div>
+          <div class="font-mono text-[11px] tracking-[0.28em] text-cobalt uppercase mb-3">CHAPTER IV // DEPLOYED ARTIFACTS</div>
+          <h2 class="font-serif text-4xl sm:text-6xl text-white font-semibold">Selected Production Systems.</h2>
+        </div>
+        <div class="font-mono text-xs text-champagne tracking-widest">
+          [ CLICK ANY ARTIFACT TO INSPECT ARCHITECTURE ]
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="artifacts-grid">
+        <!-- Populated dynamically with interactive inspection triggers -->
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHAPTER 05: TELEMETRY & VELOCITY BENCHMARKS
+         ================================================================= -->
+    <section id="chapter-5" class="chapter-section min-h-[90vh] flex flex-col justify-center px-6 md:px-16 py-24 max-w-7xl mx-auto">
+      <div class="luxe-card rounded-3xl p-8 md:p-14 border-champagne/25 reveal-up">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div class="lg:col-span-6 space-y-6">
+            <div class="font-mono text-[11px] tracking-[0.28em] text-champagne uppercase">
+              CHAPTER V // VERIFIED TELEMETRY
+            </div>
+            <h2 class="font-serif text-4xl sm:text-5xl text-white font-semibold leading-tight">
+              Engineered in Bengaluru.<br />
+              <span class="italic font-normal text-champagne">Deployed Globally.</span>
+            </h2>
+            <p class="text-sm text-platinum/70 font-light leading-relaxed">
+              We eliminate agency bloat. You collaborate directly with principal systems architects from initial topology design to global edge deployment—compressing six-month roadmaps into high-velocity execution sprints.
+            </p>
+            <div class="flex flex-wrap gap-3 pt-2 font-mono text-[11px]">
+              <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-platinum">NODE: BLR-01</span>
+              <span class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald">STATUS: ACCEPTING Q4/Q1 COMMISSIONS</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+            <div class="p-6 rounded-2xl bg-obsidian/80 border border-white/10 space-y-2">
+              <div class="font-mono text-[10px] text-muted tracking-widest">P99 EDGE RESPONSE</div>
+              <div class="font-serif text-4xl md:text-5xl text-champagne font-bold counter-val" data-target="14" data-suffix="ms">0ms</div>
+              <div class="font-mono text-[10px] text-emerald">▲ TOP 0.1% GLOBAL</div>
+            </div>
+            <div class="p-6 rounded-2xl bg-obsidian/80 border border-white/10 space-y-2">
+              <div class="font-mono text-[10px] text-muted tracking-widest">SYSTEM AVAILABILITY</div>
+              <div class="font-serif text-4xl md:text-5xl text-white font-bold counter-val" data-target="99.99" data-decimals="2" data-suffix="%">0%</div>
+              <div class="font-mono text-[10px] text-cobalt">MULTI-REGION FAILOVER</div>
+            </div>
+            <div class="p-6 rounded-2xl bg-obsidian/80 border border-white/10 space-y-2">
+              <div class="font-mono text-[10px] text-muted tracking-widest">CONVERSION LIFT</div>
+              <div class="font-serif text-4xl md:text-5xl text-white font-bold counter-val" data-target="3.8" data-decimals="1" data-suffix="x">0x</div>
+              <div class="font-mono text-[10px] text-champagne">POST-RELAUNCH AVG</div>
+            </div>
+            <div class="p-6 rounded-2xl bg-obsidian/80 border border-white/10 space-y-2">
+              <div class="font-mono text-[10px] text-muted tracking-widest">SPRINT VELOCITY</div>
+              <div class="font-serif text-4xl md:text-5xl text-cobalt font-bold counter-val" data-target="21" data-suffix="d">0d</div>
+              <div class="font-mono text-[10px] text-muted">CONCEPT TO PRODUCTION</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHAPTER 06: SPATIAL COMMISSION CONCIERGE (INTERACTIVE DISPATCH)
+         ================================================================= -->
+    <section id="chapter-6" class="chapter-section min-h-screen flex flex-col justify-center px-6 md:px-16 py-24 max-w-6xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12 space-y-4 reveal-up">
+        <div class="font-mono text-[11px] tracking-[0.3em] text-champagne uppercase">CHAPTER VI // INITIATE COMMISSION</div>
+        <h2 class="font-serif text-4xl sm:text-6xl text-white font-semibold">Architect Your Build.</h2>
+        <p class="text-sm text-platinum/65 font-light">
+          Configure your architectural scope below to generate an encrypted dossier and establish a direct line with JEFF SPACE.
+        </p>
+      </div>
+
+      <div class="luxe-card rounded-3xl p-6 sm:p-10 md:p-12 border-champagne/30 reveal-up">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <!-- Left Configurator Controls -->
+          <div class="lg:col-span-7 space-y-7">
+            <!-- Step 1: Architecture Pillar -->
+            <div class="space-y-3">
+              <label class="block font-mono text-[11px] tracking-[0.2em] text-champagne uppercase">
+                01 // SELECT PRIMARY ARCHITECTURE
+              </label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="cfg-pillar">
+                <button type="button" class="config-pill selected rounded-xl p-3.5 text-left" data-val="SPATIAL WEB / 3D FLAGSHIP">
+                  <div class="font-mono text-xs font-bold text-white">SPATIAL WEB / 3D</div>
+                  <div class="text-[11px] text-muted mt-0.5">WebGL, Shaders & Bespoke Platforms</div>
+                </button>
+                <button type="button" class="config-pill rounded-xl p-3.5 text-left" data-val="DISTRIBUTED CLOUD ENGINE">
+                  <div class="font-mono text-xs font-bold text-white">CLOUD & API CORE</div>
+                  <div class="text-[11px] text-muted mt-0.5">Microservices & High-Load Backends</div>
+                </button>
+                <button type="button" class="config-pill rounded-xl p-3.5 text-left" data-val="AUTONOMOUS AI INFRASTRUCTURE">
+                  <div class="font-mono text-xs font-bold text-white">AI AGENT SYSTEMS</div>
+                  <div class="text-[11px] text-muted mt-0.5">LLM Orchestration & Enterprise RAG</div>
+                </button>
+                <button type="button" class="config-pill rounded-xl p-3.5 text-left" data-val="ALGORITHMIC GROWTH ENGINE">
+                  <div class="font-mono text-xs font-bold text-white">ALGO ACQUISITION</div>
+                  <div class="text-[11px] text-muted mt-0.5">Programmatic SEO & Growth Funnels</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Engagement Scale -->
+            <div class="space-y-3">
+              <label class="block font-mono text-[11px] tracking-[0.2em] text-champagne uppercase">
+                02 // ENGAGEMENT TIER & VELOCITY
+              </label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="cfg-tier">
+                <button type="button" class="config-pill rounded-xl p-3 text-left" data-val="TACTICAL SPRINT (UNDER 30 DAYS)">
+                  <div class="font-mono text-xs font-bold text-white">TACTICAL SPRINT</div>
+                  <div class="text-[10px] text-muted mt-0.5">&lt; 30 Days • MVP</div>
+                </button>
+                <button type="button" class="config-pill selected rounded-xl p-3 text-left" data-val="ORBITAL PRODUCTION (1–3 MONTHS)">
+                  <div class="font-mono text-xs font-bold text-white">ORBITAL SCALE</div>
+                  <div class="text-[10px] text-muted mt-0.5">1–3 Mos • Full System</div>
+                </button>
+                <button type="button" class="config-pill rounded-xl p-3 text-left" data-val="SOVEREIGN ENTERPRISE (DEDICATED)">
+                  <div class="font-mono text-xs font-bold text-white">SOVEREIGN TIER</div>
+                  <div class="text-[10px] text-muted mt-0.5">Dedicated Principal Pod</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Client Identity & Brief -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block font-mono text-[10px] tracking-[0.2em] text-muted uppercase">03 // YOUR NAME / ORGANIZATION</label>
+                <input type="text" id="cfg-name" placeholder="E.G. ALEX MERCER // VANGUARD" class="w-full rounded-xl bg-obsidian/90 border border-white/15 px-4 py-3 text-xs font-mono text-white placeholder:text-white/25 focus:outline-none focus:border-champagne transition-colors" />
+              </div>
+              <div class="space-y-2">
+                <label class="block font-mono text-[10px] tracking-[0.2em] text-muted uppercase">04 // MISSION OBJECTIVE</label>
+                <input type="text" id="cfg-brief" placeholder="E.G. NEXT-GEN FINTECH PLATFORM" class="w-full rounded-xl bg-obsidian/90 border border-white/15 px-4 py-3 text-xs font-mono text-white placeholder:text-white/25 focus:outline-none focus:border-champagne transition-colors" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Live Cryptographic Dossier Preview & Direct Dispatch -->
+          <div class="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-obsidian/90 border border-white/10 p-6 space-y-6">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <span class="font-mono text-[10px] tracking-widest text-champagne">LIVE BRIEF DOSSIER</span>
+                <span id="dossier-id" class="font-mono text-[10px] text-emerald">#JS-8492A</span>
+              </div>
+
+              <div class="space-y-3 font-mono text-xs">
+                <div>
+                  <div class="text-[9px] text-muted">ARCHITECTURE</div>
+                  <div id="sum-pillar" class="text-white font-bold mt-0.5">SPATIAL WEB / 3D FLAGSHIP</div>
+                </div>
+                <div>
+                  <div class="text-[9px] text-muted">VELOCITY & SCALE</div>
+                  <div id="sum-tier" class="text-cobalt font-bold mt-0.5">ORBITAL PRODUCTION (1–3 MONTHS)</div>
+                </div>
+                <div>
+                  <div class="text-[9px] text-muted">PRINCIPAL</div>
+                  <div id="sum-name" class="text-platinum/90 mt-0.5">UNSPECIFIED</div>
+                </div>
+                <div>
+                  <div class="text-[9px] text-muted">OBJECTIVE</div>
+                  <div id="sum-brief" class="text-platinum/75 text-[11px] mt-0.5">BESPOKE ARCHITECTURE CONSULTATION</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3 pt-2">
+              <button type="button" onclick="dispatchWhatsApp()" data-cursor="SEND" class="magnetic-btn w-full py-4 rounded-xl bg-champagne text-obsidian font-mono text-xs font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors shadow-[0_0_30px_rgba(229,193,123,0.25)]">
+                TRANSMIT VIA WHATSAPP ↗
+              </button>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button type="button" onclick="dispatchEmail()" data-cursor="MAIL" class="py-3 rounded-xl border border-white/15 text-platinum/85 font-mono text-[10px] tracking-widest uppercase hover:border-champagne hover:text-champagne transition-colors">
+                  EMAIL BRIEF ↗
+                </button>
+                <button type="button" id="copy-brief-btn" onclick="copyBriefJSON()" data-cursor="COPY" class="py-3 rounded-xl border border-white/15 text-platinum/85 font-mono text-[10px] tracking-widest uppercase hover:border-cobalt hover:text-cobalt transition-colors">
+                  COPY SPEC
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Kernel Audit Log -->
-      <div class="pt-3 border-t border-grid-border relative z-10">
-        <div class="text-[10px] text-brand-cyan mb-1.5">KERNEL_AUDIT_STREAM</div>
-        <div id="audit-stream" class="text-[9px] text-white/50 space-y-1 font-mono h-[96px] overflow-hidden flex flex-col justify-end">
-          <div>[00.01] GLSL SHADER PIPELINE ARMED</div>
-          <div>[00.04] ORBITAL DYSON CORE LOCKED</div>
-          <div>[00.09] AWAITING OPERATOR HANDSHAKE</div>
+      <!-- Editorial Footer -->
+      <footer class="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-muted">
+        <div>© 2026 JEFF SPACE // ALL RIGHTS RESERVED</div>
+        <div class="flex items-center gap-6">
+          <a href="https://wa.me/917090462940" target="_blank" class="hover:text-champagne transition-colors">WHATSAPP: +91 7090462940</a>
+          <a href="mailto:xylorislogic@gmail.com" class="hover:text-champagne transition-colors">XYLORISLOGIC@GMAIL.COM</a>
+        </div>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- CASE STUDY INSPECTION SLIDE-OVER DRAWER -->
+  <div id="artifact-drawer">
+    <div onclick="closeArtifactDrawer()" class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+    <div id="artifact-panel" class="absolute top-0 right-0 bottom-0 w-full max-w-xl bg-surface border-l border-champagne/30 p-8 md:p-10 flex flex-col justify-between overflow-y-auto shadow-2xl">
+      <div class="space-y-6">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <span id="drawer-code" class="font-mono text-xs text-champagne tracking-widest">ARTIFACT // 01</span>
+          <button onclick="closeArtifactDrawer()" class="font-mono text-xs text-muted hover:text-white px-3 py-1 border border-white/15 rounded-full">
+            CLOSE [ESC]
+          </button>
+        </div>
+
+        <div>
+          <span id="drawer-metric" class="inline-block font-mono text-[10px] text-emerald bg-emerald/10 border border-emerald/30 px-3 py-1 rounded-full mb-3">
+            14MS LATENCY
+          </span>
+          <h3 id="drawer-title" class="font-serif text-4xl text-white font-semibold">Aether Liquidity Engine</h3>
+        </div>
+
+        <p id="drawer-desc" class="text-sm text-platinum/75 font-light leading-relaxed"></p>
+
+        <div class="space-y-3 pt-2">
+          <div class="font-mono text-[10px] tracking-widest text-champagne uppercase">SYSTEM TOPOLOGY & HIGHLIGHTS</div>
+          <ul id="drawer-bullets" class="space-y-2.5 text-xs text-platinum/80 font-light"></ul>
+        </div>
+
+        <div class="pt-4 border-t border-white/10">
+          <div class="font-mono text-[10px] text-muted mb-2">PRODUCTION STACK</div>
+          <div id="drawer-stack" class="flex flex-wrap gap-2 font-mono text-[10px] text-cobalt"></div>
         </div>
       </div>
-    </aside>
 
+      <div class="pt-8">
+        <button onclick="commissionFromDrawer()" class="w-full py-4 rounded-xl bg-champagne text-obsidian font-mono text-xs font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+          COMMISSION SIMILAR ARCHITECTURE →
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // =======================================================================
-    // 0. CINEMATIC BOOT HANDSHAKE
-    // =======================================================================
-    let bootFinished = false;
-    function skipBoot() {
-      if (bootFinished) return;
-      bootFinished = true;
-      const screen = document.getElementById('boot-screen');
-      if (screen) screen.classList.add('hidden-boot');
-      initSequence();
-    }
+    // =========================================================================
+    // 1. PRELOADER CURTAIN SEQUENCE
+    // =========================================================================
+    (function initLoader() {
+      const line = document.getElementById('loader-line');
+      const counter = document.getElementById('loader-counter');
+      const curtain = document.getElementById('intro-curtain');
+      let progress = 0;
 
-    (function runBootLoader() {
-      const bar = document.getElementById('boot-bar');
-      const pct = document.getElementById('boot-pct');
-      const log = document.getElementById('boot-log');
-      const steps = [
-        { p: 28, msg: 'COMPILING CUSTOM GLSL TOPOGRAPHY SHADERS...' },
-        { p: 64, msg: 'ESTABLISHING AES-256-GCM TELEMETRY SOCKET...' },
-        { p: 100, msg: 'SOVEREIGN OS v4.0 READY.' }
-      ];
-      let idx = 0;
-      const timer = setInterval(() => {
-        if (bootFinished) { clearInterval(timer); return; }
-        if (idx < steps.length) {
-          bar.style.width = steps[idx].p + '%';
-          pct.textContent = steps[idx].p + '%';
-          log.textContent = steps[idx].msg;
-          idx++;
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 18) + 12;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          line.style.width = '100%';
+          counter.textContent = '100';
+          setTimeout(() => curtain.classList.add('lifted'), 260);
         } else {
-          clearInterval(timer);
-          setTimeout(skipBoot, 220);
+          line.style.width = progress + '%';
+          counter.textContent = String(progress).padStart(3, '0');
         }
-      }, 240);
+      }, 65);
     })();
 
-    // =======================================================================
-    // 1. SPOTLIGHT MOUSE TRACKING & CIPHER TEXT SCRAMBLE
-    // =======================================================================
-    document.querySelectorAll('.panel').forEach(panel => {
-      panel.addEventListener('mousemove', e => {
-        const rect = panel.getBoundingClientRect();
-        panel.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        panel.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    // =========================================================================
+    // 2. PROCEDURAL AMBIENT SPATIAL AUDIO (WEB AUDIO API)
+    // =========================================================================
+    let audioCtx = null;
+    let droneGain = null;
+    let isSoundActive = false;
+
+    function toggleSoundscape() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audioCtx = new AC();
+
+        // Warm deep harmonic chord (D2 + A2 + E3)
+        droneGain = audioCtx.createGain();
+        droneGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        droneGain.connect(audioCtx.destination);
+
+        [73.42, 110.0, 164.81].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const filter = audioCtx.createBiquadFilter();
+          osc.type = idx === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(340, audioCtx.currentTime);
+
+          const subGain = audioCtx.createGain();
+          subGain.gain.value = idx === 0 ? 0.045 : 0.018;
+
+          osc.connect(filter);
+          filter.connect(subGain);
+          subGain.connect(droneGain);
+          osc.start();
+        });
+      }
+
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      isSoundActive = !isSoundActive;
+      const now = audioCtx.currentTime;
+      droneGain.gain.cancelScheduledValues(now);
+      droneGain.gain.exponentialRampToValueAtTime(isSoundActive ? 0.8 : 0.0001, now + 0.8);
+
+      document.getElementById('sound-icon-off').classList.toggle('hidden', isSoundActive);
+      document.getElementById('sound-icon-on').classList.toggle('hidden', !isSoundActive);
+    }
+
+    function playMicroTick(freq = 540) {
+      if (!isSoundActive || !audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.025, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.06);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.06);
+    }
+
+    // =========================================================================
+    // 3. CUSTOM MAGNETIC CURSOR & 3D CARD TILT KINEMATICS
+    // =========================================================================
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorRing = document.getElementById('cursor-ring');
+    const cursorLabel = document.getElementById('cursor-label');
+
+    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2, nx: 0, ny: 0 };
+    let ringPos = { x: mouse.x, y: mouse.y };
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.nx = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.ny = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      cursorDot.style.left = `${mouse.x}px`;
+      cursorDot.style.top = `${mouse.y}px`;
+    });
+
+    // Cursor hover state delegation
+    document.addEventListener('mouseover', (e) => {
+      const target = e.target.closest('[data-cursor]');
+      if (target) {
+        cursorRing.classList.add('expanded');
+        cursorLabel.textContent = target.getAttribute('data-cursor');
+      } else {
+        cursorRing.classList.remove('expanded');
+        cursorLabel.textContent = '';
+      }
+    });
+
+    // Magnetic buttons
+    document.querySelectorAll('.magnetic-btn').forEach((btn) => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        btn.style.transform = `translate(${dx * 0.22}px, ${dy * 0.22}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate(0px, 0px)';
       });
     });
 
-    function scrambleText(element, finalText) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#*';
-      let iteration = 0;
-      const interval = setInterval(() => {
-        element.textContent = finalText
-          .split('')
-          .map((letter, index) => {
-            if (letter === ' ') return ' ';
-            if (index < iteration) return finalText[index];
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join('');
-        if (iteration >= finalText.length) clearInterval(interval);
-        iteration += 1 / 2;
-      }, 22);
-    }
+    // Subtle 3D tilt on capability cards
+    document.querySelectorAll('.tilt-card').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) translateY(0px)';
+      });
+    });
 
-    // =======================================================================
-    // 2. PROCEDURAL WEB AUDIO SYNTHESIZER (Tactile SFX + Harmonic Chords)
-    // =======================================================================
-    let audioCtx = null;
-    let soundEnabled = true;
-
-    function initAudio() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) audioCtx = new AudioContext();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playTone(freq = 600, type = 'sine', duration = 0.04, gainVal = 0.035) {
-      if (!soundEnabled) return;
-      initAudio();
-      if (!audioCtx) return;
-
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function sfxKey() { playTone(860 + Math.random() * 160, 'triangle', 0.022, 0.02); }
-    function sfxTab() { playTone(640, 'sine', 0.06, 0.04); }
-    function sfxSelect() {
-      playTone(520, 'sine', 0.08, 0.055);
-      setTimeout(() => playTone(880, 'sine', 0.14, 0.055), 55);
-    }
-    function sfxSuccess() {
-      playTone(440, 'triangle', 0.12, 0.06);
-      setTimeout(() => playTone(659.25, 'triangle', 0.12, 0.06), 85);
-      setTimeout(() => playTone(880, 'triangle', 0.25, 0.07), 170);
-    }
-    function sfxError() { playTone(165, 'sawtooth', 0.18, 0.055); }
-
-    function toggleAudio() {
-      soundEnabled = !soundEnabled;
-      const btn = document.getElementById('audio-toggle');
-      btn.textContent = soundEnabled ? '[ SFX: ON ]' : '[ SFX: MUTED ]';
-      btn.className = soundEnabled
-        ? 'border border-brand-cyan/40 hover:border-brand-amber hover:text-brand-amber px-2.5 py-1 transition-colors cursor-pointer'
-        : 'border border-brand-rose/50 text-brand-rose px-2.5 py-1 transition-colors cursor-pointer';
-      if (soundEnabled) sfxSelect();
-    }
-
-    // =======================================================================
-    // 3. THREE.JS: CUSTOM GLSL TOPOGRAPHY SHADER & ORBITAL DYSON CORE
-    // =======================================================================
-    const canvas = document.getElementById('webgl-canvas');
+    // =========================================================================
+    // 4. THREE.JS: 6-CHAPTER MORPHING GLSL PARTICLE & FRESNEL CORE STAGE
+    // =========================================================================
+    const webglCanvas = document.getElementById('webgl-stage');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x05040d, 0.0095);
+    scene.fog = new THREE.FogExp2(0x040407, 0.016);
 
-    const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 18, 52);
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+    camera.position.set(0, 0, 26);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas: webglCanvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // A. Custom GLSL Shader Terrain with Topographic Contour Lines & Cursor Energy
-    const terrainUniforms = {
+    // A. Central Fresnel Obsidian & Champagne Core
+    const coreGroup = new THREE.Group();
+    scene.add(coreGroup);
+
+    const coreUniforms = {
       uTime: { value: 0 },
-      uColorPrimary: { value: new THREE.Color(0x48cae4) },
-      uColorAccent: { value: new THREE.Color(0xffd166) },
-      uMouse: { value: new THREE.Vector2(0, 0) },
-      uWaveAmp: { value: 3.6 }
+      uScroll: { value: 0 },
+      uColorGold: { value: new THREE.Color(0xe5c17b) },
+      uColorCobalt: { value: new THREE.Color(0x38bdf8) },
     };
 
-    const terrainMat = new THREE.ShaderMaterial({
-      uniforms: terrainUniforms,
+    const coreShaderMat = new THREE.ShaderMaterial({
+      uniforms: coreUniforms,
       wireframe: true,
       transparent: true,
       vertexShader: `
         uniform float uTime;
-        uniform vec2 uMouse;
-        uniform float uWaveAmp;
-        varying float vElevation;
-        varying float vDist;
+        uniform float uScroll;
+        varying float vNoise;
+        varying vec3 vNormal;
 
         void main() {
-          vec3 pos = position;
-          float wave1 = sin(pos.x * 0.075 + uTime) * cos(pos.z * 0.075 + uTime * 0.85);
-          float wave2 = sin(pos.x * 0.18 - uTime * 0.6) * 0.35;
-          float mouseDist = distance(pos.xz, uMouse * 55.0);
-          float ripple = exp(-mouseDist * 0.04) * sin(mouseDist * 0.35 - uTime * 4.0) * 2.2;
-
-          pos.y += (wave1 + wave2) * uWaveAmp + ripple;
-          vElevation = pos.y;
-          vDist = length(pos.xz);
-
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+          vNormal = normal;
+          float freq = 2.4 + uScroll * 2.5;
+          float disp = sin(position.x * freq + uTime * 1.1) *
+                       cos(position.y * freq + uTime * 0.9) *
+                       sin(position.z * freq + uTime * 0.7);
+          vNoise = disp;
+          vec3 newPos = position + normal * (disp * (0.45 + uScroll * 0.55));
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
         }
       `,
       fragmentShader: `
-        uniform vec3 uColorPrimary;
-        uniform vec3 uColorAccent;
-        varying float vElevation;
-        varying float vDist;
+        uniform float uScroll;
+        uniform vec3 uColorGold;
+        uniform vec3 uColorCobalt;
+        varying float vNoise;
 
         void main() {
-          float alpha = smoothstep(115.0, 18.0, vDist) * 0.24;
-          float crest = smoothstep(1.2, 4.5, vElevation);
-          vec3 col = mix(uColorPrimary, uColorAccent, crest * 0.75);
-          gl_FragColor = vec4(col, alpha + crest * 0.14);
+          vec3 base = mix(uColorGold, uColorCobalt, smoothstep(0.2, 0.85, uScroll));
+          float alpha = 0.14 + smoothstep(-0.2, 0.6, vNoise) * 0.22;
+          gl_FragColor = vec4(base, alpha);
         }
       `
     });
 
-    const planeGeo = new THREE.PlaneGeometry(240, 240, 76, 76);
-    planeGeo.rotateX(-Math.PI / 2);
-    const terrain = new THREE.Mesh(planeGeo, terrainMat);
-    terrain.position.y = -7;
-    scene.add(terrain);
+    const coreMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(5.2, 4), coreShaderMat);
+    coreGroup.add(coreMesh);
 
-    // B. Multi-Layered Orbital Dyson Core
-    const coreGroup = new THREE.Group();
-    coreGroup.position.set(0, 14, -26);
-    scene.add(coreGroup);
-
-    const icoOuter = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(10.5, 1),
-      new THREE.MeshBasicMaterial({ color: 0xffd166, wireframe: true, transparent: true, opacity: 0.24 })
+    // Outer Architectural Meridian Ring
+    const meridianRing = new THREE.Mesh(
+      new THREE.RingGeometry(8.2, 8.28, 96),
+      new THREE.MeshBasicMaterial({ color: 0xe5c17b, side: THREE.DoubleSide, transparent: true, opacity: 0.25 })
     );
-    coreGroup.add(icoOuter);
+    meridianRing.rotation.x = Math.PI / 2.6;
+    coreGroup.add(meridianRing);
 
-    const icoInner = new THREE.Mesh(
-      new THREE.OctahedronGeometry(5.5, 0),
-      new THREE.MeshBasicMaterial({ color: 0x48cae4, wireframe: true, transparent: true, opacity: 0.35 })
-    );
-    coreGroup.add(icoInner);
-
-    // Dual Gyroscopic Orbital Rings
-    const ring1 = new THREE.Mesh(
-      new THREE.RingGeometry(14.5, 14.75, 72),
-      new THREE.MeshBasicMaterial({ color: 0x48cae4, side: THREE.DoubleSide, transparent: true, opacity: 0.35 })
-    );
-    ring1.rotation.x = Math.PI / 2.3;
-    coreGroup.add(ring1);
-
-    const ring2 = new THREE.Mesh(
-      new THREE.RingGeometry(17.5, 17.65, 72),
-      new THREE.MeshBasicMaterial({ color: 0xffd166, side: THREE.DoubleSide, transparent: true, opacity: 0.22 })
-    );
-    ring2.rotation.x = -Math.PI / 3.1;
-    ring2.rotation.y = Math.PI / 5;
-    coreGroup.add(ring2);
-
-    // C. Starfield & Telemetry Particles
+    // B. 4,500 GPU-Accelerated Morphing Manifold Particles
+    const particleCount = window.innerWidth < 768 ? 2200 : 4500;
     const pGeo = new THREE.BufferGeometry();
-    const pCount = 420;
-    const pPos = new Float32Array(pCount * 3);
-    for (let i = 0; i < pCount * 3; i += 3) {
-      pPos[i] = (Math.random() - 0.5) * 200;
-      pPos[i + 1] = Math.random() * 55 - 6;
-      pPos[i + 2] = (Math.random() - 0.5) * 200;
-    }
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-    const particles = new THREE.Points(
-      pGeo,
-      new THREE.PointsMaterial({ color: 0xffd166, size: 0.45, transparent: true, opacity: 0.6 })
-    );
-    scene.add(particles);
 
-    let sceneState = {
-      targetCamX: 0,
-      targetCamY: 18,
-      targetCamZ: 52,
-      speed: 0.014
+    const posSphere = new Float32Array(particleCount * 3);
+    const posWave = new Float32Array(particleCount * 3);
+    const posHelix = new Float32Array(particleCount * 3);
+    const pSeeds = new Float32Array(particleCount);
+
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      const t = i / particleCount;
+      pSeeds[i] = Math.random();
+
+      // Manifold 1: Orbital Halo Sphere
+      const phi = Math.acos(2 * Math.random() - 1);
+      const theta = Math.random() * Math.PI * 2;
+      const r = 6.5 + Math.random() * 9.5;
+      posSphere[i3] = r * Math.sin(phi) * Math.cos(theta);
+      posSphere[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      posSphere[i3 + 2] = r * Math.cos(phi);
+
+      // Manifold 2: Neural Horizon Wave Grid
+      const gridSide = Math.ceil(Math.sqrt(particleCount));
+      const gx = (i % gridSide) / gridSide - 0.5;
+      const gz = Math.floor(i / gridSide) / gridSide - 0.5;
+      posWave[i3] = gx * 42;
+      posWave[i3 + 1] = Math.sin(gx * 10) * Math.cos(gz * 10) * 2.5 - 3.5;
+      posWave[i3 + 2] = gz * 42;
+
+      // Manifold 3: Double Architectural Helix
+      const angle = t * Math.PI * 14 + (i % 2 === 0 ? 0 : Math.PI);
+      const radius = 5.5 + Math.sin(t * Math.PI) * 3.0;
+      posHelix[i3] = Math.cos(angle) * radius;
+      posHelix[i3 + 1] = (t - 0.5) * 26;
+      posHelix[i3 + 2] = Math.sin(angle) * radius;
+    }
+
+    pGeo.setAttribute('position', new THREE.BufferAttribute(posSphere, 3));
+    pGeo.setAttribute('aWave', new THREE.BufferAttribute(posWave, 3));
+    pGeo.setAttribute('aHelix', new THREE.BufferAttribute(posHelix, 3));
+    pGeo.setAttribute('aSeed', new THREE.BufferAttribute(pSeeds, 1));
+
+    const particleUniforms = {
+      uTime: { value: 0 },
+      uMorphWave: { value: 0 },
+      uMorphHelix: { value: 0 },
+      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
     };
 
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-      terrainUniforms.uMouse.value.set(mouseX, -mouseY);
+    const particleMat = new THREE.ShaderMaterial({
+      uniforms: particleUniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader: `
+        attribute vec3 aWave;
+        attribute vec3 aHelix;
+        attribute float aSeed;
+
+        uniform float uTime;
+        uniform float uMorphWave;
+        uniform float uMorphHelix;
+        uniform float uPixelRatio;
+
+        varying float vSeed;
+        varying float vMorph;
+
+        void main() {
+          vSeed = aSeed;
+          vMorph = uMorphWave;
+
+          vec3 pos = mix(position, aWave, uMorphWave);
+          pos = mix(pos, aHelix, uMorphHelix);
+
+          // Organic micro-drift
+          pos.y += sin(uTime * 0.8 + aSeed * 12.0) * 0.35;
+          pos.x += cos(uTime * 0.6 + aSeed * 9.0) * 0.25;
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_PointSize = (18.0 * aSeed + 8.0) * uPixelRatio * (1.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        varying float vSeed;
+        varying float vMorph;
+
+        void main() {
+          float dist = length(gl_PointCoord - vec2(0.5));
+          if (dist > 0.5) discard;
+
+          float strength = smoothstep(0.5, 0.05, dist);
+          vec3 gold = vec3(0.898, 0.757, 0.482);
+          vec3 cobalt = vec3(0.220, 0.741, 0.973);
+          vec3 platinum = vec3(0.95, 0.96, 0.98);
+
+          vec3 col = mix(gold, platinum, step(0.65, vSeed));
+          col = mix(col, cobalt, vMorph * 0.55 * step(0.4, vSeed));
+
+          gl_FragColor = vec4(col, strength * 0.75);
+        }
+      `
     });
 
-    function animateBg() {
-      requestAnimationFrame(animateBg);
-      terrainUniforms.uTime.value += sceneState.speed;
-      const t = terrainUniforms.uTime.value;
-
-      const desiredX = sceneState.targetCamX + mouseX * 6.5;
-      const desiredY = sceneState.targetCamY + mouseY * 4.2;
-      camera.position.x += (desiredX - camera.position.x) * 0.045;
-      camera.position.y += (desiredY - camera.position.y) * 0.045;
-      camera.position.z += (sceneState.targetCamZ - camera.position.z) * 0.045;
-      camera.lookAt(0, 4, 0);
-
-      terrain.rotation.y = t * 0.012;
-      icoOuter.rotation.y = -t * 0.14;
-      icoOuter.rotation.x = t * 0.07;
-      icoInner.rotation.y = t * 0.28;
-      icoInner.rotation.z = -t * 0.18;
-      ring1.rotation.z = t * 0.18;
-      ring2.rotation.z = -t * 0.12;
-      particles.rotation.y = -t * 0.01;
-
-      renderer.render(scene, camera);
-    }
-    animateBg();
+    const particleSystem = new THREE.Points(pGeo, particleMat);
+    scene.add(particleSystem);
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      syncScrollHeight();
     });
 
-    // =======================================================================
-    // 4. SIDEBAR RADAR & TELEMETRY SPARKLINE
-    // =======================================================================
-    const radarCanvas = document.getElementById('radar-canvas');
-    const rCtx = radarCanvas ? radarCanvas.getContext('2d') : null;
-    let radarAngle = 0;
-
-    const telCanvas = document.getElementById('telemetry-canvas');
-    const tCtx = telCanvas ? telCanvas.getContext('2d') : null;
-    const telHistory = new Array(42).fill(22);
-
-    function renderHUDCanvases() {
-      if (rCtx) {
-        const w = radarCanvas.width, h = radarCanvas.height;
-        const cx = w / 2, cy = h / 2;
-        const radius = Math.min(cx, cy) - 8;
-
-        rCtx.fillStyle = 'rgba(5, 4, 13, 0.2)';
-        rCtx.fillRect(0, 0, w, h);
-
-        rCtx.strokeStyle = 'rgba(72, 202, 228, 0.24)';
-        rCtx.lineWidth = 1;
-        [0.35, 0.7, 1].forEach(s => {
-          rCtx.beginPath();
-          rCtx.arc(cx, cy, radius * s, 0, Math.PI * 2);
-          rCtx.stroke();
-        });
-
-        rCtx.beginPath();
-        rCtx.moveTo(cx - radius, cy); rCtx.lineTo(cx + radius, cy);
-        rCtx.moveTo(cx, cy - radius); rCtx.lineTo(cx, cy + radius);
-        rCtx.stroke();
-
-        rCtx.save();
-        rCtx.translate(cx, cy);
-        rCtx.rotate(radarAngle);
-        const grad = rCtx.createLinearGradient(0, 0, radius, 0);
-        grad.addColorStop(0, 'rgba(255, 209, 102, 0.85)');
-        grad.addColorStop(1, 'rgba(72, 202, 228, 0.04)');
-        rCtx.strokeStyle = grad;
-        rCtx.lineWidth = 2;
-        rCtx.beginPath();
-        rCtx.moveTo(0, 0);
-        rCtx.lineTo(radius, 0);
-        rCtx.stroke();
-        rCtx.restore();
-
-        // Bengaluru Node Blip
-        const bx = cx + Math.cos(1.1) * (radius * 0.45);
-        const by = cy + Math.sin(1.1) * (radius * 0.45);
-        rCtx.fillStyle = '#ffd166';
-        rCtx.beginPath();
-        rCtx.arc(bx, by, 3, 0, Math.PI * 2);
-        rCtx.fill();
-
-        radarAngle += 0.035;
-      }
-
-      if (tCtx && Math.random() < 0.25) {
-        telHistory.shift();
-        telHistory.push(10 + Math.random() * 26);
-
-        const w = telCanvas.width, h = telCanvas.height;
-        tCtx.clearRect(0, 0, w, h);
-
-        tCtx.strokeStyle = '#48cae4';
-        tCtx.lineWidth = 1.5;
-        tCtx.beginPath();
-        telHistory.forEach((val, idx) => {
-          const x = (idx / (telHistory.length - 1)) * w;
-          const y = h - val;
-          idx === 0 ? tCtx.moveTo(x, y) : tCtx.lineTo(x, y);
-        });
-        tCtx.stroke();
-      }
-
-      requestAnimationFrame(renderHUDCanvases);
-    }
-    renderHUDCanvases();
-
-    setInterval(() => {
-      const clockEl = document.getElementById('utc-clock');
-      if (clockEl) clockEl.textContent = new Date().toISOString().slice(11, 19);
-      const pingEl = document.getElementById('ping-readout');
-      if (pingEl) pingEl.textContent = (10 + Math.floor(Math.random() * 6)) + 'ms';
-    }, 1000);
-
-    function pushAuditLog(msg) {
-      const stream = document.getElementById('audit-stream');
-      if (!stream) return;
-      const ts = (performance.now() / 1000).toFixed(2).padStart(5, '0');
-      const div = document.createElement('div');
-      div.textContent = `[${ts}] ${msg}`;
-      stream.appendChild(div);
-      if (stream.children.length > 6) stream.removeChild(stream.firstChild);
-    }
-
-    // =======================================================================
-    // 5. VIEW SWITCHING & INTERACTIVE CASE STUDIES + SCOPE ARCHITECT
-    // =======================================================================
-    function switchView(viewName) {
-      sfxTab();
-      ['terminal', 'systems', 'architect', 'node'].forEach(v => {
-        const el = document.getElementById(`view-${v}`);
-        if (el) {
-          el.classList.toggle('hidden', v !== viewName);
-          if (v === viewName) el.classList.add('flex');
+    // =========================================================================
+    // 5. SCROLL-SCRUBBED MANIFESTO & POPULATED ARTIFACTS
+    // =========================================================================
+    (function setupManifestoScrub() {
+      const el = document.getElementById('scrub-manifesto');
+      if (!el) return;
+      // Wrap individual words while preserving gold spans
+      const processNode = (node, isGold = false) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const words = node.textContent.split(/(\s+)/);
+          const frag = document.createDocumentFragment();
+          words.forEach((w) => {
+            if (w.trim().length > 0) {
+              const span = document.createElement('span');
+              span.className = `scrub-word ${isGold ? 'gold' : ''}`;
+              span.textContent = w;
+              frag.appendChild(span);
+            } else {
+              frag.appendChild(document.createTextNode(w));
+            }
+          });
+          node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const gold = isGold || node.classList.contains('gold');
+          Array.from(node.childNodes).forEach((child) => processNode(child, gold));
         }
-      });
+      };
+      Array.from(el.childNodes).forEach((c) => processNode(c, false));
+    })();
 
-      document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.view === viewName);
-      });
-
-      const activeSection = document.getElementById(`view-${viewName}`);
-      if (activeSection) {
-        const title = activeSection.querySelector('.cipher-title');
-        if (title) scrambleText(title, title.textContent);
-      }
-
-      // Camera choreography per view
-      if (viewName === 'systems') {
-        sceneState.targetCamX = -10; sceneState.targetCamY = 22; sceneState.targetCamZ = 44;
-      } else if (viewName === 'architect') {
-        sceneState.targetCamX = 10; sceneState.targetCamY = 16; sceneState.targetCamZ = 40;
-      } else if (viewName === 'node') {
-        sceneState.targetCamX = 0; sceneState.targetCamY = 26; sceneState.targetCamZ = 48;
-      } else {
-        sceneState.targetCamX = 0; sceneState.targetCamY = 18; sceneState.targetCamZ = 52;
-      }
-
-      pushAuditLog(`VIEWPORT SWITCH: ${viewName.toUpperCase()}`);
-    }
-
-    // Populate Case Studies
-    const caseStudies = [
+    const artifactsData = [
       {
-        code: 'SYS_01 // FINTECH_CORE',
-        title: 'AETHER LIQUIDITY ENGINE',
-        metric: '14ms P99 LATENCY // $1.4B VOL',
-        stack: 'RUST • NEXT.JS • WEBGL • REDIS CLUSTER',
-        desc: 'Real-time institutional settlement dashboard with custom WebGL order-book depth visualization and zero-downtime multi-region failover.'
+        code: 'ARTIFACT 01 // FINTECH',
+        title: 'Aether Liquidity Engine',
+        metric: '14MS P99 LATENCY // $1.4B VOL',
+        pillar: 'DISTRIBUTED CLOUD ENGINE',
+        desc: 'Institutional multi-currency settlement command center featuring real-time WebGL order-book depth rendering, sub-15ms edge execution, and automated compliance circuit breakers.',
+        bullets: [
+          'Custom WebSocket binary protocol streaming 40,000+ ticks/sec at 60FPS',
+          'Multi-region active-active Redis & PostgreSQL cluster with zero-downtime failover',
+          'Hardware-backed cryptographic signing for institutional treasury approvals'
+        ],
+        stack: ['RUST', 'NEXT.JS', 'WEBGL', 'REDIS CLUSTER', 'POSTGRESQL']
       },
       {
-        code: 'SYS_02 // SPATIAL_FLAGSHIP',
-        title: 'KINETIC AUTOMOTIVE CONFIGURATOR',
-        metric: '+218% CONVERSION LIFT',
-        stack: 'THREE.JS • GLSL SHADERS • EDGE CDN',
-        desc: '60FPS browser-native 3D vehicle studio with real-time raytraced reflections, dynamic lighting states, and instant telemetry spec export.'
+        code: 'ARTIFACT 02 // SPATIAL COMMERCE',
+        title: 'Kinetic Studio Configurator',
+        metric: '+218% CONVERSION VELOCITY',
+        pillar: 'SPATIAL WEB / 3D FLAGSHIP',
+        desc: 'Browser-native 3D product configurator engineered with custom PBR shaders, dynamic studio lighting rigs, and real-time CAD spec sheet compilation.',
+        bullets: [
+          'Custom GLSL clearcoat and metallic flake shaders running smoothly on mobile GPUs',
+          'Instant URL-serialized state sharing and automated PDF engineering dossier export',
+          'Reduced asset payload by 78% via Draco mesh compression and KTX2 textures'
+        ],
+        stack: ['THREE.JS', 'CUSTOM GLSL', 'DRACO', 'EDGE CDN']
       },
       {
-        code: 'SYS_03 // NEURAL_OPS',
-        title: 'NEXUS AUTONOMOUS DISPATCH',
+        code: 'ARTIFACT 03 // NEURAL OPS',
+        title: 'Nexus Autonomous Dispatch',
         metric: '84% WORKFLOW AUTOMATION',
-        stack: 'LLM AGENTS • PYTHON • VECTOR DB',
-        desc: 'Multi-agent enterprise orchestration platform automating compliance audits, customer triage, and live ERP synchronization.'
+        pillar: 'AUTONOMOUS AI INFRASTRUCTURE',
+        desc: 'Multi-agent enterprise orchestration platform that ingests unstructured operational telemetry, executes deterministic tool calls, and resolves complex logistics exceptions.',
+        bullets: [
+          'Hybrid dense-sparse vector retrieval with strict citation guardrails',
+          'Real-time human-in-the-loop approval matrix with full audit trail replay',
+          'Sub-second streaming inference routing across specialized foundation models'
+        ],
+        stack: ['LLM AGENTS', 'VECTOR DB', 'PYTHON', 'EVENT STREAMING']
       },
       {
-        code: 'SYS_04 // ALGO_GROWTH',
-        title: 'HYPERION ACQUISITION MATRIX',
-        metric: '4.7X PIPELINE VELOCITY',
-        stack: 'PROGRAMMATIC SEO • ANALYTICS • EDGE',
-        desc: 'High-velocity programmatic landing infrastructure generating 12,000+ sub-second localized endpoints with live attribution telemetry.'
+        code: 'ARTIFACT 04 // GROWTH MATRIX',
+        title: 'Hyperion Acquisition Engine',
+        metric: '4.7X PIPELINE EXPANSION',
+        pillar: 'ALGORITHMIC GROWTH ENGINE',
+        desc: 'Programmatic enterprise landing architecture generating thousands of hyper-personalized, edge-rendered endpoints backed by closed-loop revenue attribution.',
+        bullets: [
+          'Automated semantic clustering and dynamic schema generation at the CDN edge',
+          'Sub-400ms Largest Contentful Paint across global mobile networks',
+          'Direct CRM & WhatsApp webhook routing for high-intent enterprise leads'
+        ],
+        stack: ['EDGE SSR', 'PROGRAMMATIC SEO', 'TELEMETRY', 'WEBHOOKS']
       }
     ];
 
-    (function renderCaseStudies() {
-      const grid = document.getElementById('case-studies-grid');
+    let activeDrawerArtifact = null;
+
+    (function renderArtifacts() {
+      const grid = document.getElementById('artifacts-grid');
       if (!grid) return;
-      grid.innerHTML = caseStudies.map(cs => `
-        <div class="border border-grid-border bg-black/55 p-4 flex flex-col justify-between gap-3 hover:border-brand-cyan/70 transition-colors">
-          <div class="space-y-2">
-            <div class="flex items-center justify-between text-[10px]">
-              <span class="text-brand-cyan font-bold">${cs.code}</span>
-              <span class="text-brand-emerald bg-brand-emerald/10 px-2 py-0.5 border border-brand-emerald/30">${cs.metric}</span>
+      grid.innerHTML = artifactsData.map((art, idx) => `
+        <article onclick="openArtifactDrawer(${idx})" data-cursor="INSPECT" class="luxe-card rounded-2xl p-8 flex flex-col justify-between gap-6 group reveal-up">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between font-mono text-[10px]">
+              <span class="text-champagne tracking-widest">${art.code}</span>
+              <span class="text-emerald bg-emerald/10 border border-emerald/25 px-2.5 py-0.5 rounded-full">${art.metric}</span>
             </div>
-            <h3 class="font-display font-bold text-base text-white">${cs.title}</h3>
-            <p class="text-[11px] text-white/65 leading-relaxed">${cs.desc}</p>
+            <h3 class="font-serif text-3xl text-white font-semibold group-hover:text-champagne transition-colors">${art.title}</h3>
+            <p class="text-sm text-platinum/70 font-light leading-relaxed">${art.desc}</p>
           </div>
-          <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
-            <span class="text-brand-amber/90">${cs.stack}</span>
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[11px]">
+            <span class="text-muted">${art.stack.slice(0, 3).join(' • ')}</span>
+            <span class="text-champagne group-hover:translate-x-1 transition-transform">INSPECT SPEC →</span>
           </div>
-        </div>
+        </article>
       `).join('');
     })();
 
-    // Populate Interactive Scope Architect
-    const architectCatalog = [
-      {
-        id: 'ENTERPRISE_WEB',
-        name: '3D / SPATIAL FLAGSHIP WEB',
-        weeks: 3,
-        selected: true,
-        deliverable: 'Custom Three.js/GLSL interactive experience, design system & sub-second edge deployment'
-      },
-      {
-        id: 'CLOUD_ENGINES',
-        name: 'DISTRIBUTED CLOUD & API CORE',
-        weeks: 3,
-        selected: true,
-        deliverable: 'High-throughput microservices, database sharding, automated CI/CD & 99.99% SLA setup'
-      },
-      {
-        id: 'NEURAL_AUTOMATION',
-        name: 'AUTONOMOUS AI AGENT PIPELINE',
-        weeks: 2,
-        selected: false,
-        deliverable: 'Custom RAG knowledge engine, tool-calling LLM agents & secure enterprise API wrappers'
-      },
-      {
-        id: 'ALGORITHMIC_GROWTH',
-        name: 'ALGORITHMIC ACQUISITION ENGINE',
-        weeks: 2,
-        selected: false,
-        deliverable: 'Programmatic landing architecture, telemetry funnels & automated conversion optimization'
+    window.openArtifactDrawer = function(idx) {
+      const art = artifactsData[idx];
+      if (!art) return;
+      activeDrawerArtifact = art;
+      playMicroTick(660);
+
+      document.getElementById('drawer-code').textContent = art.code;
+      document.getElementById('drawer-metric').textContent = art.metric;
+      document.getElementById('drawer-title').textContent = art.title;
+      document.getElementById('drawer-desc').textContent = art.desc;
+      document.getElementById('drawer-bullets').innerHTML = art.bullets.map(b => `<li class="flex items-start gap-2.5"><span class="text-champagne">◆</span><span>${b}</span></li>`).join('');
+      document.getElementById('drawer-stack').innerHTML = art.stack.map(s => `<span class="px-2.5 py-1 rounded-md bg-cobalt/10 border border-cobalt/25">${s}</span>`).join('');
+
+      document.getElementById('artifact-drawer').classList.add('open');
+    };
+
+    window.closeArtifactDrawer = function() {
+      document.getElementById('artifact-drawer').classList.remove('open');
+    };
+
+    window.commissionFromDrawer = function() {
+      if (activeDrawerArtifact) {
+        selectConfiguratorPillar(activeDrawerArtifact.pillar);
+        document.getElementById('cfg-brief').value = `SIMILAR TO ${activeDrawerArtifact.title.toUpperCase()}`;
+        updateBriefSummary();
       }
+      closeArtifactDrawer();
+      scrollToChapter(5);
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeArtifactDrawer();
+    });
+
+    // =========================================================================
+    // 6. INTERACTIVE COMMISSION CONFIGURATOR & DIRECT DISPATCH
+    // =========================================================================
+    let briefState = {
+      id: 'JS-' + Math.floor(10000 + Math.random() * 89999).toString(16).toUpperCase(),
+      pillar: 'SPATIAL WEB / 3D FLAGSHIP',
+      tier: 'ORBITAL PRODUCTION (1–3 MONTHS)',
+      name: '',
+      brief: ''
+    };
+
+    document.getElementById('dossier-id').textContent = `#${briefState.id}`;
+
+    function selectConfiguratorPillar(val) {
+      briefState.pillar = val;
+      document.querySelectorAll('#cfg-pillar .config-pill').forEach((btn) => {
+        btn.classList.toggle('selected', btn.dataset.val === val);
+      });
+    }
+
+    document.querySelectorAll('#cfg-pillar .config-pill').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playMicroTick(600);
+        selectConfiguratorPillar(btn.dataset.val);
+        updateBriefSummary();
+      });
+    });
+
+    document.querySelectorAll('#cfg-tier .config-pill').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playMicroTick(640);
+        briefState.tier = btn.dataset.val;
+        document.querySelectorAll('#cfg-tier .config-pill').forEach((b) => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        updateBriefSummary();
+      });
+    });
+
+    document.getElementById('cfg-name').addEventListener('input', (e) => {
+      briefState.name = e.target.value.trim().toUpperCase();
+      updateBriefSummary();
+    });
+
+    document.getElementById('cfg-brief').addEventListener('input', (e) => {
+      briefState.brief = e.target.value.trim().toUpperCase();
+      updateBriefSummary();
+    });
+
+    function updateBriefSummary() {
+      document.getElementById('sum-pillar').textContent = briefState.pillar;
+      document.getElementById('sum-tier').textContent = briefState.tier;
+      document.getElementById('sum-name').textContent = briefState.name || 'UNSPECIFIED';
+      document.getElementById('sum-brief').textContent = briefState.brief || 'BESPOKE ARCHITECTURE CONSULTATION';
+    }
+
+    function buildFormattedPayload() {
+      return `✦ *JEFF SPACE — COMMISSION DOSSIER* ✦
+-----------------------------------------
+*DOSSIER ID:* #${briefState.id}
+*PRINCIPAL:* ${briefState.name || 'EXECUTIVE INQUIRY'}
+*ARCHITECTURE:* ${briefState.pillar}
+*ENGAGEMENT:* ${briefState.tier}
+*OBJECTIVE:* ${briefState.brief || 'Bespoke Architecture Consultation'}
+-----------------------------------------
+Requesting architectural briefing with JEFF SPACE.`;
+    }
+
+    window.dispatchWhatsApp = function() {
+      playMicroTick(780);
+      const url = `https://wa.me/917090462940?text=${encodeURIComponent(buildFormattedPayload())}`;
+      window.open(url, '_blank');
+    };
+
+    window.dispatchEmail = function() {
+      playMicroTick(740);
+      const subject = encodeURIComponent(`[JEFF SPACE #${briefState.id}] ${briefState.pillar}`);
+      const body = encodeURIComponent(buildFormattedPayload());
+      window.location.href = `mailto:xylorislogic@gmail.com?subject=${subject}&body=${body}`;
+    };
+
+    window.copyBriefJSON = function() {
+      playMicroTick(700);
+      navigator.clipboard.writeText(JSON.stringify(briefState, null, 2));
+      const btn = document.getElementById('copy-brief-btn');
+      btn.textContent = 'COPIED ✓';
+      setTimeout(() => { btn.textContent = 'COPY SPEC'; }, 1800);
+    };
+
+    // =========================================================================
+    // 7. INERTIAL SMOOTH SCROLL ENGINE + CHAPTER CHOREOGRAPHY LOOP
+    // =========================================================================
+    const smoothViewport = document.getElementById('smooth-viewport');
+    const scrollSpacer = document.getElementById('scroll-spacer');
+    const chapters = Array.from(document.querySelectorAll('.chapter-section'));
+    const chapterTitles = [
+      'THE SINGULARITY',
+      'ENGINEERING DOCTRINE',
+      'CAPABILITY MATRIX',
+      'DEPLOYED ARTIFACTS',
+      'VERIFIED TELEMETRY',
+      'INITIATE COMMISSION'
     ];
 
-    function renderArchitect() {
-      const container = document.getElementById('architect-modules');
-      if (!container) return;
+    let targetScroll = 0;
+    let currentScroll = 0;
+    let maxScroll = 1;
+    let activeChapterIndex = 0;
+    let countersTriggered = false;
 
-      container.innerHTML = architectCatalog.map((mod, i) => `
-        <div onclick="toggleArchitectModule(${i})" class="arch-card ${mod.selected ? 'active' : ''}">
-          <div class="flex items-center justify-between text-xs font-bold">
-            <span class="${mod.selected ? 'text-brand-amber' : 'text-white'}">${mod.name}</span>
-            <span class="text-[10px] px-2 py-0.5 border ${mod.selected ? 'border-brand-amber text-brand-amber' : 'border-white/20 text-white/40'}">
-              ${mod.selected ? '[ ARMED ]' : '[ + ADD ]'}
-            </span>
-          </div>
-          <div class="text-[11px] text-white/60 mt-2 leading-relaxed">${mod.deliverable}</div>
-          <div class="text-[10px] text-brand-cyan mt-2">+${mod.weeks} SPRINT WEEKS</div>
-        </div>
-      `).join('');
-
-      const activeMods = architectCatalog.filter(m => m.selected);
-      const totalWeeks = activeMods.reduce((sum, m) => sum + m.weeks, 0) || 2;
-      document.getElementById('arch-count').textContent = `${activeMods.length} ACTIVE`;
-      document.getElementById('arch-sprint-est').textContent = `EST. SPRINT: ${totalWeeks}–${totalWeeks + 2} WEEKS`;
-      document.getElementById('arch-tier').textContent =
-        activeMods.length >= 3 ? 'SOVEREIGN_ENTERPRISE' : activeMods.length === 2 ? 'ORBITAL_GROWTH' : 'TACTICAL_MVP';
-
-      document.getElementById('arch-deliverables').innerHTML = activeMods.length
-        ? activeMods.map(m => `<div><span class="text-brand-emerald">✓</span> ${m.deliverable}</div>`).join('')
-        : `<div class="text-brand-rose">SELECT AT LEAST ONE MODULE ABOVE TO COMPILE BLUEPRINT.</div>`;
+    function syncScrollHeight() {
+      const totalHeight = smoothViewport.getBoundingClientRect().height;
+      scrollSpacer.style.height = `${totalHeight}px`;
+      maxScroll = Math.max(1, totalHeight - window.innerHeight);
     }
 
-    window.toggleArchitectModule = function(idx) {
-      sfxSelect();
-      architectCatalog[idx].selected = !architectCatalog[idx].selected;
-      renderArchitect();
+    window.addEventListener('load', syncScrollHeight);
+    setTimeout(syncScrollHeight, 400);
+
+    window.addEventListener('scroll', () => {
+      targetScroll = window.scrollY;
+    }, { passive: true });
+
+    window.scrollToChapter = function(idx) {
+      if (!chapters[idx]) return;
+      playMicroTick(520 + idx * 45);
+      const offsetTop = chapters[idx].offsetTop;
+      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
     };
 
-    window.pushArchitectToTerminal = async function() {
-      const activeMods = architectCatalog.filter(m => m.selected);
-      if (!activeMods.length) { sfxError(); return; }
-      sfxSuccess();
+    function triggerMetricCounters() {
+      if (countersTriggered) return;
+      countersTriggered = true;
+      document.querySelectorAll('.counter-val').forEach((el) => {
+        const target = parseFloat(el.dataset.target);
+        const decimals = parseInt(el.dataset.decimals || '0', 10);
+        const suffix = el.dataset.suffix || '';
+        const duration = 1400;
+        const start = performance.now();
 
-      bookingData.protocol = activeMods.map(m => m.id).join(' + ');
-      bookingData.scale = activeMods.length >= 3 ? 'SOVEREIGN_ENTERPRISE' : activeMods.length === 2 ? 'ORBITAL_GROWTH' : 'TACTICAL_MVP';
-      await updateManifestUI();
-
-      switchView('terminal');
-      flowContainer.innerHTML = '';
-      await typeText("IMPORTED CUSTOM BLUEPRINT FROM SCOPE ARCHITECT.", false, "text-brand-emerald font-bold", 8);
-      await typeText(`MODULES: ${bookingData.protocol}`, false, "text-brand-cyan", 8);
-      await typeText(`SCALE TIER: ${bookingData.scale}`, false, "text-brand-cyan", 8);
-      startStage3Timeline();
-    };
-
-    renderArchitect();
-
-    // =======================================================================
-    // 6. MULTI-STAGE INTERACTIVE TERMINAL & CLI ENGINE
-    // =======================================================================
-    const flowContainer = document.getElementById('booking-flow');
-    const scrollContainer = document.getElementById('terminal-output');
-    const terminalForm = document.getElementById('terminal-form');
-    const terminalInput = document.getElementById('terminal-input');
-    const stageBadge = document.getElementById('stage-badge');
-
-    let currentStage = 0;
-    let activeOptions = [];
-    let cmdHistory = [];
-    let historyIndex = -1;
-
-    let bookingData = {
-      protocol: '',
-      scale: '',
-      timeline: '',
-      designation: '',
-      directive: '',
-      signature: '8F92A10C44E19B02'
-    };
-
-    async function updateManifestUI() {
-      document.getElementById('mf-protocol').textContent = bookingData.protocol || 'UNASSIGNED';
-      document.getElementById('mf-scale').textContent = bookingData.scale || 'UNASSIGNED';
-      document.getElementById('mf-timeline').textContent = bookingData.timeline || 'UNASSIGNED';
-      document.getElementById('mf-designation').textContent = bookingData.designation || 'UNASSIGNED';
-      document.getElementById('mf-directive').textContent = bookingData.directive || 'UNASSIGNED';
-
-      const payloadStr = JSON.stringify(bookingData) + Date.now();
-      if (window.crypto && window.crypto.subtle) {
-        const msgBuffer = new TextEncoder().encode(payloadStr);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-        bookingData.signature = hashHex.slice(0, 16).toUpperCase();
-        const hashEl = document.getElementById('crypto-hash');
-        if (hashEl) hashEl.textContent = hashHex;
-      }
-    }
-
-    function scrollToBottom() {
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-    }
-
-    function setStageBadge(step, label) {
-      if (stageBadge) stageBadge.textContent = `STAGE: 0${step}/05 // ${label}`;
-      const statusEl = document.getElementById('manifest-status');
-      if (statusEl) statusEl.textContent = step === 5 ? 'LOCKED_READY' : `STEP_0${step}_ACTIVE`;
-    }
-
-    async function typeText(text, isPrompt = false, colorClass = "text-white", speed = 11) {
-      const line = document.createElement('div');
-      line.className = 'flex items-start gap-2';
-
-      const prefix = document.createElement('span');
-      if (isPrompt) {
-        prefix.className = 'text-brand-amber font-bold shrink-0';
-        prefix.textContent = 'root@jeffspace:~#';
-      } else {
-        prefix.className = 'text-brand-cyan/70 shrink-0';
-        prefix.textContent = '>';
-      }
-      line.appendChild(prefix);
-
-      const content = document.createElement('div');
-      content.className = colorClass;
-      line.appendChild(content);
-      flowContainer.appendChild(line);
-
-      for (let i = 0; i < text.length; i++) {
-        content.textContent += text.charAt(i);
-        if (i % 4 === 0) sfxKey();
-        scrollToBottom();
-        await new Promise(r => setTimeout(r, speed));
-      }
-      return line;
-    }
-
-    function renderChoices(choices, onSelectCallback) {
-      const grid = document.createElement('div');
-      grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 my-3 pl-3';
-      activeOptions = [];
-
-      choices.forEach((choice, idx) => {
-        const card = document.createElement('div');
-        card.className = 'protocol-btn';
-        card.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
-            <span class="font-bold text-xs md:text-sm">${choice.label}</span>
-            <span class="text-[10px] text-brand-amber border border-brand-amber/35 px-1.5 py-0.2 shrink-0">[${idx + 1}]</span>
-          </div>
-          <div class="text-[11px] text-white/60 leading-snug">${choice.desc}</div>
-        `;
-
-        const triggerSelect = () => {
-          activeOptions = [];
-          Array.from(grid.children).forEach(c => c.classList.add('disabled'));
-          card.classList.remove('disabled');
-          card.classList.add('selected');
-          sfxSelect();
-          onSelectCallback(choice);
-        };
-
-        card.addEventListener('click', triggerSelect);
-        activeOptions.push(triggerSelect);
-        grid.appendChild(card);
-      });
-
-      flowContainer.appendChild(grid);
-      scrollToBottom();
-    }
-
-    async function initSequence() {
-      currentStage = 0;
-      flowContainer.innerHTML = '';
-      await typeText("JEFF SPACE SOVEREIGN OS v4.0 // SECURE UPLINK ESTABLISHED.", false, "text-brand-cyan font-bold", 8);
-      await typeText("OPERATOR AUTHENTICATED. SELECT AN ARCHITECTURE PROTOCOL OR USE TOP TABS TO EXPLORE.", false, "text-white/75", 7);
-      startStage1Protocol();
-    }
-
-    async function startStage1Protocol() {
-      currentStage = 1;
-      setStageBadge(1, 'ARCHITECTURE');
-      terminalInput.placeholder = "PRESS [1-4] OR CLICK AN ARCHITECTURE PROTOCOL...";
-
-      await typeText("STEP 01 // SELECT TARGET ARCHITECTURE PROTOCOL:", false, "text-brand-amber font-bold mt-2");
-
-      renderChoices([
-        {
-          id: 'ENTERPRISE_WEB',
-          label: '[ ENTERPRISE_WEB_SYSTEMS ]',
-          desc: 'Bespoke 3D/WebGL flagships, full-stack platforms & high-conversion design systems.',
-          color: 0x48cae4,
-          cam: { x: -6, y: 16, z: 46 }
-        },
-        {
-          id: 'CLOUD_ENGINES',
-          label: '[ CUSTOM_CLOUD_ENGINES ]',
-          desc: 'Distributed microservices, ultra-low-latency APIs & zero-downtime cloud infrastructure.',
-          color: 0xffd166,
-          cam: { x: 8, y: 20, z: 44 }
-        },
-        {
-          id: 'ALGORITHMIC_GROWTH',
-          label: '[ ALGORITHMIC_ACQUISITION ]',
-          desc: 'Programmatic SEO architectures, data telemetry & automated conversion pipelines.',
-          color: 0xff5d8f,
-          cam: { x: 0, y: 24, z: 50 }
-        },
-        {
-          id: 'NEURAL_AUTOMATION',
-          label: '[ AI_AGENT_INFRASTRUCTURE ]',
-          desc: 'Autonomous LLM workflows, enterprise RAG systems & intelligent ops automation.',
-          color: 0x06d6a0,
-          cam: { x: 0, y: 14, z: 38 }
+        function step(now) {
+          const p = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = (target * eased).toFixed(decimals) + suffix;
+          if (p < 1) requestAnimationFrame(step);
         }
-      ], async (choice) => {
-        bookingData.protocol = choice.id;
-        terrainUniforms.uColorPrimary.value.setHex(choice.color);
-        icoInner.material.color.setHex(choice.color);
-        sceneState.targetCamX = choice.cam.x;
-        sceneState.targetCamY = choice.cam.y;
-        sceneState.targetCamZ = choice.cam.z;
-        terrainUniforms.uWaveAmp.value = 4.6;
-
-        pushAuditLog(`PROTOCOL LOCKED: ${choice.id}`);
-        await updateManifestUI();
-        await typeText(`ARCHITECTURE CONFIRMED: ${choice.id}`, false, "text-brand-cyan");
-        startStage2Scale();
+        requestAnimationFrame(step);
       });
     }
 
-    async function startStage2Scale() {
-      currentStage = 2;
-      setStageBadge(2, 'SCALE_TIER');
-      terminalInput.placeholder = "PRESS [1-3] OR CLICK DEPLOYMENT SCALE...";
+    const scrubWords = Array.from(document.querySelectorAll('.scrub-word'));
+    const revealEls = Array.from(document.querySelectorAll('.reveal-up'));
+    const chapterDots = Array.from(document.querySelectorAll('.chapter-dot'));
 
-      await typeText("STEP 02 // SELECT DEPLOYMENT RESOURCE ALLOCATION:", false, "text-brand-amber font-bold mt-2");
+    function renderLoop(now) {
+      requestAnimationFrame(renderLoop);
+      const time = now * 0.001;
 
-      renderChoices([
-        {
-          id: 'TACTICAL_MVP',
-          label: '[ TACTICAL_STRIKE // MVP ]',
-          desc: 'Rapid high-impact flagship launch or core system upgrade engineered for speed.'
-        },
-        {
-          id: 'ORBITAL_GROWTH',
-          label: '[ ORBITAL_SCALE // PRODUCTION ]',
-          desc: 'Multi-module production architecture built for high concurrency & rapid scaling.'
-        },
-        {
-          id: 'SOVEREIGN_ENTERPRISE',
-          label: '[ SOVEREIGN_TIER // CUSTOM ]',
-          desc: 'Dedicated principal engineering squad, custom SLAs & multi-region infrastructure.'
-        }
-      ], async (choice) => {
-        bookingData.scale = choice.id;
-        pushAuditLog(`SCALE TIER: ${choice.id}`);
-        await updateManifestUI();
-        await typeText(`RESOURCE TIER LOCKED: ${choice.id}`, false, "text-brand-cyan");
-        startStage3Timeline();
+      // 1. Lerp smooth scroll & cursor ring
+      currentScroll += (targetScroll - currentScroll) * 0.085;
+      smoothViewport.style.transform = `translate3d(0, ${-currentScroll.toFixed(2)}px, 0)`;
+
+      ringPos.x += (mouse.x - ringPos.x) * 0.16;
+      ringPos.y += (mouse.y - ringPos.y) * 0.16;
+      cursorRing.style.left = `${ringPos.x}px`;
+      cursorRing.style.top = `${ringPos.y}px`;
+
+      const progress = Math.min(1, Math.max(0, currentScroll / maxScroll));
+      document.getElementById('global-progress').style.width = `${(progress * 100).toFixed(2)}%`;
+
+      // 2. Determine Active Chapter
+      let currentIdx = 0;
+      const probeY = currentScroll + window.innerHeight * 0.45;
+      chapters.forEach((sec, idx) => {
+        if (probeY >= sec.offsetTop) currentIdx = idx;
       });
-    }
 
-    async function startStage3Timeline() {
-      currentStage = 3;
-      setStageBadge(3, 'TIMELINE');
-      terminalInput.placeholder = "PRESS [1-3] OR CLICK TARGET TIMELINE...";
+      if (currentIdx !== activeChapterIndex) {
+        activeChapterIndex = currentIdx;
+        playMicroTick(460 + currentIdx * 40);
+        document.getElementById('hud-chapter-num').textContent = `0${currentIdx + 1} / 06`;
+        document.getElementById('hud-chapter-title').textContent = chapterTitles[currentIdx];
 
-      await typeText("STEP 03 // SPECIFY TARGET DEPLOYMENT VELOCITY:", false, "text-brand-amber font-bold mt-2");
+        chapterDots.forEach((dot, i) => {
+          const bar = dot.querySelector('.dot-bar');
+          if (i === currentIdx) {
+            bar.classList.remove('w-2', 'bg-white/25');
+            bar.classList.add('w-6', 'bg-champagne');
+          } else {
+            bar.classList.remove('w-6', 'bg-champagne');
+            bar.classList.add('w-2', 'bg-white/25');
+          }
+        });
+      }
 
-      renderChoices([
-        {
-          id: 'IMMEDIATE_PRIORITY',
-          label: '[ IMMEDIATE // UNDER 30 DAYS ]',
-          desc: 'Accelerated sprint execution with priority principal engineering allocation.'
-        },
-        {
-          id: 'STANDARD_CYCLE',
-          label: '[ STANDARD // 1 TO 3 MONTHS ]',
-          desc: 'Structured architecture, iterative weekly milestones & comprehensive QA.'
-        },
-        {
-          id: 'STRATEGIC_ROADMAP',
-          label: '[ LONG_RANGE // Q-ROADMAP ]',
-          desc: 'Phased digital transformation & retained technical architecture advisory.'
+      // 3. Reveal elements in viewport
+      revealEls.forEach((el) => {
+        const top = el.offsetTop;
+        if (currentScroll + window.innerHeight * 0.88 > top) {
+          el.classList.add('is-visible');
         }
-      ], async (choice) => {
-        bookingData.timeline = choice.id;
-        pushAuditLog(`VELOCITY: ${choice.id}`);
-        await updateManifestUI();
-        await typeText(`DEPLOYMENT VELOCITY: ${choice.id}`, false, "text-brand-cyan");
-        startStage4Designation();
       });
+
+      // 4. Chapter II Scrubbed Manifesto Word Lighting
+      if (chapters[1] && scrubWords.length) {
+        const ch2Top = chapters[1].offsetTop;
+        const ch2Height = chapters[1].offsetHeight;
+        const localProg = (currentScroll + window.innerHeight * 0.55 - ch2Top) / (ch2Height * 0.72);
+        const litCount = Math.floor(Math.min(1, Math.max(0, localProg)) * scrubWords.length);
+        scrubWords.forEach((w, idx) => {
+          w.classList.toggle('lit', idx < litCount);
+        });
+      }
+
+      // 5. Trigger Chapter V Counters
+      if (chapters[4] && currentScroll + window.innerHeight * 0.75 > chapters[4].offsetTop) {
+        triggerMetricCounters();
+      }
+
+      // 6. Choreograph 3D WebGL Manifolds & Camera Flight
+      coreUniforms.uTime.value = time;
+      coreUniforms.uScroll.value = progress;
+      particleUniforms.uTime.value = time;
+
+      // Smooth morph weights across chapters:
+      // 0.0 -> 0.35: Sphere -> Wave
+      // 0.35 -> 0.75: Wave -> Helix
+      // 0.75 -> 1.0: Helix -> Expanded Constellation
+      const waveWeight = Math.sin(Math.min(1, progress * 1.5) * Math.PI);
+      const helixWeight = Math.max(0, Math.min(1, (progress - 0.35) * 2.2)) * (1 - Math.max(0, (progress - 0.8) * 4.0));
+
+      particleUniforms.uMorphWave.value += (waveWeight - particleUniforms.uMorphWave.value) * 0.06;
+      particleUniforms.uMorphHelix.value += (helixWeight - particleUniforms.uMorphHelix.value) * 0.06;
+
+      // Camera & Core subtle parallax + orbital drift
+      const targetCamX = mouse.nx * 2.4 + Math.sin(progress * Math.PI * 2) * 3.5;
+      const targetCamY = mouse.ny * 1.8 + (progress - 0.5) * -4.0;
+      const targetCamZ = 26 - Math.sin(progress * Math.PI) * 6.5;
+
+      camera.position.x += (targetCamX - camera.position.x) * 0.05;
+      camera.position.y += (targetCamY - camera.position.y) * 0.05;
+      camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+      camera.lookAt(0, 0, 0);
+
+      coreGroup.rotation.y = time * 0.14 + progress * Math.PI * 2;
+      coreGroup.rotation.x = Math.sin(time * 0.2) * 0.25 + progress * 0.8;
+      meridianRing.rotation.z = -time * 0.22;
+      particleSystem.rotation.y = time * 0.04 + progress * 1.4;
+
+      renderer.render(scene, camera);
     }
 
-    async function startStage4Designation() {
-      currentStage = 4;
-      setStageBadge(4, 'DESIGNATION');
-      await typeText("STEP 04 // ENTER TARGET DESIGNATION (YOUR NAME OR ORGANIZATION):", true, "text-brand-amber font-bold mt-2");
-      terminalInput.placeholder = "TYPE YOUR NAME / COMPANY AND PRESS ENTER...";
-      terminalInput.focus();
-    }
-
-    async function startStage5Directive() {
-      currentStage = 5;
-      setStageBadge(5, 'DIRECTIVE');
-      await typeText("STEP 05 // ENTER BRIEF MISSION OBJECTIVE (OR PRESS ENTER TO SKIP):", true, "text-brand-amber font-bold mt-2");
-      terminalInput.placeholder = "E.G., REBUILD FINTECH PLATFORM / NEW 3D PRODUCT LAUNCH...";
-      terminalInput.focus();
-    }
-
-    async function finalizeBooking() {
-      currentStage = 6;
-      setStageBadge(5, 'COMPLETE');
-      terminalInput.placeholder = "TYPE /REBOOT TO START A NEW MISSION...";
-      sfxSuccess();
-
-      sceneState.targetCamX = 0;
-      sceneState.targetCamY = 12;
-      sceneState.targetCamZ = 34;
-
-      await typeText("COMPILING ENCRYPTED MISSION MANIFEST...", false, "text-brand-amber mt-3");
-      await typeText(`SHA-256 SIGNATURE: #${bookingData.signature}`, false, "text-white/60");
-      await typeText("UPLINK CHANNELS ARMED AND READY FOR TRANSMISSION.", false, "text-brand-emerald font-bold");
-
-      const rawMessage =
-`⚡ *JEFF SPACE — SOVEREIGN UPLINK MANIFEST* ⚡
------------------------------------------
-*ID:* #${bookingData.signature}
-*TARGET:* ${bookingData.designation}
-*PROTOCOL:* ${bookingData.protocol}
-*SCALE:* ${bookingData.scale}
-*TIMELINE:* ${bookingData.timeline}
-*DIRECTIVE:* ${bookingData.directive}
------------------------------------------
-Requesting engineering deployment & technical consultation.`;
-
-      const waLink = `https://wa.me/917090462940?text=${encodeURIComponent(rawMessage)}`;
-      const mailSubject = encodeURIComponent(`[JEFF SPACE UPLINK #${bookingData.signature}] ${bookingData.designation} — ${bookingData.protocol}`);
-      const mailLink = `mailto:xylorislogic@gmail.com?subject=${mailSubject}&body=${encodeURIComponent(rawMessage)}`;
-
-      const dossierCard = document.createElement('div');
-      dossierCard.className = 'my-4 p-4 border border-brand-amber/60 bg-brand-amber/10 space-y-4';
-      dossierCard.innerHTML = `
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-brand-amber/30 pb-2">
-          <span class="text-brand-amber font-bold text-xs tracking-widest">ENCRYPTED MISSION DOSSIER // #${bookingData.signature}</span>
-          <span class="text-[10px] bg-brand-emerald/20 text-brand-emerald px-2 py-0.5 font-bold border border-brand-emerald/40">VERIFIED</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-          <div><span class="text-white/45">CLIENT:</span> <strong class="text-white">${bookingData.designation}</strong></div>
-          <div><span class="text-white/45">PROTOCOL:</span> <strong class="text-brand-cyan">${bookingData.protocol}</strong></div>
-          <div><span class="text-white/45">SCALE:</span> <strong class="text-white">${bookingData.scale}</strong></div>
-          <div><span class="text-white/45">TIMELINE:</span> <strong class="text-white">${bookingData.timeline}</strong></div>
-          <div class="sm:col-span-2"><span class="text-white/45">DIRECTIVE:</span> <span class="text-white/95">${bookingData.directive}</span></div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
-          <a href="${waLink}" target="_blank" class="flex-1 px-5 py-3 bg-brand-amber text-black font-bold text-xs tracking-wider text-center hover:bg-white transition-colors">
-            [ TRANSMIT VIA WHATSAPP UPLINK ] ↗
-          </a>
-          <a href="${mailLink}" class="px-5 py-3 border border-brand-cyan text-brand-cyan font-bold text-xs tracking-wider text-center hover:bg-brand-cyan/20 transition-colors">
-            [ DISPATCH EMAIL ]
-          </a>
-          <button type="button" onclick="copyManifest()" id="copy-btn" class="px-4 py-3 border border-white/30 text-white/85 text-xs hover:border-white transition-colors cursor-pointer">
-            [ COPY JSON ]
-          </button>
-        </div>
-      `;
-
-      flowContainer.appendChild(dossierCard);
-      scrollToBottom();
-    }
-
-    window.copyManifest = function() {
-      navigator.clipboard.writeText(JSON.stringify(bookingData, null, 2));
-      const btn = document.getElementById('copy-btn');
-      if (btn) {
-        btn.textContent = '[ COPIED! ]';
-        btn.classList.add('text-brand-emerald', 'border-brand-emerald');
-      }
-      sfxSelect();
-    };
-
-    window.resetTerminal = function() {
-      bookingData = { protocol: '', scale: '', timeline: '', designation: '', directive: '', signature: '8F92A10C44E19B02' };
-      updateManifestUI();
-      terrainUniforms.uColorPrimary.value.setHex(0x48cae4);
-      icoInner.material.color.setHex(0x48cae4);
-      terrainUniforms.uWaveAmp.value = 3.6;
-      sceneState = { targetCamX: 0, targetCamY: 18, targetCamZ: 52, speed: 0.014 };
-      pushAuditLog("OPERATOR INITIATED WARM REBOOT");
-      initSequence();
-    };
-
-    // Keyboard Hotkeys & Command History
-    document.addEventListener('keydown', (e) => {
-      if ([1, 2, 3].includes(currentStage) && document.activeElement !== terminalInput) {
-        const num = parseInt(e.key, 10);
-        if (num >= 1 && num <= activeOptions.length) {
-          e.preventDefault();
-          activeOptions[num - 1]();
-        }
-      }
-    });
-
-    terminalInput.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' && cmdHistory.length > 0) {
-        e.preventDefault();
-        historyIndex = Math.min(historyIndex + 1, cmdHistory.length - 1);
-        terminalInput.value = cmdHistory[cmdHistory.length - 1 - historyIndex];
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (historyIndex > 0) {
-          historyIndex--;
-          terminalInput.value = cmdHistory[cmdHistory.length - 1 - historyIndex];
-        } else {
-          historyIndex = -1;
-          terminalInput.value = '';
-        }
-      }
-    });
-
-    terminalForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const rawVal = terminalInput.value.trim();
-      if (rawVal) {
-        cmdHistory.push(rawVal);
-        historyIndex = -1;
-      }
-      terminalInput.value = '';
-
-      if (rawVal.startsWith('/')) {
-        const cmd = rawVal.toLowerCase();
-        await typeText(rawVal.toUpperCase(), true, "text-white/80", 5);
-
-        if (cmd === '/help') {
-          await typeText("SHELL COMMANDS: /HELP, /STATUS, /SYSTEMS, /ARCHITECT, /CLEAR, /REBOOT", false, "text-brand-cyan", 6);
-        } else if (cmd === '/systems') {
-          switchView('systems');
-        } else if (cmd === '/architect') {
-          switchView('architect');
-        } else if (cmd === '/clear') {
-          flowContainer.innerHTML = '';
-          await typeText("TERMINAL BUFFER CLEARED.", false, "text-brand-cyan", 6);
-        } else if (cmd === '/reboot') {
-          resetTerminal();
-        } else if (cmd === '/status') {
-          await typeText(`NODE: BLR-01 | STAGE: 0${currentStage} | HASH: #${bookingData.signature}`, false, "text-brand-emerald", 6);
-        } else {
-          sfxError();
-          await typeText(`UNKNOWN COMMAND "${rawVal}". TYPE /HELP FOR COMMAND LIST.`, false, "text-brand-rose", 6);
-        }
-        return;
-      }
-
-      if ([1, 2, 3].includes(currentStage)) {
-        const num = parseInt(rawVal, 10);
-        if (num >= 1 && num <= activeOptions.length) {
-          activeOptions[num - 1]();
-        } else {
-          sfxError();
-          await typeText(`SELECT AN OPTION ABOVE OR ENTER A NUMBER (1-${activeOptions.length}).`, false, "text-brand-rose", 6);
-        }
-        return;
-      }
-
-      if (currentStage === 4) {
-        if (!rawVal) {
-          sfxError();
-          await typeText("ERR: TARGET DESIGNATION CANNOT BE EMPTY.", false, "text-brand-rose", 8);
-          return;
-        }
-        bookingData.designation = rawVal.toUpperCase();
-        sfxSelect();
-        pushAuditLog(`DESIGNATION: ${bookingData.designation}`);
-        await updateManifestUI();
-        await typeText(`DESIGNATION RECORDED: ${bookingData.designation}`, false, "text-brand-cyan", 8);
-        startStage5Directive();
-        return;
-      }
-
-      if (currentStage === 5) {
-        bookingData.directive = rawVal ? rawVal.toUpperCase() : 'CLASSIFIED // EXECUTIVE CONSULTATION';
-        sfxSelect();
-        pushAuditLog("MISSION DIRECTIVE LOCKED");
-        await updateManifestUI();
-        await typeText(`DIRECTIVE LOGGED: ${bookingData.directive}`, false, "text-brand-cyan", 8);
-        finalizeBooking();
-        return;
-      }
-    });
+    requestAnimationFrame(renderLoop);
   </script>
 </body>
 </html>
