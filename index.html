@@ -1,519 +1,1353 @@
+```html
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>JEFF SPACE</title>
-
-  <!-- Typography: Outfit for modern, rounded, cinematic sans-serif -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Outfit', 'sans-serif'] },
-          colors: {
-            'pixar-blue': '#0a192f',
-            'pixar-gold': '#ffb703',
-            'pixar-orange': '#fb8500',
-            'pixar-cyan': '#8ecae6',
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- GSAP & ScrollTrigger for Cinematic Scrollytelling -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-  <!-- Three.js for 3D PBR Graphics -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JEFF SPACE — Paper Film</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600;1,9..144,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    body, html {
+    :root {
+      --paper-cream: #f4ede0;
+      --paper-warm: #e8dcc8;
+      --paper-kraft: #c89b6e;
+      --paper-kraft-dark: #9c6f44;
+      --ink-charcoal: #181512;
+      --ink-muted: #5c5349;
+      --accent-orange: #e05a2b;
+      --accent-orange-dark: #b8421a;
+      --border-paper: rgba(24, 21, 18, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background-color: #0a192f;
-      color: #ffffff;
-      overflow-x: hidden;
-      font-family: 'Outfit', sans-serif;
     }
 
-    /* Hide Scrollbar but keep functionality */
-    ::-webkit-scrollbar { width: 0px; background: transparent; }
+    html {
+      scroll-behavior: auto;
+      background: var(--paper-cream);
+      color: var(--ink-charcoal);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-    #webgl-canvas {
+    body {
+      background: var(--paper-cream);
+      color: var(--ink-charcoal);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle tactile paper fiber overlay */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 60;
+      opacity: 0.16;
+      background-image:
+        radial-gradient(rgba(24, 21, 18, 0.18) 0.8px, transparent 0),
+        radial-gradient(rgba(156, 111, 68, 0.16) 0.8px, transparent 0);
+      background-size: 18px 18px, 11px 11px;
+      background-position: 0 0, 5px 7px;
+    }
+
+    /* Pinned Top Header */
+    .site-header {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.35rem;
       pointer-events: none;
     }
 
-    #story-container {
-      position: relative;
-      z-index: 10;
+    .header-brand,
+    .header-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .chapter {
-      min-height: 100vh;
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(244, 237, 224, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid var(--ink-charcoal);
+      padding: 0.42rem 0.85rem;
+      border-radius: 999px;
+      font-family: 'Fraunces', serif;
+      font-weight: 800;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      color: var(--ink-charcoal);
+      cursor: pointer;
+      box-shadow: 2px 3px 0 var(--ink-charcoal);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .brand-pill:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 4px 0 var(--ink-charcoal);
+    }
+
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent-orange);
+      display: inline-block;
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(244, 237, 224, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid var(--ink-charcoal);
+      padding: 0.42rem 0.85rem;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-charcoal);
+      cursor: pointer;
+      box-shadow: 2px 3px 0 var(--ink-charcoal);
+      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover {
+      background: var(--ink-charcoal);
+      color: var(--paper-cream);
+      transform: translate(-1px, -1px);
+    }
+
+    .pill-btn.primary {
+      background: var(--accent-orange);
+      color: #fff;
+      border-color: var(--ink-charcoal);
+    }
+
+    .pill-btn.primary:hover {
+      background: var(--accent-orange-dark);
+      color: #fff;
+    }
+
+    /* Scroll Track & Sticky Film Stage */
+    .film-track {
+      position: relative;
+      height: 820vh;
+      width: 100%;
+    }
+
+    .film-stage {
+      position: sticky;
+      top: 0;
+      height: 100dvh;
+      width: 100%;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
+      background: var(--paper-cream);
+    }
+
+    #paper-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Editorial Copy Overlay */
+    .stage-overlay {
       position: relative;
-      padding: 0 5vw;
+      z-index: 20;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding: 4.85rem 1.5rem 2.35rem;
+      max-width: 1140px;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    .glass-panel {
-      background: rgba(10, 25, 47, 0.4);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      border-radius: 24px;
+    .scene-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
 
-    /* Cinematic Text Reveal */
-    .title-gradient {
-      background: linear-gradient(135deg, #ffffff 0%, #8ecae6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .scene-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      background: rgba(244, 237, 224, 0.9);
+      padding: 0.28rem 0.6rem;
+      border: 1px solid var(--border-paper);
+      border-radius: 4px;
     }
 
-    /* Floating Particles Overlay */
-    .dust-overlay {
+    .scene-headline-wrap {
+      max-width: 680px;
+      margin-top: 0.65rem;
+    }
+
+    .scene-headline {
+      font-family: 'Fraunces', serif;
+      font-weight: 800;
+      font-size: clamp(1.55rem, 4.1vw, 3.35rem);
+      line-height: 1.07;
+      letter-spacing: -0.02em;
+      color: var(--ink-charcoal);
+      text-shadow: 0 2px 16px rgba(244, 237, 224, 0.96);
+    }
+
+    .scene-headline em {
+      font-style: italic;
+      color: var(--accent-orange);
+    }
+
+    .scene-sub {
+      margin-top: 0.55rem;
+      font-size: clamp(0.86rem, 1.45vw, 1.04rem);
+      line-height: 1.48;
+      color: var(--ink-muted);
+      max-width: 500px;
+      background: rgba(244, 237, 224, 0.84);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    /* Bottom Prompt & Scene Stepper */
+    .stage-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      pointer-events: auto;
+      flex-wrap: wrap;
+    }
+
+    .scroll-cue {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-charcoal);
+      background: rgba(244, 237, 224, 0.92);
+      border: 1px solid var(--border-paper);
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .scroll-arrow {
+      display: inline-block;
+      animation: bounceDown 1.4s infinite ease-in-out;
+    }
+
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    .scene-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.36rem;
+      background: rgba(244, 237, 224, 0.92);
+      padding: 0.38rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-paper);
+    }
+
+    .scene-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink-charcoal);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .scene-dot.active {
+      width: 20px;
+      border-radius: 999px;
+      background: var(--accent-orange);
+      border-color: var(--accent-orange);
+    }
+
+    /* Thin Bottom Progress Bar */
+    .progress-rail {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(24, 21, 18, 0.1);
+      z-index: 55;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-orange);
+      transition: width 0.05s linear;
+    }
+
+    /* Closing Charcoal Footer */
+    .closing-footer {
+      position: relative;
+      z-index: 30;
+      background: var(--ink-charcoal);
+      color: var(--paper-cream);
+      padding: 5rem 1.5rem 4rem;
+      border-top: 4px solid var(--accent-orange);
+    }
+
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .footer-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--paper-kraft);
+      margin-bottom: 0.9rem;
+    }
+
+    .footer-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 1.08;
+      margin-bottom: 1rem;
+    }
+
+    .footer-title em {
+      font-style: italic;
+      color: var(--accent-orange);
+    }
+
+    .footer-copy {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: rgba(244, 237, 224, 0.8);
+      max-width: 580px;
+      margin-bottom: 2rem;
+    }
+
+    .footer-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 2.75rem;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.8rem 1.35rem;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1.5px solid var(--paper-cream);
+      color: var(--paper-cream);
+      background: transparent;
+      transition: all 0.18s ease;
+    }
+
+    .cta-btn:hover {
+      background: var(--paper-cream);
+      color: var(--ink-charcoal);
+      transform: translateY(-2px);
+    }
+
+    .cta-btn.orange {
+      background: var(--accent-orange);
+      border-color: var(--accent-orange);
+      color: #fff;
+    }
+
+    .cta-btn.orange:hover {
+      background: var(--accent-orange-dark);
+      border-color: var(--accent-orange-dark);
+      color: #fff;
+    }
+
+    .capabilities-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.9rem;
+      padding: 1.6rem 0;
+      border-top: 1px solid rgba(244, 237, 224, 0.15);
+      border-bottom: 1px solid rgba(244, 237, 224, 0.15);
+      margin-bottom: 1.75rem;
+    }
+
+    .cap-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(244, 237, 224, 0.12);
+      padding: 0.95rem;
+      border-radius: 8px;
+    }
+
+    .cap-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      color: var(--accent-orange);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .cap-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.02rem;
+      margin-top: 0.25rem;
+    }
+
+    .footer-credits {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(244, 237, 224, 0.5);
+      letter-spacing: 0.06em;
+    }
+
+    /* Booking Modal */
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 5;
-      pointer-events: none;
-      background-image: radial-gradient(circle at center, transparent 0%, #0a192f 120%);
+      background: rgba(24, 21, 18, 0.72);
+      backdrop-filter: blur(6px);
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
 
-    .magnetic-btn {
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    .modal-backdrop.open {
+      display: flex;
     }
-    .magnetic-btn:hover {
-      transform: scale(1.05) translateY(-2px);
+
+    .modal-card {
+      background: var(--paper-cream);
+      color: var(--ink-charcoal);
+      border: 2px solid var(--ink-charcoal);
+      box-shadow: 8px 10px 0 var(--ink-charcoal);
+      border-radius: 14px;
+      max-width: 480px;
+      width: 100%;
+      padding: 1.6rem;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: 1px solid var(--ink-charcoal);
+      border-radius: 999px;
+      width: 30px;
+      height: 30px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .modal-sub {
+      font-size: 0.86rem;
+      color: var(--ink-muted);
+      margin-bottom: 1.15rem;
+    }
+
+    .form-group {
+      margin-bottom: 0.9rem;
+    }
+
+    .form-label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1.5px solid var(--ink-charcoal);
+      background: #fffdf9;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink-charcoal);
+    }
+
+    .form-textarea {
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.4rem;
+      right: 1.4rem;
+      background: var(--ink-charcoal);
+      color: var(--paper-cream);
+      border: 1.5px solid var(--accent-orange);
+      padding: 0.7rem 1.05rem;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      z-index: 90;
+      display: none;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    /* Mobile & Narrow Viewport Refinements */
+    @media (max-width: 640px) {
+      .site-header { padding: 0.65rem 0.85rem; }
+      .brand-pill { padding: 0.36rem 0.7rem; font-size: 0.82rem; }
+      .pill-btn { padding: 0.36rem 0.7rem; font-size: 0.64rem; }
+      .pill-btn.hide-xs { display: none; }
+      .stage-overlay { padding: 4.1rem 1rem 1.5rem; }
+      .scene-headline-wrap { margin-top: 0.45rem; }
+      .scene-sub { font-size: 0.82rem; }
+      .stage-bottom { justify-content: center; }
+      .scroll-cue { font-size: 0.64rem; padding: 0.34rem 0.65rem; }
+      .scene-dots { padding: 0.32rem 0.5rem; gap: 0.28rem; }
+      .closing-footer { padding: 3.5rem 1.1rem 3rem; }
     }
   </style>
 </head>
 <body>
+  <div class="paper-grain"></div>
 
-  <!-- WebGL Background -->
-  <canvas id="webgl-canvas"></canvas>
-  <div class="dust-overlay"></div>
-
-  <!-- Global Header -->
-  <header class="fixed top-0 left-0 w-full p-6 z-50 flex justify-between items-center mix-blend-difference">
-    <div class="text-2xl font-black tracking-widest text-white flex items-center gap-2">
-      <div class="w-4 h-4 rounded-full bg-pixar-gold shadow-[0_0_15px_#ffb703]"></div>
-      JEFF_SPACE
+  <!-- Pinned Header -->
+  <header class="site-header">
+    <div class="header-brand">
+      <button id="top-btn" class="brand-pill" type="button">
+        <span class="brand-dot"></span>
+        JEFF SPACE
+      </button>
     </div>
-    <div class="text-sm font-semibold tracking-widest text-pixar-cyan uppercase">
-      Scrollytelling Engine v2.0
+    <div class="header-actions">
+      <button id="sfx-btn" class="pill-btn hide-xs" type="button">SFX: OFF</button>
+      <button id="open-modal-btn" class="pill-btn primary" type="button">Book a call</button>
     </div>
   </header>
 
-  <!-- Scrollytelling Container -->
-  <main id="story-container">
-    
-    <!-- CHAPTER 1: THE SPARK -->
-    <section class="chapter items-center text-center" id="ch1">
-      <div class="glass-panel p-8 md:p-16 max-w-4xl ui-element opacity-0 translate-y-10">
-        <h2 class="text-xs font-bold tracking-[0.3em] text-pixar-gold uppercase mb-4">Origin</h2>
-        <h1 class="text-5xl md:text-7xl font-black title-gradient leading-tight mb-6">
-          Beyond the Interface.
-        </h1>
-        <p class="text-lg md:text-xl text-blue-100/80 font-light max-w-2xl mx-auto leading-relaxed">
-          Welcome to a sovereign digital environment. We don't build web pages; we engineer immersive, 60FPS spatial narratives powered by cinematic physics.
-        </p>
-        <div class="mt-12 flex flex-col items-center gap-2 animate-bounce opacity-70">
-          <span class="text-xs font-bold tracking-widest uppercase">Scroll to Dive</span>
-          <svg class="w-6 h-6 text-pixar-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-        </div>
-      </div>
-    </section>
+  <!-- Scroll-Driven Paper Film -->
+  <section class="film-track" id="film-track">
+    <div class="film-stage">
+      <canvas id="paper-canvas"></canvas>
 
-    <!-- CHAPTER 2: THE ARCHITECTURE -->
-    <section class="chapter items-start" id="ch2">
-      <div class="glass-panel p-8 md:p-12 max-w-2xl ui-element opacity-0 -translate-x-10 mt-32">
-        <h2 class="text-xs font-bold tracking-[0.3em] text-pixar-orange uppercase mb-4">Infrastructure</h2>
-        <h3 class="text-4xl md:text-5xl font-extrabold text-white mb-6">
-          Tactile Engineering.
-        </h3>
-        <p class="text-blue-100/80 leading-relaxed text-lg mb-8">
-          Drawing inspiration from physical animation studios, our architecture utilizes Physically Based Rendering (PBR). Materials react to light with transmission, roughness, and dynamic ambient occlusion.
-        </p>
-        <ul class="space-y-4">
-          <li class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-pixar-cyan/20 flex items-center justify-center border border-pixar-cyan/50">
-              <span class="w-2 h-2 rounded-full bg-pixar-cyan shadow-[0_0_10px_#8ecae6]"></span>
-            </div>
-            <div class="font-semibold tracking-wide">Volumetric Lighting & Fog</div>
-          </li>
-          <li class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-pixar-gold/20 flex items-center justify-center border border-pixar-gold/50">
-              <span class="w-2 h-2 rounded-full bg-pixar-gold shadow-[0_0_10px_#ffb703]"></span>
-            </div>
-            <div class="font-semibold tracking-wide">Subsurface Scattering Shaders</div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- CHAPTER 3: THE CORE -->
-    <section class="chapter items-end" id="ch3">
-      <div class="glass-panel p-8 md:p-12 max-w-2xl ui-element opacity-0 translate-x-10">
-        <h2 class="text-xs font-bold tracking-[0.3em] text-pixar-cyan uppercase mb-4">The Nexus</h2>
-        <h3 class="text-4xl md:text-5xl font-extrabold text-white mb-6">
-          Living Systems.
-        </h3>
-        <p class="text-blue-100/80 leading-relaxed text-lg">
-          Your data is not static. Our WebGL pipelines translate complex backend infrastructure into living, breathing geometric ecosystems that users can feel, not just see.
-        </p>
-        <div class="grid grid-cols-2 gap-4 mt-8">
-          <div class="p-4 bg-white/5 rounded-xl border border-white/10 text-center">
-            <div class="text-3xl font-black text-pixar-gold mb-1">120</div>
-            <div class="text-xs font-bold tracking-widest text-white/50">FPS TARGET</div>
+      <div class="stage-overlay">
+        <div>
+          <div class="scene-meta">
+            <span class="scene-counter" id="scene-counter">00 / 08</span>
           </div>
-          <div class="p-4 bg-white/5 rounded-xl border border-white/10 text-center">
-            <div class="text-3xl font-black text-pixar-orange mb-1">PBR</div>
-            <div class="text-xs font-bold tracking-widest text-white/50">MATERIALS</div>
+          <div class="scene-headline-wrap">
+            <h1 class="scene-headline" id="scene-headline">
+              Scroll to run <em>the paper film.</em>
+            </h1>
+            <p class="scene-sub" id="scene-sub">
+              Three cardboard builders assembling a live pitch—scroll down to scrub through the story.
+            </p>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- CHAPTER 4: THE COMMISSION -->
-    <section class="chapter items-center justify-center" id="ch4">
-      <div class="glass-panel p-8 md:p-16 w-full max-w-5xl ui-element opacity-0 scale-95">
-        <div class="text-center mb-10">
-          <h2 class="text-xs font-bold tracking-[0.3em] text-pixar-gold uppercase mb-4">Final Stage</h2>
-          <h3 class="text-4xl md:text-6xl font-black title-gradient">Initiate Your Build.</h3>
-        </div>
+        <div class="stage-bottom">
+          <button id="next-scene-btn" class="scroll-cue" type="button">
+            <span id="scroll-cue-text">SCROLL TO RUN THE FILM</span>
+            <span class="scroll-arrow">↓</span>
+          </button>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div class="space-y-6">
-            <div class="group">
-              <label class="block text-xs font-bold tracking-widest text-pixar-cyan uppercase mb-2 ml-2">Project Designation</label>
-              <input type="text" placeholder="Enter Company or Codex" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-white/30 focus:outline-none focus:border-pixar-cyan focus:bg-white/10 transition-all font-semibold">
-            </div>
-            <div class="group">
-              <label class="block text-xs font-bold tracking-widest text-pixar-orange uppercase mb-2 ml-2">Architectural Style</label>
-              <div class="grid grid-cols-2 gap-3">
-                <button class="bg-pixar-gold/20 border border-pixar-gold text-pixar-gold px-4 py-3 rounded-xl font-bold text-sm hover:bg-pixar-gold hover:text-pixar-blue transition-colors">Spatial / 3D</button>
-                <button class="bg-white/5 border border-white/10 text-white/70 px-4 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors">Cloud / API</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col justify-between bg-[#050d1a]/80 rounded-2xl p-6 border border-white/5">
-            <div>
-              <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
-                <span class="text-xs font-bold tracking-widest text-white/50">SYSTEM STATUS</span>
-                <span class="text-xs font-bold tracking-widest text-green-400 flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> ONLINE
-                </span>
-              </div>
-              <p class="text-sm text-blue-100/70 leading-relaxed font-light">
-                Transmitting this brief will establish a direct, encrypted uplink with our principal engineers. No automated replies, zero bloat.
-              </p>
-            </div>
-            
-            <button class="magnetic-btn w-full mt-6 bg-gradient-to-r from-pixar-cyan to-blue-500 text-white font-black tracking-widest uppercase py-4 rounded-xl shadow-[0_10px_30px_rgba(142,202,230,0.3)] hover:shadow-[0_15px_40px_rgba(142,202,230,0.5)]">
-              Transmit Uplink ↗
-            </button>
-          </div>
+          <div class="scene-dots" id="scene-dots" aria-label="Scene navigation"></div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </main>
+  <!-- Closing Charcoal Footer -->
+  <footer class="closing-footer" id="closing-footer">
+    <div class="footer-inner">
+      <div class="footer-kicker">END OF REEL // PRIVATE STUDIO · LIMITED SLOTS</div>
+      <h2 class="footer-title">A website just <em>pitched you.</em></h2>
+      <p class="footer-copy">
+        Imagine this level of engineering running your web platform, cloud pipelines, and AI workflows. We take on select builds each quarter—tell us what you're building.
+      </p>
+
+      <div class="footer-ctas">
+        <button id="footer-book-btn" class="cta-btn orange" type="button">Book a 15-min call →</button>
+        <a class="cta-btn" href="https://wa.me/917090462940" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+        <a class="cta-btn" href="mailto:xylorislogic@gmail.com">Email xylorislogic@gmail.com</a>
+        <button id="replay-btn" class="cta-btn" type="button">↻ Replay film</button>
+      </div>
+
+      <div class="capabilities-strip">
+        <div class="cap-card">
+          <div class="cap-tag">01 // Architecture</div>
+          <div class="cap-name">Enterprise Web</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-tag">02 // Infrastructure</div>
+          <div class="cap-name">Cloud Engines</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-tag">03 // Growth</div>
+          <div class="cap-name">Algo Acquisition</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-tag">04 // Workflows</div>
+          <div class="cap-name">AI Automation</div>
+        </div>
+      </div>
+
+      <div class="footer-credits">
+        <span>540-FRAME CUT-PAPER STOP-MOTION CANVAS · SCROLL-SCRUBBED</span>
+        <span>MADE WITH ❤️ BY JEFF</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Thin Bottom Progress Bar -->
+  <div class="progress-rail">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <!-- Quick Scope & Booking Modal -->
+  <div class="modal-backdrop" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <button class="modal-close" id="close-modal-btn" type="button" aria-label="Close">✕</button>
+      <h3 class="modal-title" id="modal-title">Start a conversation</h3>
+      <p class="modal-sub">Pick a focus area and send a quick brief—we'll reply within one business day.</p>
+      <form id="scope-form">
+        <div class="form-group">
+          <label class="form-label" for="scope-track">System Focus</label>
+          <select class="form-select" id="scope-track">
+            <option value="Enterprise Web">Enterprise Web</option>
+            <option value="Cloud Engines">Cloud Engines</option>
+            <option value="Algo Acquisition">Algo Acquisition</option>
+            <option value="AI Automation">AI Automation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="scope-name">Your Name / Company</label>
+          <input class="form-input" id="scope-name" type="text" placeholder="e.g. Aarav / Northstar Labs" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="scope-brief">What are you building?</label>
+          <textarea class="form-textarea" id="scope-brief" placeholder="A short note on the bottleneck or product..." required></textarea>
+        </div>
+        <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+          <button class="pill-btn primary" type="submit">Send via WhatsApp →</button>
+          <button class="pill-btn" id="copy-brief-btn" type="button">Copy Brief</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
 
   <script>
-    // ==========================================
-    // 1. THREE.JS SETUP (The "Pixar" Environment)
-    // ==========================================
-    const canvas = document.getElementById('webgl-canvas');
-    const scene = new THREE.Scene();
-    
-    // Cinematic Fog
-    scene.fog = new THREE.FogExp2('#0a192f', 0.035);
+    // =========================================================================
+    // SCENE SCRIPT (Opening Frame + 8 Scenes)
+    // =========================================================================
+    const SCENES = [
+      {
+        counter: '00 / 08',
+        headline: 'Scroll to run <em>the paper film.</em>',
+        sub: 'Three cardboard builders assembling a live pitch—scroll down to scrub through the story.',
+        cue: 'SCROLL TO RUN THE FILM'
+      },
+      {
+        counter: '01 / 08',
+        headline: 'This website <em>is the pitch.</em>',
+        sub: 'No bloated slide decks or buzzword landing pages. Just craft you can feel.',
+        cue: 'KEEP SCROLLING'
+      },
+      {
+        counter: '02 / 08',
+        headline: 'Behind most sites, every day is <em>firefighting.</em>',
+        sub: 'Overflowing inbox trays, tangled spreadsheets, and fragile scripts catching fire under load.',
+        cue: 'KEEP SCROLLING'
+      },
+      {
+        counter: '03 / 08',
+        headline: 'Scattered tools <em>jam the belt.</em>',
+        sub: 'When your web app, cloud ops, and acquisition don’t talk, growth stalls on the line.',
+        cue: 'KEEP SCROLLING'
+      },
+      {
+        counter: '04 / 08',
+        headline: 'So we <em>install a system.</em>',
+        sub: 'Enterprise Web, Cloud Engines, Algo Acquisition, and AI Automation—snapped into one grid.',
+        cue: 'KEEP SCROLLING'
+      },
+      {
+        counter: '05 / 08',
+        headline: 'Leads route. <em>Data answers.</em>',
+        sub: 'Automated pipelines turn scattered signals into crisp decisions without manual babysitting.',
+        cue: 'KEEP SCROLLING'
+      },
+      {
+        counter: '06 / 08',
+        headline: 'Built <em>exclusively</em> for founders who ship.',
+        sub: 'Private engineering studio—direct access, zero middlemen, and custom systems built from scratch.',
+        cue: 'KEEP SCROLLING'
+      },
+      {
+        counter: '07 / 08',
+        headline: 'No 40-page proposals. <em>Just have a chat.</em>',
+        sub: 'Bring the messy problem. In 15 minutes we’ll map out what to automate or rebuild first.',
+        cue: 'ALMOST THERE'
+      },
+      {
+        counter: '08 / 08',
+        headline: 'Don’t take our word. <em>See for yourself.</em>',
+        sub: 'Scroll once more to reach the booking desk.',
+        cue: 'TO BOOKING DESK ↓'
+      }
+    ];
 
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 20);
-
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
-    // Pixar-style soft shadows & physical lighting
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
-
-    // ==========================================
-    // 2. LIGHTING (Cinematic 3-Point Setup)
-    // ==========================================
-    // Ambient / Fill (Soft blue sky bounce)
-    const hemiLight = new THREE.HemisphereLight('#8ecae6', '#0a192f', 0.8);
-    scene.add(hemiLight);
-
-    // Key Light (Warm sunlight/gold casting soft shadows)
-    const dirLight = new THREE.DirectionalLight('#ffb703', 2.5);
-    dirLight.position.set(10, 15, 10);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.bias = -0.0001;
-    scene.add(dirLight);
-
-    // Rim/Accent Light (Bright Cyan to pop edges)
-    const rimLight = new THREE.PointLight('#8ecae6', 3, 50);
-    rimLight.position.set(-10, -5, -10);
-    scene.add(rimLight);
-
-    // ==========================================
-    // 3. OBJECTS & PBR MATERIALS
-    // ==========================================
-    const objects = [];
-
-    // Material 1: Soft, matte "clay/plastic" (Pixar signature)
-    const matteMaterial = new THREE.MeshStandardMaterial({
-      color: '#0a192f',
-      roughness: 0.7,
-      metalness: 0.1,
-    });
-
-    // Material 2: Gorgeous frosted glass (Transmission)
-    const glassMaterial = new THREE.MeshPhysicalMaterial({
-      color: '#ffffff',
-      transmission: 0.95, // Glass effect
-      opacity: 1,
-      metalness: 0.1,
-      roughness: 0.2, // Frosted look
-      ior: 1.5,
-      thickness: 2.0,
-      specularIntensity: 1.0,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1,
-    });
-
-    // Material 3: Glowing Energy Core
-    const glowMaterial = new THREE.MeshStandardMaterial({
-      color: '#ffb703',
-      emissive: '#fb8500',
-      emissiveIntensity: 2.0,
-      roughness: 0.2,
-      metalness: 1.0,
-    });
-
-    // The Central Core (Torus Knot inside a Glass Sphere)
-    const coreGroup = new THREE.Group();
-    scene.add(coreGroup);
-
-    // Inner glowing knot
-    const knotGeo = new THREE.TorusKnotGeometry(2, 0.6, 128, 32);
-    const knot = new THREE.Mesh(knotGeo, glowMaterial);
-    knot.castShadow = true;
-    coreGroup.add(knot);
-
-    // Outer frosted glass shell
-    const sphereGeo = new THREE.SphereGeometry(3.5, 64, 64);
-    const glassShell = new THREE.Mesh(sphereGeo, glassMaterial);
-    glassShell.receiveShadow = true;
-    coreGroup.add(glassShell);
-    objects.push(coreGroup);
-
-    // Floating Environmental Modules (Soft shapes)
-    const moduleGeo = new THREE.CylinderGeometry(1, 1, 3, 32);
-    // Smooth the cylinder edges visually
-    moduleGeo.computeVertexNormals();
-
-    for(let i=0; i<15; i++) {
-      const isGlass = Math.random() > 0.5;
-      const mesh = new THREE.Mesh(moduleGeo, isGlass ? glassMaterial : matteMaterial);
-      
-      // Random positioning around the core
-      const radius = 8 + Math.random() * 15;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos((Math.random() * 2) - 1);
-      
-      mesh.position.set(
-        radius * Math.sin(phi) * Math.cos(theta),
-        radius * Math.sin(phi) * Math.sin(theta),
-        radius * Math.cos(phi)
-      );
-
-      // Random rotation
-      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-      
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      
-      // Store initial data for animation
-      mesh.userData = {
-        baseRotX: mesh.rotation.x,
-        baseRotY: mesh.rotation.y,
-        speed: 0.002 + Math.random() * 0.005
-      };
-
-      scene.add(mesh);
-      objects.push(mesh);
+    // =========================================================================
+    // PROCEDURAL PAPER TEXTURES (Kraft & Cream Cardstock)
+    // =========================================================================
+    function makePaperPattern(baseHex, speckDark, speckLight) {
+      const off = document.createElement('canvas');
+      off.width = 96;
+      off.height = 96;
+      const octx = off.getContext('2d');
+      octx.fillStyle = baseHex;
+      octx.fillRect(0, 0, 96, 96);
+      for (let i = 0; i < 240; i++) {
+        octx.fillStyle = i % 2 === 0 ? speckDark : speckLight;
+        const rx = (i * 37) % 96;
+        const ry = (i * 61) % 96;
+        octx.fillRect(rx, ry, (i % 3) + 1, 1);
+      }
+      return off;
     }
 
-    // ==========================================
-    // 4. GSAP SCROLLTELLING ANIMATION TIMELINE
-    // ==========================================
-    gsap.registerPlugin(ScrollTrigger);
+    const kraftTile = makePaperPattern('#c89b6e', 'rgba(92, 60, 30, 0.14)', 'rgba(255, 240, 220, 0.14)');
+    const creamTile = makePaperPattern('#fffdf8', 'rgba(24, 21, 18, 0.05)', 'rgba(200, 155, 110, 0.07)');
+    const warmTile  = makePaperPattern('#ebe0cd', 'rgba(92, 60, 30, 0.08)', 'rgba(255, 255, 255, 0.2)');
 
-    // Create a master timeline linked to the scroll of the page
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#story-container",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.5, // Buttery smooth scrubbing
+    // =========================================================================
+    // AUDIO: SUBTLE PROCEDURAL PAPER RUSTLE / CLICK
+    // =========================================================================
+    let audioCtx = null;
+    let sfxOn = false;
+
+    function playPaperTick() {
+      if (!sfxOn) return;
+      try {
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) audioCtx = new AC();
+        }
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(210 + Math.random() * 90, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.045);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } catch (_) {}
+    }
+
+    // =========================================================================
+    // DOM REFS & STATE
+    // =========================================================================
+    const track = document.getElementById('film-track');
+    const canvas = document.getElementById('paper-canvas');
+    const ctx = canvas.getContext('2d');
+    const counterEl = document.getElementById('scene-counter');
+    const headlineEl = document.getElementById('scene-headline');
+    const subEl = document.getElementById('scene-sub');
+    const cueEl = document.getElementById('scroll-cue-text');
+    const progressFill = document.getElementById('progress-fill');
+    const dotsWrap = document.getElementById('scene-dots');
+
+    let kraftPat = null;
+    let creamPat = null;
+    let warmPat = null;
+
+    let progress = 0;
+    let lastSceneIdx = -1;
+
+    SCENES.forEach((_, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'scene-dot' + (idx === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', 'Jump to scene ' + idx);
+      btn.addEventListener('click', () => jumpToScene(idx));
+      dotsWrap.appendChild(btn);
+    });
+
+    function jumpToScene(idx) {
+      const maxScroll = track.offsetHeight - window.innerHeight;
+      const targetP = idx / (SCENES.length - 1);
+      window.scrollTo({ top: targetP * maxScroll, behavior: 'smooth' });
+    }
+
+    // =========================================================================
+    // CANVAS SIZING & TACTILE CUT-PAPER PRIMITIVES
+    // =========================================================================
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      kraftPat = ctx.createPattern(kraftTile, 'repeat');
+      creamPat = ctx.createPattern(creamTile, 'repeat');
+      warmPat = ctx.createPattern(warmTile, 'repeat');
+      renderFrame();
+    }
+
+    function resolveFill(fill) {
+      if (fill === 'KRAFT') return kraftPat || '#c89b6e';
+      if (fill === 'CREAM') return creamPat || '#fffdf8';
+      if (fill === 'WARM') return warmPat || '#ebe0cd';
+      return fill;
+    }
+
+    function cutPaperRect(x, y, w, h, fill, angle = 0, shadow = 10, stroke = '#181512', radius = 3) {
+      ctx.save();
+      ctx.translate(x + w / 2, y + h / 2);
+      ctx.rotate(angle);
+      ctx.shadowColor = 'rgba(24, 21, 18, 0.24)';
+      ctx.shadowBlur = shadow * 1.5;
+      ctx.shadowOffsetX = shadow * 0.55;
+      ctx.shadowOffsetY = shadow * 0.85;
+      ctx.fillStyle = resolveFill(fill);
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h / 2, w, h, radius);
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      if (stroke) {
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = stroke;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function tapeStrip(x, y, w, h, angle = -0.15) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.fillStyle = 'rgba(224, 90, 43, 0.82)';
+      ctx.strokeStyle = 'rgba(24, 21, 18, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.strokeRect(-w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+
+    function paperPerson(x, y, scale = 1, pose = 0, shirt = 'KRAFT', facing = 1) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale * facing, scale);
+      ctx.shadowColor = 'rgba(24, 21, 18, 0.22)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 4 * facing;
+      ctx.shadowOffsetY = 6;
+
+      // Legs
+      ctx.strokeStyle = '#181512';
+      ctx.lineWidth = 6.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-7, 12);
+      ctx.lineTo(-10 + Math.sin(pose) * 4, 42);
+      ctx.moveTo(7, 12);
+      ctx.lineTo(10 - Math.sin(pose) * 4, 42);
+      ctx.stroke();
+
+      // Torso (cut-paper jacket)
+      ctx.fillStyle = resolveFill(shirt);
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.roundRect(-16, -30, 32, 44, 7);
+      ctx.fill();
+      ctx.stroke();
+
+      // Head
+      ctx.fillStyle = '#fffdf8';
+      ctx.beginPath();
+      ctx.arc(0, -47, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Hair cap
+      ctx.fillStyle = '#181512';
+      ctx.beginPath();
+      ctx.arc(0, -50, 14, Math.PI, Math.PI * 2);
+      ctx.fill();
+
+      // Articulated arms
+      ctx.strokeStyle = '#181512';
+      ctx.lineWidth = 5.5;
+      ctx.beginPath();
+      ctx.moveTo(-14, -22);
+      ctx.lineTo(-30, -6 + Math.sin(pose) * 15);
+      ctx.moveTo(14, -22);
+      ctx.lineTo(30, -6 - Math.sin(pose) * 15);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function paperMug(x, y, color = 'CREAM', steamPhase = 0) {
+      cutPaperRect(x, y, 26, 30, color, -0.02, 5, '#181512', 4);
+      ctx.save();
+      ctx.strokeStyle = '#181512';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(x + 26, y + 14, 7, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
+      // Cut-paper steam curl
+      ctx.strokeStyle = 'rgba(24, 21, 18, 0.45)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + 9, y - 6);
+      ctx.quadraticCurveTo(x + 3 + Math.sin(steamPhase) * 4, y - 16, x + 12, y - 24);
+      ctx.moveTo(x + 17, y - 6);
+      ctx.quadraticCurveTo(x + 22 - Math.sin(steamPhase) * 4, y - 15, x + 16, y - 23);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function paperPlant(x, y, sway = 0) {
+      ctx.save();
+      ctx.translate(x, y);
+      // Leaves
+      ctx.fillStyle = '#5c7c54';
+      ctx.strokeStyle = '#181512';
+      ctx.lineWidth = 2;
+      [-0.45, 0, 0.45].forEach((ang, i) => {
+        ctx.save();
+        ctx.rotate(ang + Math.sin(sway + i) * 0.06);
+        ctx.beginPath();
+        ctx.ellipse(0, -24, 7, 18, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      });
+      // Pot
+      ctx.fillStyle = '#e05a2b';
+      ctx.beginPath();
+      ctx.moveTo(-15, -6);
+      ctx.lineTo(15, -6);
+      ctx.lineTo(11, 20);
+      ctx.lineTo(-11, 20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function paperFlame(x, y, s, wobble) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(s, s);
+      ctx.rotate(Math.sin(wobble) * 0.09);
+      ctx.shadowColor = 'rgba(24,21,18,0.2)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 4;
+      ctx.fillStyle = '#e05a2b';
+      ctx.strokeStyle = '#181512';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -36);
+      ctx.quadraticCurveTo(24, -10, 15, 18);
+      ctx.quadraticCurveTo(0, 26, -15, 18);
+      ctx.quadraticCurveTo(-24, -10, 0, -36);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f4ede0';
+      ctx.beginPath();
+      ctx.moveTo(0, -15);
+      ctx.quadraticCurveTo(10, 0, 6, 14);
+      ctx.quadraticCurveTo(0, 18, -6, 14);
+      ctx.quadraticCurveTo(-10, 0, 0, -15);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawTornBorder(W, H, jitter) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(156, 111, 68, 0.35)';
+      ctx.lineWidth = 2;
+      const m = Math.min(W, H) * 0.025;
+      ctx.beginPath();
+      for (let x = m; x <= W - m; x += 28) {
+        const yOff = ((Math.sin(x * 0.13) + jitter * 0.15) * 2.5);
+        if (x === m) ctx.moveTo(x, m + yOff);
+        else ctx.lineTo(x, m + yOff);
+      }
+      for (let y = m; y <= H - m; y += 28) {
+        const xOff = ((Math.cos(y * 0.13) - jitter * 0.15) * 2.5);
+        ctx.lineTo(W - m + xOff, y);
+      }
+      for (let x = W - m; x >= m; x -= 28) {
+        const yOff = ((Math.sin(x * 0.17) + jitter * 0.15) * 2.5);
+        ctx.lineTo(x, H - m + yOff);
+      }
+      for (let y = H - m; y >= m; y -= 28) {
+        const xOff = ((Math.cos(y * 0.17) - jitter * 0.15) * 2.5);
+        ctx.lineTo(m + xOff, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // =========================================================================
+    // MAIN PROCEDURAL 540-FRAME STOP-MOTION RENDERER
+    // =========================================================================
+    function renderFrame() {
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      ctx.clearRect(0, 0, W, H);
+
+      const frame = Math.floor(progress * 540);
+      const sceneFloat = progress * (SCENES.length - 1);
+      const sceneIdx = Math.min(SCENES.length - 1, Math.floor(sceneFloat + 0.18));
+      const localT = sceneFloat - Math.floor(sceneFloat);
+      const jitter = (frame % 2 === 0 ? 1 : -1) * 0.9;
+
+      if (sceneIdx !== lastSceneIdx) {
+        lastSceneIdx = sceneIdx;
+        const s = SCENES[sceneIdx];
+        counterEl.textContent = s.counter;
+        headlineEl.innerHTML = s.headline;
+        subEl.textContent = s.sub;
+        cueEl.textContent = s.cue;
+        document.querySelectorAll('.scene-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === sceneIdx);
+        });
+        playPaperTick();
+      }
+
+      drawTornBorder(W, H, jitter);
+
+      // Responsive diorama placement for Desktop & Mobile
+      const isMobile = W < 640;
+      const cx = W * 0.5;
+      const cy = isMobile ? H * 0.66 : H * 0.62;
+      const sc = isMobile
+        ? Math.min(W / 560, H / 640)
+        : Math.min(W / 860, H / 590, 1.18);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(sc, sc);
+
+      // Tactile cardboard stage floor
+      cutPaperRect(-310, 108, 620, 24, 'KRAFT', 0.004 * jitter, 8, '#181512', 4);
+      tapeStrip(-265, 112, 32, 12, -0.3);
+      tapeStrip(265, 112, 32, 12, 0.25);
+
+      if (sceneIdx === 0) {
+        // Opening: Builders assembling cut-paper browser + plant + mug
+        const slide = (1 - Math.min(1, localT * 1.6)) * 28;
+        cutPaperRect(-185, -88 + jitter, 370, 184, 'CREAM', -0.01, 14, '#181512', 6);
+        cutPaperRect(-185, -88 + jitter, 370, 30, '#181512', -0.01, 0, null, 4);
+        // Browser window dots
+        ctx.fillStyle = '#e05a2b';
+        ctx.beginPath(); ctx.arc(-166, -72 + jitter, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#c89b6e';
+        ctx.beginPath(); ctx.arc(-151, -72 + jitter, 4.5, 0, Math.PI * 2); ctx.fill();
+
+        cutPaperRect(-162, -40 + slide, 148, 110, 'WARM', 0.02, 6);
+        cutPaperRect(4, -40 - slide * 0.6, 158, 52, '#e05a2b', -0.015, 6);
+        cutPaperRect(4, 24 + slide * 0.4, 158, 46, 'KRAFT', 0.01, 6);
+
+        paperPlant(-210, 88, frame * 0.08);
+        paperMug(196, 78, 'CREAM', frame * 0.14);
+        paperPerson(-255, 66, 0.95, frame * 0.16, 'KRAFT', 1);
+        paperPerson(255, 66, 0.95, frame * 0.16 + 1.4, '#e05a2b', -1);
+      } else if (sceneIdx === 1) {
+        // 01: Unrolling kraft blueprint
+        const unroll = Math.min(1, 0.35 + localT * 1.1);
+        cutPaperRect(-235, -72 + jitter, 470 * unroll, 162, 'KRAFT', -0.01, 12, '#181512', 4);
+        if (unroll > 0.5) {
+          cutPaperRect(-200, -45, 178, 102, 'CREAM', 0.015, 6);
+          cutPaperRect(10, -45, 186, 102, 'CREAM', -0.012, 6);
+          tapeStrip(-200, -45, 26, 10, -0.4);
+          tapeStrip(195, 55, 26, 10, 0.4);
+        }
+        paperPerson(-270, 66, 0.95, frame * 0.2, '#181512', 1);
+        paperPerson(265, 66, 0.95, frame * 0.2 + 1, '#e05a2b', -1);
+      } else if (sceneIdx === 2) {
+        // 02: Firefighting — burning inbox tray & rotary desk phone
+        cutPaperRect(-155, 18 + jitter, 185, 86, 'KRAFT', 0.01, 10);
+        cutPaperRect(-120, -36, 82, 64, 'CREAM', -0.16, 6);
+        cutPaperRect(-35, -48, 92, 68, 'WARM', 0.14, 6);
+        // Cut-paper rotary phone on right
+        cutPaperRect(75, 42, 88, 62, '#181512', 0.02, 8, '#181512', 8);
+        ctx.fillStyle = '#f4ede0';
+        ctx.beginPath(); ctx.arc(119, 74, 15, 0, Math.PI * 2); ctx.fill();
+        cutPaperRect(72, 22 + Math.sin(frame * 0.6) * 4, 94, 16, '#e05a2b', Math.sin(frame * 0.5) * 0.05, 5, '#181512', 8);
+
+        paperFlame(-125, -18, 0.95, frame * 0.28);
+        paperFlame(-30, -42, 1.18, frame * 0.28 + 1);
+        paperFlame(60, -14, 0.88, frame * 0.28 + 2);
+        paperPerson(-240, 66, 0.95, frame * 0.34, '#e05a2b', 1);
+      } else if (sceneIdx === 3) {
+        // 03: Conveyor belt jamming
+        cutPaperRect(-245, 34, 490, 44, '#181512', 0, 10, '#181512', 20);
+        for (let i = -195; i <= 195; i += 78) {
+          ctx.save();
+          ctx.translate(i, 56);
+          ctx.rotate(frame * 0.08);
+          ctx.fillStyle = '#c89b6e';
+          ctx.beginPath(); ctx.arc(0, 0, 11, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#181512'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(8, 0); ctx.stroke();
+          ctx.restore();
+        }
+        const shift = Math.sin(frame * 0.25) * 11;
+        cutPaperRect(-165 + shift, -36, 92, 66, 'CREAM', -0.18, 6);
+        cutPaperRect(-52 - shift, -58, 96, 76, 'WARM', 0.14, 6);
+        cutPaperRect(68 + shift, -32, 86, 62, '#e05a2b', -0.1, 6);
+        paperPerson(-270, 66, 0.9, frame * 0.2, 'KRAFT', 1);
+        paperMug(225, 78, 'CREAM', frame * 0.12);
+      } else if (sceneIdx === 4) {
+        // 04: Installing the 4 JEFF SPACE modules cleanly
+        const labels = ['ENTERPRISE WEB', 'CLOUD ENGINES', 'ALGO ACQ.', 'AI AUTOMATION'];
+        const colors = ['CREAM', 'WARM', 'KRAFT', '#e05a2b'];
+        labels.forEach((lbl, idx) => {
+          const x = -258 + idx * 134;
+          const drop = Math.max(0, (1 - Math.min(1, localT * 1.9 - idx * 0.14))) * -52;
+          cutPaperRect(x, -46 + drop + jitter * 0.4, 120, 124, colors[idx], (idx % 2 === 0 ? -0.02 : 0.02), 9, '#181512', 6);
+          tapeStrip(x + 60, -46 + drop, 28, 10, (idx % 2 === 0 ? -0.15 : 0.15));
+          ctx.fillStyle = idx === 3 ? '#fff' : '#181512';
+          ctx.font = '700 10px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(lbl, x + 60, 18 + drop);
+        });
+      } else if (sceneIdx === 5) {
+        // 05: Kraft envelope routing burnt-orange data packets to clean dashboard
+        cutPaperRect(-235, -36 + jitter, 152, 106, 'KRAFT', -0.04, 10);
+        // Envelope flap
+        ctx.save();
+        ctx.strokeStyle = '#181512';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-235, -32 + jitter);
+        ctx.lineTo(-159, 20 + jitter);
+        ctx.lineTo(-83, -32 + jitter);
+        ctx.stroke();
+        ctx.restore();
+
+        cutPaperRect(80, -46 - jitter, 174, 118, 'CREAM', 0.02, 10);
+        for (let i = 0; i < 6; i++) {
+          const t = ((frame * 0.018 + i / 6) % 1);
+          const px = -72 + t * 145;
+          const py = Math.sin(t * Math.PI) * -38;
+          cutPaperRect(px, py, 14, 14, '#e05a2b', t * 2, 4, '#181512', 2);
+        }
+        paperPerson(275, 66, 0.9, frame * 0.12, '#181512', -1);
+      } else if (sceneIdx === 6) {
+        // 06: Private studio signal pin + paper planes
+        ctx.save();
+        ctx.strokeStyle = 'rgba(200, 155, 110, 0.7)';
+        ctx.lineWidth = 2;
+        for (let r = 35; r <= 125; r += 30) {
+          ctx.beginPath();
+          ctx.arc(0, 15, r + (frame % 14), 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+        cutPaperRect(-62, -26 + jitter, 124, 46, '#181512', -0.02, 9, '#181512', 6);
+        ctx.fillStyle = '#f4ede0';
+        ctx.font = '700 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('JEFF // PRIVATE', 0, 1 + jitter);
+        paperPerson(-215, 66, 0.9, frame * 0.14, '#e05a2b', 1);
+        paperPerson(215, 66, 0.9, frame * 0.14 + 2, 'KRAFT', -1);
+      } else if (sceneIdx === 7) {
+        // 07: Minimalist desk with two steaming mugs & taped wall frame
+        cutPaperRect(-80, -112, 160, 98, 'WARM', 0.01, 7);
+        tapeStrip(0, -112, 30, 12, -0.08);
+        cutPaperRect(-170, 38, 340, 22, 'KRAFT', 0, 8);
+        paperMug(-105, 8 + jitter, 'CREAM', frame * 0.14);
+        paperMug(75, 8 - jitter, '#e05a2b', frame * 0.14 + 1.5);
+        paperPlant(0, 18, frame * 0.08);
+      } else {
+        // 08: Five celebrating paper-craft figures + confetti
+        const xs = [-200, -100, 0, 100, 200];
+        const shirts = ['KRAFT', '#e05a2b', '#181512', 'KRAFT', '#e05a2b'];
+        xs.forEach((px, idx) => {
+          const hop = Math.abs(Math.sin(frame * 0.18 + idx)) * -18;
+          paperPerson(px, 66 + hop, 0.92, frame * 0.32 + idx, shirts[idx], idx % 2 === 0 ? 1 : -1);
+        });
+        for (let c = 0; c < 16; c++) {
+          const cxp = ((c * 97 + frame * 3) % 540) - 270;
+          const cyp = ((c * 53 + frame * 4) % 210) - 125;
+          cutPaperRect(cxp, cyp, 10, 10, c % 2 === 0 ? '#e05a2b' : 'KRAFT', c + frame * 0.1, 2, null, 2);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    // =========================================================================
+    // SCROLL & INTERACTION WIRING
+    // =========================================================================
+    function onScroll() {
+      const maxScroll = Math.max(1, track.offsetHeight - window.innerHeight);
+      const y = Math.min(maxScroll, Math.max(0, window.scrollY));
+      progress = y / maxScroll;
+      progressFill.style.width = (progress * 100).toFixed(2) + '%';
+      renderFrame();
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', resizeCanvas);
+
+    document.getElementById('top-btn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('replay-btn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('sfx-btn').addEventListener('click', (e) => {
+      sfxOn = !sfxOn;
+      e.target.textContent = sfxOn ? 'SFX: ON' : 'SFX: OFF';
+      if (sfxOn) playPaperTick();
+    });
+
+    document.getElementById('next-scene-btn').addEventListener('click', () => {
+      if (lastSceneIdx >= SCENES.length - 1) {
+        document.getElementById('closing-footer').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        jumpToScene(Math.min(SCENES.length - 1, lastSceneIdx + 1));
       }
     });
 
-    // Initial Camera Position
-    camera.position.set(0, 0, 25);
-    
-    // --- Scroll Animations (3D Scene) ---
-    
-    // Chapter 1 to 2: Fly around to the side, look at the core
-    tl.to(camera.position, {
-      x: 12, y: 5, z: 12,
-      ease: "power2.inOut"
-    }, 0);
-    tl.to(coreGroup.rotation, {
-      y: Math.PI,
-      ease: "none"
-    }, 0);
+    // Modal & Toast
+    const modal = document.getElementById('booking-modal');
+    const toast = document.getElementById('toast');
 
-    // Chapter 2 to 3: Dive *inside* the glass sphere!
-    tl.to(camera.position, {
-      x: 0, y: 0, z: 3,
-      ease: "power3.inOut"
-    }, 1);
-    tl.to(dirLight.position, {
-      x: -10, y: -10, z: 5, // Move light for dramatic inside shadows
-    }, 1);
-
-    // Chapter 3 to 4: Pull way back, tilt up, majestic reveal
-    tl.to(camera.position, {
-      x: -15, y: -10, z: 20,
-      ease: "power2.inOut"
-    }, 2);
-    tl.to(coreGroup.rotation, {
-      y: Math.PI * 2.5,
-      x: Math.PI / 4,
-      ease: "none"
-    }, 2);
-
-    // --- Scroll Animations (HTML UI Fades) ---
-    
-    // Helper to animate sections in
-    const sections = gsap.utils.toArray('.ui-element');
-    sections.forEach((sec, i) => {
-      gsap.to(sec, {
-        scrollTrigger: {
-          trigger: sec.parentElement,
-          start: "top center+=20%",
-          end: "center center",
-          scrub: 1,
-        },
-        opacity: 1,
-        x: 0,
-        y: 0,
-        scale: 1,
-        ease: "back.out(1.7)"
-      });
-      
-      // Fade out on scroll past
-      gsap.to(sec, {
-        scrollTrigger: {
-          trigger: sec.parentElement,
-          start: "center center",
-          end: "bottom center-=20%",
-          scrub: 1,
-        },
-        opacity: 0,
-        y: -30,
-        ease: "power1.in"
-      });
-    });
-
-    // ==========================================
-    // 5. RENDER LOOP (Constant ambient animation)
-    // ==========================================
-    const clock = new THREE.Clock();
-
-    function animate() {
-      requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-
-      // Camera always looks at the center smoothly
-      camera.lookAt(0, 0, 0);
-
-      // Ambient rotation for the core
-      knot.rotation.x = time * 0.5;
-      knot.rotation.y = time * 0.3;
-      glassShell.rotation.y = -time * 0.1;
-
-      // Ambient float for modules
-      objects.forEach((obj, idx) => {
-        if (idx === 0) return; // Skip core group
-        obj.rotation.x = obj.userData.baseRotX + time * obj.userData.speed;
-        obj.rotation.y = obj.userData.baseRotY + time * obj.userData.speed;
-        obj.position.y += Math.sin(time * 2 + idx) * 0.005; // Gentle hover
-      });
-
-      // Dynamic light pulsation
-      rimLight.intensity = 3 + Math.sin(time * 3) * 1.5;
-
-      renderer.render(scene, camera);
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
     }
-    animate();
 
-    // ==========================================
-    // 6. RESIZE HANDLER & MOUSE KINEMATICS
-    // ==========================================
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('open-modal-btn').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('footer-book-btn').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('close-modal-btn').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
     });
 
-    // Subtle parallax effect based on mouse movement
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
+    function buildBriefText() {
+      const trackVal = document.getElementById('scope-track').value;
+      const nameVal = document.getElementById('scope-name').value.trim() || 'A visitor';
+      const briefVal = document.getElementById('scope-brief').value.trim() || 'Looking to discuss a build.';
+      return `Hi Jeff Space! I'm ${nameVal} — interested in ${trackVal}. Brief: ${briefVal}`;
+    }
 
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
-      mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+    document.getElementById('scope-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = encodeURIComponent(buildBriefText());
+      window.open('https://wa.me/917090462940?text=' + text, '_blank', 'noopener,noreferrer');
+      modal.classList.remove('open');
+      showToast('Opening WhatsApp with your brief...');
     });
 
-    // We hook the mouse parallax into the render loop implicitly via GSAP ticker for smoothness
-    gsap.ticker.add(() => {
-      targetX = mouseX * 2;
-      targetY = mouseY * 2;
-      // Add a tiny bit of offset to the whole scene based on mouse
-      scene.rotation.y += (targetX - scene.rotation.y) * 0.05;
-      scene.rotation.x += (targetY - scene.rotation.x) * 0.05;
+    document.getElementById('copy-brief-btn').addEventListener('click', () => {
+      const txt = buildBriefText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => showToast('Brief copied to clipboard!')).catch(() => fallbackCopy(txt));
+      } else {
+        fallbackCopy(txt);
+      }
     });
+
+    function fallbackCopy(txt) {
+      const ta = document.createElement('textarea');
+      ta.value = txt;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('Brief copied to clipboard!');
+    }
+
+    resizeCanvas();
+    onScroll();
   </script>
 </body>
 </html>
+```
